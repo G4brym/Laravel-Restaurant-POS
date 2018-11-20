@@ -78,4 +78,9 @@ class UserControllerAPI extends Controller
         }
         return response()->json($totalEmail == 0);
     }
+
+    public function myProfile(Request $request)
+    {
+        return new UserResource($request->user());
+    }
 }

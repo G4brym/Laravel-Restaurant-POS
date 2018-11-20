@@ -1,0 +1,21 @@
+@extends('master')
+
+@section('title', 'Vue.js App')
+
+@section('content')
+
+<div class="jumbotron">
+    <h1>@{{ title }}</h1>
+</div>
+<user-list :users="users" @edit-click="editUser" @delete-click="deleteUser" ref="usersListRef"></user-list> 
+<div class="alert alert-success" v-if="showSuccess">
+    <button type="button" class="close-btn" v-on:click="showSuccess=false">&times;</button>
+    <strong>@{{ successMessage }}</strong>
+</div>
+
+<user-edit :user="currentUser" :departments="departments"  @user-saved="savedUser" @user-canceled="cancelEdit" v-if="currentUser"></user-edit>              
+@endsection
+
+@section('pagescript')
+<script src="js/vue.js"></script>
+@stop  
