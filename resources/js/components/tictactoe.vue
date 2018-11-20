@@ -1,5 +1,5 @@
 <template>
-    <div>
+	<div>
         <div>
             <h3 class="text-center">{{ title }}</h3>
             <br>
@@ -18,14 +18,14 @@
                 </div>
             </div>
             <hr>
-        </div>
-    </div>
+        </div>  
+    </div>			
 </template>
 
-<script>
-    module.exports = {
-        data: function() {
-            return {
+<script type="text/javascript">
+	export default {
+        data: function(){
+			return {
                 title: 'TicTacToe',
                 showSuccess: false,
                 showFailure: false,
@@ -33,6 +33,8 @@
                 failMessage: '',
                 currentValue: 1,
                 gameEnded:false,
+                player1User: undefined,
+                player2User: undefined,
                 board: [0,0,0,0,0,0,0,0,0]
             }
         },
@@ -44,13 +46,12 @@
             clickPiece: function(index) {
                 if(this.board[index] || this.gameEnded) return;
                 this.board[index] = this.currentValue;
-                this.successMessage = this.playerName(this.currentValue) +' has Played';
+                this.successMessage = this.currentPlayer+' has Played';
                 this.showSuccess = true;
                 this.currentValue = (this.currentValue == 1)? 2 : 1;
                 this.checkGameEnded();
             },
             restartGame:function(){
-                console.log('restartGame');
                 this.board= [0,0,0,0,0,0,0,0,0];
                 this.showSuccess= false;
                 this.showFailure= false;
@@ -71,12 +72,6 @@
                 ((this.board[2]==value) && (this.board[5]==value) && (this.board[8]==value)) || 
                 ((this.board[0]==value) && (this.board[4]==value) && (this.board[8]==value)) || 
                 ((this.board[2]==value) && (this.board[4]==value) && (this.board[6]==value));
-            },
-            playerName : function(playerNumber) {
-                if (this.$root["player" + playerNumber]) {
-                    return this.$root["player" + playerNumber]
-                }
-                return "Player" + playerNumber;
             },
             checkGameEnded: function(){
                 if (this.hasRow(1)) {
@@ -105,18 +100,36 @@
                     }
                 });
                 return returnValue;
-            }
+            },
             // ----------------------------------------------------------------------------------------
             // GAME LOGIC - END
             // ----------------------------------------------------------------------------------------        
-        },
-        computed: {
-            currentPlayer: function(){ 
-                if (this.$root["player" + this.currentValue]) {
-                    return this.$root["player" + this.currentValue]
+            playerName: function(playerNumber){
+                if(this.player1User != undefined && playerNumber == 1){
+                    return this.player1User.name;                
                 }
-                return "Player" + this.currentValue;
+                if(this.player2User != undefined && playerNumber == 2){
+                    return this.player2User.name;
+                }
+                return 'Player '+playerNumber;
+            }
+        },
+        computed:{
+            currentPlayer: function(){ 
+                return this.playerName(this.currentValue);
+            }
+        },
+        mounted(){
+            if(this.$root.$data.player1){
+                this.player1User = this.$root.$data.player1;
+            }
+            if(this.$root.$data.player2 ){
+                this.player2User = this.$root.$data.player2;
             }
         }
-    };
+    }
 </script>
+
+<style>	
+    
+</style>
