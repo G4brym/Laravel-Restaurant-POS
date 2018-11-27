@@ -47658,17 +47658,17 @@ var logout = Vue.component('logout', __webpack_require__(77));
 var routes = [{ path: '/', redirect: '/users', name: 'root' }, { path: '/users', component: user, name: 'users' }, { path: '/departments', component: department, name: 'departments' }, { path: '/tictactoe', component: game, name: 'game' }, { path: '/profile', component: profile, name: 'profile' }, { path: '/login', component: login, name: 'login' }, { path: '/logout', component: logout, name: 'logout' }];
 
 var router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
-    routes: routes
+  routes: routes
 });
 
 router.beforeEach(function (to, from, next) {
-    if (to.name == 'profile' || to.name == 'logout') {
-        if (!__WEBPACK_IMPORTED_MODULE_1__stores_global_store__["a" /* default */].state.user) {
-            next("/login");
-            return;
-        }
+  if (to.name == 'profile' || to.name == 'logout') {
+    if (!__WEBPACK_IMPORTED_MODULE_1__stores_global_store__["a" /* default */].state.user) {
+      next("/login");
+      return;
     }
-    next();
+  }
+  next();
 });
 
 // Change the base URL to your REST API URL
@@ -47677,19 +47677,19 @@ router.beforeEach(function (to, from, next) {
 //axios.defaults.baseURL = 'http://my.api';
 
 var app = new Vue({
-    router: router,
-    data: {
-        player1: undefined,
-        player2: undefined
-    },
-    store: __WEBPACK_IMPORTED_MODULE_1__stores_global_store__["a" /* default */],
-    created: function created() {
-        console.log('-----');
-        console.log(this.$store.state.user);
-        this.$store.commit('loadDepartments');
-        this.$store.commit('loadTokenAndUserFromSession');
-        console.log(this.$store.state.user);
-    }
+  router: router,
+  data: {
+    player1: undefined,
+    player2: undefined
+  },
+  store: __WEBPACK_IMPORTED_MODULE_1__stores_global_store__["a" /* default */],
+  created: function created() {
+    console.log('-----');
+    console.log(this.$store.state.user);
+    this.$store.commit('loadDepartments');
+    this.$store.commit('loadTokenAndUserFromSession');
+    console.log(this.$store.state.user);
+  }
 }).$mount('#app');
 
 /***/ }),
@@ -51397,7 +51397,7 @@ var content = __webpack_require__(48);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(13)("3a556ed0", content, false, {});
+var update = __webpack_require__(13)("43105fc5", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -51421,7 +51421,7 @@ exports = module.exports = __webpack_require__(12)(false);
 
 
 // module
-exports.push([module.i, "\np[data-v-e039bdd4] {\n\tfont-size: 2em;\n\ttext-align: center;\n}\n", ""]);
+exports.push([module.i, "\np[data-v-e039bdd4] {\r\n\tfont-size: 2em;\r\n\ttext-align: center;\n}\r\n", ""]);
 
 // exports
 
@@ -51607,7 +51607,7 @@ var content = __webpack_require__(53);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(13)("59790dba", content, false, {});
+var update = __webpack_require__(13)("6acac667", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -51822,7 +51822,7 @@ var content = __webpack_require__(57);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(13)("8789ce80", content, false, {});
+var update = __webpack_require__(13)("64e65d26", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -52237,7 +52237,7 @@ var content = __webpack_require__(63);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(13)("558a7424", content, false, {});
+var update = __webpack_require__(13)("bf6f91de", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -52261,7 +52261,7 @@ exports = module.exports = __webpack_require__(12)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/*\t  Specific style applied only on the component*/\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/*\t  Specific style applied only on the component*/\r\n", ""]);
 
 // exports
 
@@ -52399,7 +52399,7 @@ var content = __webpack_require__(68);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(13)("dfe45ba6", content, false, {});
+var update = __webpack_require__(13)("ae19a1c0", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
