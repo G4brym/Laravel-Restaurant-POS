@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class Department extends Resource
+class Order extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,13 @@ class Department extends Resource
         //return parent::toArray($request);
         return [
           'id'   => $this->id,
-          'name' => $this->name,
-          'date' => $this->updated_at->toDateTimeString()
+          'state' => $this->state,
+          'start' => $this->start,
+          'end' => $this->end,
+          'item' => $this->item->id,
+          'meal' => $this->meal->id,
+          'responsible_cook_id' => $this->responsible_cook->id,
+          'responsible_cook' => $this->responsible_cook->name,
         ];
     }
 }
