@@ -17,7 +17,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('departments', 'DepartmentControllerAPI@index');
 Route::get('users', 'UserControllerAPI@index');
 Route::get('users/emailavailable', 'UserControllerAPI@emailAvailable');
 Route::middleware('auth:api')->get('users/me', 'UserControllerAPI@myProfile');
@@ -26,6 +25,14 @@ Route::get('users/{id}', 'UserControllerAPI@show');
 Route::post('users', 'UserControllerAPI@store');
 Route::put('users/{id}', 'UserControllerAPI@update');
 Route::delete('users/{id}', 'UserControllerAPI@destroy');
+
+
+Route::get('orders', 'OrderControllerAPI@index');
+Route::get('orders/waiter', 'OrderControllerAPI@waiter');
+Route::get('orders/{id}', 'OrderControllerAPI@show');
+Route::post('orders', 'OrderControllerAPI@store');
+Route::put('orders/{id}', 'OrderControllerAPI@update');
+Route::delete('orders/{id}', 'OrderControllerAPI@destroy');
 
 /*
 Caso prefiram usar Resource Routes para o user, podem implementar antes as rotas:
