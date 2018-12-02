@@ -15,4 +15,3 @@ const mix = require('laravel-mix');
 mix.js('resources/js/vue.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css');
 
-mix.js('resources/js/tictactoe.js', 'public/js');

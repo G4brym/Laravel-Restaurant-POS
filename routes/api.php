@@ -33,6 +33,12 @@ Route::middleware('auth:api')->post('orders', 'OrderControllerAPI@store');
 Route::middleware('auth:api')->put('orders/{id}', 'OrderControllerAPI@update');
 Route::middleware('auth:api')->delete('orders/{id}', 'OrderControllerAPI@destroy');
 
+Route::middleware('auth:api')->get('meals', 'MealControllerAPI@index');
+//Route::middleware('auth:api')->get('meals/{id}', 'MealControllerAPI@show');
+//Route::middleware('auth:api')->post('meals', 'MealControllerAPI@store');
+//Route::middleware('auth:api')->put('meals/{id}', 'MealControllerAPI@update');
+//Route::middleware('auth:api')->delete('meals/{id}', 'MealControllerAPI@destroy');
+
 /*
 Caso prefiram usar Resource Routes para o user, podem implementar antes as rotas:
 NOTA: neste caso, o parâmetro a receber nos métodos do controlador é user e não id

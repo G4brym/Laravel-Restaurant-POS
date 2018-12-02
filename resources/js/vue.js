@@ -17,18 +17,16 @@
 
  const user = Vue.component('user', require('./components/user.vue'));
  const department = Vue.component('department', require('./components/departmentList.vue'));
- const orderList = Vue.component('orderList', require('./components/orderList'));
- const game = Vue.component('game', require('./components/tictactoe.vue'));
+ const waiter = Vue.component('waiter', require('./components/waiter'));
  const profile = Vue.component('profile', require('./components/profile.vue'));
  const login = Vue.component('login', require('./components/login.vue'));
  const logout = Vue.component('logout', require('./components/logout.vue'));
 
  const routes = [
  { path: '/', redirect: '/users', name: 'root'},
- { path: '/waiter', component: orderList, name: 'orderList'}, // TODO maybe change this just to orders?
+ { path: '/waiter', component: waiter, name: 'waiter'},
  { path: '/users', component: user, name: 'users'},
  { path: '/departments', component: department, name: 'departments'},
- { path: '/tictactoe', component: game, name: 'game'},
  { path: '/profile', component: profile, name: 'profile'},
  { path: '/login', component: login, name: 'login'},
  { path: '/logout', component: logout, name: 'logout'},
@@ -63,7 +61,7 @@ store,
 created() {
     console.log('-----');
     console.log(this.$store.state.user);
-    this.$store.commit('loadDepartments');
+    // this.$store.commit('loadDepartments');
     this.$store.commit('loadTokenAndUserFromSession');
     console.log(this.$store.state.user);
 }

@@ -5,7 +5,6 @@
 @section('content')
     <router-link to="/users">Users</router-link> -  
     <router-link to="/departments">Departments</router-link> -
-    <router-link to="/tictactoe">Tic Tac Toe</router-link> -
     <router-link to="/profile" v-show="this.$store.state.user">Profile</router-link> -
     <router-link to="/login"  v-show="!this.$store.state.user">Login</router-link> -
     <router-link to="/logout" v-show="this.$store.state.user">Logout</router-link>
