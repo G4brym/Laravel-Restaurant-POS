@@ -27,12 +27,11 @@ Route::put('users/{id}', 'UserControllerAPI@update');
 Route::delete('users/{id}', 'UserControllerAPI@destroy');
 
 
-Route::get('orders', 'OrderControllerAPI@index');
-Route::get('orders/waiter', 'OrderControllerAPI@waiter');
-Route::get('orders/{id}', 'OrderControllerAPI@show');
-Route::post('orders', 'OrderControllerAPI@store');
-Route::put('orders/{id}', 'OrderControllerAPI@update');
-Route::delete('orders/{id}', 'OrderControllerAPI@destroy');
+Route::middleware('auth:api')->get('orders', 'OrderControllerAPI@index');
+Route::middleware('auth:api')->get('orders/{id}', 'OrderControllerAPI@show');
+Route::middleware('auth:api')->post('orders', 'OrderControllerAPI@store');
+Route::middleware('auth:api')->put('orders/{id}', 'OrderControllerAPI@update');
+Route::middleware('auth:api')->delete('orders/{id}', 'OrderControllerAPI@destroy');
 
 /*
 Caso prefiram usar Resource Routes para o user, podem implementar antes as rotas:

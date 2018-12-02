@@ -9,7 +9,8 @@ export default new Vuex.Store({
     state: { 
         token: "",
         user: null, 
-        departments: []       
+        departments: [],
+        orders: []
     },  
     mutations: { 
         clearUserAndToken: (state) => {
@@ -52,9 +53,15 @@ export default new Vuex.Store({
         },
         loadDepartments: (state) => {
             axios.get('api/departments')
-                    .then(response => {
-                        state.departments = response.data.data; 
-                    });
+                .then(response => {
+                    state.departments = response.data.data;
+                });
+        },
+        loadOrders: (state) => {
+            axios.get('api/orders')
+                .then(response => {
+                    state.ordersw = response.data.data;
+                });
         }
     } 
 });
