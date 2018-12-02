@@ -8,9 +8,4 @@ class VueController extends Controller
     {
         return view('vue.index');
     }
-
-    public function tictactoe()
-    {
-        return view('tictactoe.index');
-    }
 }
