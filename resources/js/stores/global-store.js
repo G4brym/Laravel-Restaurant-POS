@@ -69,6 +69,12 @@ export default new Vuex.Store({
                 .then(response => {
                     state.waiterMeals = response.data.data;
                 });
+        },
+        loadTables: (state) => {
+            axios.get('api/tables')
+                .then(response => {
+                    state.tables = response.data.data;
+                });
         }
     } 
 });
