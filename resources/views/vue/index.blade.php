@@ -151,10 +151,10 @@
 
     <!-- Manager-->
     <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/dashboard"><i class="fa fa-briefcase"></i> <span>Dashboard</span></router-link></li>
-    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/table"><i class="fa fa-briefcase"></i> <span>Tables</span></router-link></li>
-    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/menu"><i class="fa fa-briefcase"></i> <span>Menu</span></router-link></li>
-    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/users"><i class="fa fa-briefcase"></i> <span>Users</span></router-link></li>
-    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/stats"><i class="fa fa-briefcase"></i> <span>Stats</span></router-link></li>
+    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/table"><i class="fa fa-flag-o"></i> <span>Tables</span></router-link></li>
+    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/menu"><i class="fa fa-envelope-o"></i> <span>Menu</span></router-link></li>
+    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/users"><i class="fa fa-users"></i> <span>Users</span></router-link></li>
+    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/stats"><i class="fa fa-circle"></i> <span>Stats</span></router-link></li>
     <!--
     <li class="treeview">
         <a href="#">
