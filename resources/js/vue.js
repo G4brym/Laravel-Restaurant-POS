@@ -15,7 +15,8 @@
 
  import store from './stores/global-store';
 
- const manager = Vue.component('manager', require('./components/manager.vue'));
+ const table = Vue.component('table', require('./components/table.vue'));
+
  const user = Vue.component('user', require('./components/user.vue'));
  const waiter = Vue.component('waiter', require('./components/waiter'));
  const profile = Vue.component('profile', require('./components/profile.vue'));
@@ -25,7 +26,7 @@
  const routes = [
  { path: '/', redirect: '/users', name: 'root'},
  { path: '/waiter', component: waiter, name: 'waiter'},
- { path: '/manager', component: manager, name: 'manager'},
+ { path: '/table', component: table, name: 'table'},
  { path: '/users', component: user, name: 'users'},
  { path: '/profile', component: profile, name: 'profile'},
  { path: '/login', component: login, name: 'login'},

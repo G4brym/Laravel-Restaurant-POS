@@ -145,8 +145,17 @@
 <!-- sidebar menu: : style can be found in sidebar.less -->
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">MAIN NAVIGATION</li>
-    <li v-show="this.$store.state.user"><router-link to="/users"><i class="fa fa-briefcase"></i> <span>Users</span></router-link></li>
-    <li v-show="this.$store.state.user"><router-link to="/waiter"><i class="fa fa-briefcase"></i> <span>Waiter</span></router-link></li>
+    
+    <!-- Waiter-->
+    <li v-if="this.$store.state.user.type === 'waiter'"><router-link to="/waiter"><i class="fa fa-briefcase"></i> <span>Waiter</span></router-link></li>
+
+    <!-- Manager-->
+    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/dashboard"><i class="fa fa-briefcase"></i> <span>Dashboard</span></router-link></li>
+    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/table"><i class="fa fa-briefcase"></i> <span>Tables</span></router-link></li>
+    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/menu"><i class="fa fa-briefcase"></i> <span>Menu</span></router-link></li>
+    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/users"><i class="fa fa-briefcase"></i> <span>Users</span></router-link></li>
+    <li v-if="this.$store.state.user.type === 'manager'"><router-link to="/stats"><i class="fa fa-briefcase"></i> <span>Stats</span></router-link></li>
+    <!--
     <li class="treeview">
         <a href="#">
             <i class="fa fa-files-o"></i>
@@ -161,7 +170,7 @@
             <li><a href="../layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
             <li><a href="../layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>
         </ul>
-    </li>
+    </li>-->
 </ul>
 @endsection
 
