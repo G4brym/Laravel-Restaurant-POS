@@ -20,7 +20,12 @@
 					                <td>{{ table.table_number }}</td>
 					                <td>{{ table.created_at }}</td>
 					                <td>{{ table.updated_at }}</td>
+					                <td>
+						                <a class="btn btn-sm btn-primary" v-on:click.prevent="">Edit</a>
+						                <a class="btn btn-sm btn-danger" v-on:click.prevent="">Delete</a>
+						        	</td>
 						        </tr>
+						        
 						    </tbody>
 	                    </table>
 	                </div>
