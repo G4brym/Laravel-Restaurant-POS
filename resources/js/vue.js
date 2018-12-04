@@ -17,7 +17,6 @@
 
  const manager = Vue.component('manager', require('./components/manager.vue'));
  const user = Vue.component('user', require('./components/user.vue'));
- const department = Vue.component('department', require('./components/departmentList.vue'));
  const waiter = Vue.component('waiter', require('./components/waiter'));
  const profile = Vue.component('profile', require('./components/profile.vue'));
  const login = Vue.component('login', require('./components/login.vue'));
@@ -28,7 +27,6 @@
  { path: '/waiter', component: waiter, name: 'waiter'},
  { path: '/manager', component: manager, name: 'manager'},
  { path: '/users', component: user, name: 'users'},
- { path: '/departments', component: department, name: 'departments'},
  { path: '/profile', component: profile, name: 'profile'},
  { path: '/login', component: login, name: 'login'},
  { path: '/logout', component: logout, name: 'logout'},

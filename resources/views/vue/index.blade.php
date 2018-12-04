@@ -97,46 +97,34 @@
                     </li>
                 </ul>
             </li>-->
-            <li class="dropdown user user-menu">
+            <li class="dropdown user user-menu" v-if="this.$store.state.user">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                    <span class="hidden-xs">@{{this.$store.state.user != null ? this.$store.state.user.name : " - None - " }}</span>
+                    <img src="{{ URL::asset('img/avatar.png') }}" class="user-image" alt="User Image">
+                    <span class="hidden-xs">@{{this.$store.state.user.name}}</span>
                 </a>
                 <ul class="dropdown-menu">
                     <!-- User image -->
                     <li class="user-header">
-                        <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                        <img src="{{ URL::asset('img/avatar.png') }}" class="img-circle" alt="User Image">
 
                         <p>
-                            @{{this.$store.state.user != null ? this.$store.state.user.name : " - None - " }}
-                            <small>Member since Nov. 2012</small>
+                            @{{this.$store.state.user.name}}
+                            <small>@{{this.$store.state.user.type}}</small>
                         </p>
-                    </li>
-                    <!-- Menu Body -->
-                    <li class="user-body">
-                        <div class="row">
-                            <div class="col-xs-4 text-center">
-                                <a href="#">Followers</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="#">Sales</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="#">Friends</a>
-                            </div>
-                        </div>
-                        <!-- /.row -->
                     </li>
                     <!-- Menu Footer-->
                     <li class="user-footer">
                         <div class="pull-left">
-                            <a href="#" class="btn btn-default btn-flat">Profile</a>
-                        </div>
-                        <div class="pull-right">
-                            <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                            <router-link to="/profile"  class="btn btn-default btn-flat"><i class="fa fa-briefcase"></i> <span>Profile</span></router-link>
                         </div>
                     </li>
                 </ul>
+            </li>
+            <li v-show="this.$store.state.user">
+                <router-link to="/logout"><i class="fa fa-briefcase"></i> <span>Logout</span></router-link>
+            </li>
+            <li v-show="!this.$store.state.user">
+                <router-link to="/login"><i class="fa fa-briefcase"></i> <span>Login</span></router-link>
             </li>
         </ul>
     </div>
@@ -145,22 +133,20 @@
 
 @section('sidebar')
 <!-- Sidebar user panel -->
-<div class="user-panel">
+<div class="user-panel" v-if="this.$store.state.user">
     <div class="pull-left image">
-        <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+        <img src="{{ URL::asset('img/avatar.png') }}" class="img-circle" alt="User Image">
     </div>
     <div class="pull-left info">
-        <p>@{{this.$store.state.user != null ? this.$store.state.user.name : " - None - " }}</p>
+        <p>@{{this.$store.state.user.name}}</p>
         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
     </div>
 </div>
 <!-- sidebar menu: : style can be found in sidebar.less -->
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">MAIN NAVIGATION</li>
-    <li v-show="!this.$store.state.user"><router-link to="/login"><i class="fa fa-circle-o text-red"></i> <span>Login</span></router-link></li>
-    <li v-show="this.$store.state.user"><router-link to="/logout"><i class="fa fa-circle-o text-red"></i> <span>Logout</span></router-link></li>
-    <li v-show="this.$store.state.user"><router-link to="/users"><i class="fa fa-circle-o text-red"></i> <span>Users</span></router-link></li>
-    <li v-show="this.$store.state.user"><router-link to="/profile"><i class="fa fa-circle-o text-red"></i> <span>Profile</span></router-link></li>
+    <li v-show="this.$store.state.user"><router-link to="/users"><i class="fa fa-briefcase"></i> <span>Users</span></router-link></li>
+    <li v-show="this.$store.state.user"><router-link to="/waiter"><i class="fa fa-briefcase"></i> <span>Waiter</span></router-link></li>
     <li class="treeview">
         <a href="#">
             <i class="fa fa-files-o"></i>

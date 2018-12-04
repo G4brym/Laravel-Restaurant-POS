@@ -19,6 +19,7 @@
                         </thead>
                         <tbody>
                         <tr v-for="order in meal.orders"  :key="order.id">
+
                             <td>{{ order.item_id }}</td>
                             <td>{{ order.responsible_cook }}</td>
                             <td>{{ order.state }}</td>
