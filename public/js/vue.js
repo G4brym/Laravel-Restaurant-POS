@@ -50345,7 +50345,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
         departments: [],
         orders: [],
         waiterMeals: [],
-        tabels: []
+        tables: []
     },
     mutations: {
         clearUserAndToken: function clearUserAndToken(state) {
@@ -51440,7 +51440,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/*\t  Specific style applied only on the component*/\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/*\t  Specific style applied only on the component*/\r\n", ""]);
 
 // exports
 
@@ -51500,6 +51500,11 @@ module.exports = function listToStyles (parentId, list) {
 //
 //
 //
+//
+//
+//
+//
+//
 
 // Component code (not registered)
 module.exports = {
@@ -51516,17 +51521,27 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("table", { staticClass: "table table-striped" }, [
+  return _c("div", [
     _vm._m(0),
     _vm._v(" "),
-    _vm._m(1),
-    _vm._v(" "),
-    _c(
-      "tbody",
-      _vm._l(this.$store.state.tables, function(table) {
-        return _c("tr", [_c("td", [_vm._v(_vm._s(table.table_number))])])
-      })
-    )
+    _c("table", { staticClass: "table table-striped" }, [
+      _vm._m(1),
+      _vm._v(" "),
+      _c(
+        "tbody",
+        _vm._l(this.$store.state.tables, function(table) {
+          return _c("tr", [
+            _c("td", [_vm._v(_vm._s(table.table_number))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(table.deleted_at))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(table.created_at))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(table.updated_at))])
+          ])
+        })
+      )
+    ])
   ])
 }
 var staticRenderFns = [

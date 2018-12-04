@@ -1,19 +1,24 @@
 <template>
-	<table class="table table-striped">
+	<div>
 		<div class="jumbotron">
-			<h1>Lista mesas</h1>
+				<h1>Lista mesas</h1>
 		</div>
-	    <thead>
-	        <tr>
-	            <th>Numero da mesa</th>
-	        </tr>
-	    </thead>
-	    <tbody>
-	        <tr v-for="table in this.$store.state.tables">
-                <td>{{ table.table_number }}</td>
-	        </tr>
-	    </tbody>
-	</table>
+		<table class="table table-striped">
+		    <thead>
+		        <tr>
+		            <th>Numero da mesa</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		        <tr v-for="table in this.$store.state.tables">
+	                <td>{{ table.table_number }}</td>
+	                <td>{{ table.deleted_at }}</td>
+	                <td>{{ table.created_at }}</td>
+	                <td>{{ table.updated_at }}</td>
+		        </tr>
+		    </tbody>
+		</table>
+	</div>
 </template>
 
 <script type="text/javascript">
