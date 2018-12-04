@@ -12,6 +12,7 @@ export default new Vuex.Store({
         departments: [],
         orders: [],
         waiterMeals: [],
+        tabels: [],
     },
     mutations: { 
         clearUserAndToken: (state) => {

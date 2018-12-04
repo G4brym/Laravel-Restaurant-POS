@@ -19,7 +19,9 @@
 <script type="text/javascript">
 	// Component code (not registered)
 	module.exports={
-		
+		created: function () {
+            this.$store.commit('loadTables');
+        },
 	}
 </script>
 
