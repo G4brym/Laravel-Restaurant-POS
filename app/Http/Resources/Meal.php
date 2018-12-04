@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Order as OrderResource;
+
 use Illuminate\Http\Resources\Json\Resource;
 
 class Meal extends Resource
@@ -24,7 +26,7 @@ class Meal extends Resource
           'responsible_waiter_id' => $this->responsible_waiter->id,
           'responsible_waiter' => $this->responsible_waiter->name,
           'total_price_preview' => $this->total_price_preview,
-          'orders' => $this->orders,
+          'orders' => OrderResource::collection($this->orders),
         ];
     }
 }
