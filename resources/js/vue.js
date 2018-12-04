@@ -15,6 +15,7 @@
 
  import store from './stores/global-store';
 
+ const manager = Vue.component('manager', require('./components/manager.vue'));
  const user = Vue.component('user', require('./components/user.vue'));
  const department = Vue.component('department', require('./components/departmentList.vue'));
  const waiter = Vue.component('waiter', require('./components/waiter'));
@@ -25,6 +26,7 @@
  const routes = [
  { path: '/', redirect: '/users', name: 'root'},
  { path: '/waiter', component: waiter, name: 'waiter'},
+ { path: '/manager', component: manager, name: 'manager'},
  { path: '/users', component: user, name: 'users'},
  { path: '/departments', component: department, name: 'departments'},
  { path: '/profile', component: profile, name: 'profile'},

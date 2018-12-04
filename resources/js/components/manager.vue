@@ -19,6 +19,7 @@
 <script type="text/javascript">
 	// Component code (not registered)
 	module.exports={
+		
 	}
 </script>
 
