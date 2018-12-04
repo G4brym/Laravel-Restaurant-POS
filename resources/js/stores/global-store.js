@@ -12,6 +12,7 @@ export default new Vuex.Store({
         departments: [],
         orders: [],
         waiterMeals: [],
+        tabels: [],
     },
     mutations: { 
         clearUserAndToken: (state) => {
@@ -68,6 +69,12 @@ export default new Vuex.Store({
             axios.get('api/meals?waiter=true&unfinished=true')
                 .then(response => {
                     state.waiterMeals = response.data.data;
+                });
+        },
+        loadTables: (state) => {
+            axios.get('api/tables')
+                .then(response => {
+                    state.tables = response.data.data;
                 });
         }
     } 
