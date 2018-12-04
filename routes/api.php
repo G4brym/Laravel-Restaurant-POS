@@ -38,6 +38,7 @@ Route::middleware('auth:api')->delete('orders/{id}', 'OrderControllerAPI@destroy
 
 Route::middleware('auth:api')->get('meals', 'MealControllerAPI@index');
 //Route::middleware('auth:api')->get('meals/{id}', 'MealControllerAPI@show');
+Route::middleware('auth:api')->get('meals/{id}/orders', 'MealControllerAPI@orders');
 //Route::middleware('auth:api')->post('meals', 'MealControllerAPI@store');
 //Route::middleware('auth:api')->put('meals/{id}', 'MealControllerAPI@update');
 //Route::middleware('auth:api')->delete('meals/{id}', 'MealControllerAPI@destroy');

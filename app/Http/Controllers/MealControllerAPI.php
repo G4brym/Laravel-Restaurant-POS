@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Meal as MealResource;
+use App\Http\Resources\Order as OrderResource;
 
 use Illuminate\Http\Request;
+use App\Order;
 use App\Meal;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,5 +34,22 @@ class MealControllerAPI extends Controller
         } else {
             // TODO
         }
+    }
+
+    // Get all orders for a given meal id
+    public function orders(Request $request)
+    {
+        $id = $request->get('id');
+
+        $baseQuery = Order::where('meal_id', $id)->orderBy('updated_at', 'desc');
+
+        if ($request->has('states')) {
+            $pieces = explode(',', $request->get('states'));
+            foreach ($pieces as &$value) {
+                $baseQuery = $baseQuery->where('state', $value);
+            }
+        }
+
+        return new OrderResource($baseQuery);
     }
 }
