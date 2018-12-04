@@ -12,3 +12,4 @@ npm-debug.log
 yarn-error.log
 .phpunit.result.cache
 .env
+public/js/vue.js
