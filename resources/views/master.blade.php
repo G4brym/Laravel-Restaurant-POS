@@ -7,16 +7,10 @@
     <title>@yield('title')</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Bootstrap 3.3.7 -->
-    <link rel="stylesheet" href="{{ URL::asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ URL::asset('vendor/font-awesome/css/font-awesome.min.css') }}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{ URL::asset('css/AdminLTE.min.css') }}">
-    <!-- AdminLTE Skins. Choose a skin from the css/skins
-         folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="{{ URL::asset('css/skins/_all-skins.min.css') }}">
-    <link rel="stylesheet" href="{{ URL::asset('css/app22.css') }}">
+
+    <link rel="stylesheet" href="{{ URL::asset('css/app.css') }}">
 
     @yield('extrastyles')
 
@@ -27,11 +21,8 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <!-- Google Font -->
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-yellow sidebar-mini layout-boxed">
 <!-- Site wrapper -->
 <div class="wrapper" id="app">
 
@@ -64,31 +55,15 @@
 
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-            <b>Version</b> 2.4.0
+            <b>Version</b> 1.0.0
         </div>
-        <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-        reserved.
     </footer>
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery 3 -->
-<script src="{{ URL::asset('vendor/jquery/dist/jquery.min.js') }}"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="{{ URL::asset('vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-<!-- SlimScroll -->
-<script src="{{ URL::asset('vendor/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script>
-<!-- FastClick -->
-<script src="{{ URL::asset('vendor/fastclick/lib/fastclick.js') }}"></script>
-<!-- AdminLTE App -->
-<script src="{{ URL::asset('js/adminlte.js') }}"></script>
-
 @yield('pagescript')
 
-<!--<script>-->
-<!--    $(document).ready(function () {-->
-<!--        $('.sidebar-menu').tree()-->
-<!--    })-->
-<!--</script>-->
+<script src="{{ URL::asset('js/adminlte.js') }}"></script>
+
 </body>
 </html>
