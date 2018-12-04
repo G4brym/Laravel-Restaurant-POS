@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\Table as TableResource;
+use App\Table;
 
 class TableControllerAPI extends Controller
 {
@@ -13,7 +15,7 @@ class TableControllerAPI extends Controller
      */
     public function index()
     {
-        return TableResource::collection(Table::paginate(5));
+        return TableResource::collection(Table::paginate(50));
     }
 
     /**
