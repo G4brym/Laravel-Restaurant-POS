@@ -26,9 +26,11 @@ Route::post('users', 'UserControllerAPI@store');
 Route::put('users/{id}', 'UserControllerAPI@update');
 Route::delete('users/{id}', 'UserControllerAPI@destroy');
 
-Route::get('manager', 'TableControllerAPI@index');
-Route::middleware('auth:api')->get('tables', 'TableControllerAPI@index');
-Route::middleware('auth:api')->get('tables/{id}', 'TableControllerAPI@show');
+Route::get('tables', 'TableControllerAPI@index');
+Route::get('tables/{id}', 'TableControllerAPI@show');
+Route::post('tables', 'TableControllerAPI@store');
+Route::put('tables/{id}', 'TableControllerAPI@update');
+Route::delete('tables/{id}', 'TableControllerAPI@destroy');
 
 Route::middleware('auth:api')->get('orders', 'OrderControllerAPI@index');
 Route::middleware('auth:api')->get('orders/{id}', 'OrderControllerAPI@show');
