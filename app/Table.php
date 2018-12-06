@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Table extends Model
 {
+
+	public function getRouteKeyName() {
+        return 'table_number';
+    }
+
 	protected $table = 'restaurant_tables';
 
     protected $fillable = [
