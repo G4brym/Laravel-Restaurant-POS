@@ -37,19 +37,24 @@ class MealControllerAPI extends Controller
     }
 
     // Get all orders for a given meal id
-    public function orders(Request $request)
+    public function orders(Request $request, $id)
     {
-        $id = $request->get('id');
-
         $baseQuery = Order::where('meal_id', $id)->orderBy('updated_at', 'desc');
 
         if ($request->has('states')) {
             $pieces = explode(',', $request->get('states'));
+            $i = 1;
             foreach ($pieces as &$value) {
-                $baseQuery = $baseQuery->where('state', $value);
+                if($i === 1){
+                    $baseQuery->where('state', $value);
+                } else {
+                    $baseQuery->orWhere('state', $value);
+                }
+
+                $i++;
             }
         }
 
-        return new OrderResource($baseQuery);
+        return new OrderResource($baseQuery->get());
     }
 }
