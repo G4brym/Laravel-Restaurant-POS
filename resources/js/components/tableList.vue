@@ -8,7 +8,7 @@
 	        </tr>
 	    </thead>
 	    <tbody>
-	        <tr v-for="table in this.$store.state.tables">
+	        <tr v-for="table in tables"  :key="table.table_number" :class="{activerow: editingTable === table}">
                 <td>{{ table.table_number }}</td>
                 <td>{{ table.created_at }}</td>
                 <td>{{ table.updated_at }}</td>
@@ -23,7 +23,6 @@
 </template>
 
 <script type="text/javascript">
-	// Component code (not registered)
 	module.exports={
 		props: ['tables'],
 		data: function(){
@@ -45,5 +44,5 @@
 </script>
 
 <style scoped>
-/*	  Specific style applied only on the component*/
+
 </style>

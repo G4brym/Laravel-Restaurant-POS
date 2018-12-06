@@ -20,19 +20,15 @@
 		props: ['table'],
 	    methods: {
 	        saveTable: function(){
-	            axios.put('api/tables/'+this.table.id, this.table)
+	            axios.put('api/tables/'+this.table.table_number, this.table)
 	                .then(response=>{
-	                	// Copy object properties from response.data.data to this.table
-	                	// without creating a new reference
 	                	Object.assign(this.table, response.data.data);
 	                	this.$emit('table-saved', this.table)
 	                });
 	        },
 	        cancelEdit: function(){
-	        	axios.get('api/tables/'+this.table.id)
+	        	axios.get('api/tables/'+this.table.table_number)
 	                .then(response=>{
-	                	// Copy object properties from response.data.data to this.table
-	                	// without creating a new reference
 	                	Object.assign(this.table, response.data.data);
 	                	this.$emit('table-canceled', this.table);
 	                });

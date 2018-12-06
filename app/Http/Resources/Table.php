@@ -16,7 +16,6 @@ class Table extends JsonResource
     {
         //return parent::toArray($request);
         return [
-          'id' => $this->id,
           'table_number' => $this->table_number,
           'deleted_at' => $this->deleted_at,
           'created_at' => $this->created_at,

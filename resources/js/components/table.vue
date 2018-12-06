@@ -2,7 +2,7 @@
     <div>
 		<div class="box">
 	        <div class="box-header with-border">
-	            <h3 class="box-title">Mesas</h3>
+	            <h3 class="box-title">Restaurant Tables</h3>
 	        </div>
 	        <div class="box-body">
 	            <div class="panel panel-info">
@@ -49,7 +49,7 @@
 	            this.showSuccess = false;
 	        },
 	        deleteTable: function(table){
-	            axios.delete('api/tables/'+table.id)
+	            axios.delete('api/tables/'+table.table_number)
 	                .then(response => {
 	                    this.showSuccess = true;
 	                    this.successMessage = 'Table Deleted';
@@ -88,8 +88,5 @@
 </script>
 
 <style scoped>	
-p {
-	font-size: 2em;
-	text-align: center;
-}
+
 </style>

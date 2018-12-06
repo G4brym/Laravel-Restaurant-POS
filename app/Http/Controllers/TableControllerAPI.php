@@ -14,14 +14,14 @@ class TableControllerAPI extends Controller
         return TableResource::collection(Table::paginate(50));
     }
 
-    public function show($id)
+    public function show($table_number)
     {
-        return new UserResource(User::find($id));
+        return new TableResource(Table::find($table_number));
     }
 
-    public function destroy($id)
+    public function destroy($table_number)
     {
-        $table = Table::findOrFail($id);
+        $table = Table::findOrFail($table_number);
         $table->delete();
         return response()->json(null, 204);
     }
@@ -29,7 +29,7 @@ class TableControllerAPI extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'table_number' => 'required|unique:restaurante_tables,table_number'
+            'table_number' => 'required|unique:restaurant_tables,table_number'
         ]);
 
         $table = new Table();
@@ -39,15 +39,15 @@ class TableControllerAPI extends Controller
         return response()->json(new TableResource($table), 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $table_number)
     {
         $request->validate([
-            'table_number' => 'required|unique:restaurante_tables,table_number'
+            'table_number' => 'required|unique:restaurant_tables,table_number'
         ]);
 
-        $table = Table::findOrFail($id);
+        $table = Table::findOrFail($table_number);
         $table->update($request->all());
-        return new UserResource($user);
+        return new TableResource($table);
     }
 
 }
