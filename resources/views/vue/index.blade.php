@@ -145,17 +145,23 @@
 <!-- sidebar menu: : style can be found in sidebar.less -->
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">MAIN NAVIGATION</li>
-    
-    <!-- Waiter -->
-    <li v-if="this.$store.state.user && this.$store.state.user.type === NULL"><router-link to="/waiter"><i class="fa fa-briefcase"></i> <span>Waiter</span></router-link></li>
+    <template v-if="this.$store.state.user">
 
-    <!-- Manager -->
-    <li v-if="this.$store.state.user && this.$store.state.user.type === 'manager'"><router-link to="/dashboard"><i class="fa fa-briefcase"></i> <span>Dashboard</span></router-link></li>
-    <li v-if="this.$store.state.user && this.$store.state.user.type === 'manager'"><router-link to="/table"><i class="fa fa-flag-o"></i> <span>Tables</span></router-link></li>
-    <li v-if="this.$store.state.user && this.$store.state.user.type === 'manager'"><router-link to="/menu"><i class="fa fa-envelope-o"></i> <span>Menu</span></router-link></li>
-    <li v-if="this.$store.state.user && this.$store.state.user.type === 'manager'"><router-link to="/users"><i class="fa fa-users"></i> <span>Users</span></router-link></li>
-    <li v-if="this.$store.state.user && this.$store.state.user.type === 'manager'"><router-link to="/stats"><i class="fa fa-circle"></i> <span>Stats</span></router-link></li>
-    <!--
+        <template v-if="this.$store.state.user.type === 'waiter'">
+            <li><router-link to="/waiter"><i class="fa fa-briefcase"></i> <span>Waiter</span></router-link></li>
+        </template>
+
+        <template v-if="this.$store.state.user.type === 'manager'">
+            <li><router-link to="/dashboard"><i class="fa fa-briefcase"></i> <span>Dashboard</span></router-link></li>
+            <li><router-link to="/table"><i class="fa fa-flag-o"></i> <span>Tables</span></router-link></li>
+            <li><router-link to="/menu"><i class="fa fa-envelope-o"></i> <span>Menu</span></router-link></li>
+            <li><router-link to="/users"><i class="fa fa-users"></i> <span>Users</span></router-link></li>
+            <li><router-link to="/stats"><i class="fa fa-circle"></i> <span>Stats</span></router-link></li>
+        </template>
+
+    </template>
+
+        <!--
     <li class="treeview">
         <a href="#">
             <i class="fa fa-files-o"></i>
