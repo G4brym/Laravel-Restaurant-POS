@@ -23,13 +23,6 @@ class MealControllerAPI extends Controller
                 $baseQuery = $baseQuery->where('state', 'active');
             }
 
-//            if ($request->has('states')) {
-//                $pieces = explode(',', $request->get('states'));
-//                foreach ($pieces as &$value) {
-//                    $baseQuery = $baseQuery->where('state', $value);
-//                }
-//            }
-
             return MealResource::collection($baseQuery->paginate(50));
         } else {
             // TODO

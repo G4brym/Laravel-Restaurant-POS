@@ -13,7 +13,23 @@ class OrderControllerAPI extends Controller
     public function index(Request $request)
     {
         $uid = Auth::user()->id;
-        return OrderResource::collection(Order::join('meals', 'orders.meal_id', '=', 'meals.id')->where('meals.responsible_waiter_id', $uid)->orderBy('orders.updated_at', 'desc')->paginate(50));
+        $baseQuery = Order::join('meals', 'orders.meal_id', '=', 'meals.id')->where('meals.responsible_waiter_id', $uid)->orderBy('orders.updated_at', 'desc');
+
+        if ($request->has('states')) {
+            $pieces = explode(',', $request->get('states'));
+            $i = 1;
+            foreach ($pieces as &$value) {
+                if($i == 1){
+                    $baseQuery = $baseQuery->where('orders.state', $value);
+                } else {
+                    $baseQuery = $baseQuery->orWhere('orders.state', $value);
+                }
+
+                $i++;
+            }
+        }
+
+        return new OrderResource($baseQuery->paginate(50));
     }
 
 // Trash code
