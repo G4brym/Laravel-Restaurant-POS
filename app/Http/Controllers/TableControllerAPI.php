@@ -22,7 +22,14 @@ class TableControllerAPI extends Controller
     public function destroy($table_number)
     {
         $table = Table::findOrFail($table_number);
-        $table->delete();
+        try {
+            $table->delete();
+        }
+        catch (\Exception $e) {
+            $date=date_create();
+            date_timestamp_get($date);
+            Table::where('table_number', $table_number)->update(array('deleted_at' => date_format($date,"Y-m-d H:i:s")));
+        }
         return response()->json(null, 204);
     }
 

@@ -4,7 +4,7 @@
 	    <div class="form-group">
 	        <label for="inputNumber">Número da mesa</label>
 	        <input
-	            type="number" class="form-control" v-model="table.number"
+	            type="number" class="form-control" v-model="table.table_number"
 	            name="number" id="inputNumber"
 	            placeholder="inputNumber"/>
 	    </div>
