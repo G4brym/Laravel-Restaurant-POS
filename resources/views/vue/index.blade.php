@@ -1,6 +1,6 @@
 @extends('master')
 
-@section('title', 'Vue.js App')
+@section('title', 'Restaurant')
 
 @section('header')
 <!-- Logo -->
