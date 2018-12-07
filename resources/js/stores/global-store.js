@@ -53,12 +53,6 @@ export default new Vuex.Store({
                 state.user = JSON.parse(user);
             }
         },
-        loadDepartments: (state) => {
-            axios.get('api/departments')
-                .then(response => {
-                    state.departments = response.data.data;
-                });
-        },
         loadOrders: (state) => {
             axios.get('api/orders')
                 .then(response => {

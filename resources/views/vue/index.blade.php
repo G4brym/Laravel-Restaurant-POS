@@ -145,6 +145,9 @@
 <!-- sidebar menu: : style can be found in sidebar.less -->
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">MAIN NAVIGATION</li>
+
+    <li><router-link to="/itemsMenu"><i class="fa fa-table"></i><span>Menu</span></router-link></li>
+
     <template v-if="this.$store.state.user">
 
         <template v-if="this.$store.state.user.type === 'waiter'">
@@ -154,7 +157,6 @@
         <template v-if="this.$store.state.user.type === 'manager'">
             <li><router-link to="/dashboard"><i class="fa fa-briefcase"></i> <span>Dashboard</span></router-link></li>
             <li><router-link to="/table"><i class="fa fa-flag-o"></i> <span>Tables</span></router-link></li>
-            <li><router-link to="/menu"><i class="fa fa-envelope-o"></i> <span>Menu</span></router-link></li>
             <li><router-link to="/users"><i class="fa fa-users"></i> <span>Users</span></router-link></li>
             <li><router-link to="/stats"><i class="fa fa-circle"></i> <span>Stats</span></router-link></li>
         </template>
