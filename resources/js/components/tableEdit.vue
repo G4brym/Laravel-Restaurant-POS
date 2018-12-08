@@ -20,11 +20,14 @@
 		props: ['table'],
 	    methods: {
 	        saveTable: function(){
-	            axios.put('api/tables/'+this.table.table_number, this.table)
+	            axios.put('api/tables/'+this.table.table_number, {table_number: document.getElementById("inputNumber").value})
 	                .then(response=>{
 	                	Object.assign(this.table, response.data.data);
 	                	this.$emit('table-saved', this.table)
-	                });
+	                })
+	                .catch(error => {
+                    	this.$emit('edit-error')
+                    });
 	        },
 	        cancelEdit: function(){
 	        	axios.get('api/tables/'+this.table.table_number)

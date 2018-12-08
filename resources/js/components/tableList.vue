@@ -19,7 +19,7 @@
 		        	</td>
 	        	</template>
 	        </tr>
-	        
+	        <a class="btn btn-sm btn-primary" v-on:click.prevent="addTable()">Add new table</a>
 	    </tbody>
     </table>
 </template>
@@ -40,6 +40,9 @@
             deleteTable: function(table){
                 this.editingTable = table;
                 this.$emit('delete-click', table);
+			},
+			addTable: function(){
+				this.$emit('add-click');
 			},
         },		
 	}
