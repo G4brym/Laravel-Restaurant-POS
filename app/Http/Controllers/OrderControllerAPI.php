@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Order as OrderResource;
 
+use App\Meal;
 use Illuminate\Http\Request;
 use App\Order;
 use Illuminate\Support\Facades\Auth;
@@ -13,16 +14,20 @@ class OrderControllerAPI extends Controller
     public function index(Request $request)
     {
         $uid = Auth::user()->id;
-        $baseQuery = Order::join('meals', 'orders.meal_id', '=', 'meals.id')->where('meals.responsible_waiter_id', $uid)->orderBy('orders.updated_at', 'desc');
+        $baseQuery = Order::whereIn('meal_id', function($query) use ($uid){
+            $query->select('id')
+                ->from(with(new Meal)->getTable())
+                ->where('responsible_waiter_id', $uid);
+        })->orderBy('updated_at', 'desc');
 
         if ($request->has('states')) {
             $pieces = explode(',', $request->get('states'));
             $i = 1;
             foreach ($pieces as &$value) {
                 if($i == 1){
-                    $baseQuery = $baseQuery->where('orders.state', $value);
+                    $baseQuery = $baseQuery->where('state', $value);
                 } else {
-                    $baseQuery = $baseQuery->orWhere('orders.state', $value);
+                    $baseQuery = $baseQuery->orWhere('state', $value);
                 }
 
                 $i++;

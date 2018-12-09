@@ -1,5 +1,41 @@
 <template>
     <div>
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Prepared Orders</h3>
+
+                <!--<div class="box-tools pull-right">-->
+                <!--<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"-->
+                <!--title="Collapse" v-on:click.prevent="toggleBox(meal.id)">-->
+                <!--<i class="fa fa-minus"></i></button>-->
+                <!--</div>-->
+            </div>
+            <div class="box-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Cook</th>
+                        <th>State</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <template v-for="order in this.$store.state.preparedOrders">
+                        <tr class="table-warning">
+                            <td>{{ order.item }}</td>
+                            <td>{{ order.responsible_cook }}</td>
+                            <td><span class="label" :class="label-warning">{{ order.state }}</span></td>
+                            <td>
+                                <a class="btn btn-sm btn-warning" v-on:click.prevent="deliverOrder(order)">Deliver</a>
+                            </td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="box" v-for="meal in this.$store.state.waiterMeals"  :key="meal.id">
             <div class="box-header with-border">
                 <h3 class="box-title">Meal {{ meal.id }} - Table {{meal.table_number_id}}</h3>
@@ -50,6 +86,7 @@
 	module.exports={
         created: function () {
             this.$store.commit('loadWaiterMeals');
+            this.$store.commit('loadPreparedOrders');
         },
         methods: {
             deleteOrder: function(order){
