@@ -35,6 +35,7 @@
         methods: {
             editTable: function(table){
                 this.editingTable = table;
+                
                 this.$emit('edit-click', table);
             },		
             deleteTable: function(table){

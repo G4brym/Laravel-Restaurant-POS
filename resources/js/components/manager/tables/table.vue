@@ -35,9 +35,9 @@
 </template>
 
 <script type="text/javascript">
-	import TableEdit from './tableEdit.vue';
-	import TableList from './tableList.vue';
-	import TableAdd from './tableAdd.vue';
+	import TableEdit from './edit.vue';
+	import TableList from './list.vue';
+	import TableAdd from './add.vue';
 	
 	export default {
 		data: function(){
@@ -62,7 +62,7 @@
                 this.showMessage = true;
 	    	},
 	        editTable: function(table){
-	            this.currentTable = table;
+	            this.currentTable = Object.assign({},table);
 	        },
 
 	        deleteTable: function(table){
@@ -98,6 +98,7 @@
 	            this.typeofmsg = "alert-success";
 	            this.message = "Table updated";
 	            this.showMessage = true;
+	            this.getTables();
 	        },
 	        cancelEdit: function(){
 	            this.currentTable = null;

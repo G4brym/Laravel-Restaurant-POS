@@ -24,7 +24,7 @@ Vue.use(new VueSocketio({
 
 import store from './stores/global-store';
 
-const table = Vue.component('table', require('./components/table.vue'));
+const table = Vue.component('tableMain', require('./components/manager/tables/table.vue'));
 const user = Vue.component('user', require('./components/user.vue'));
 const waiter = Vue.component('waiter', require('./components/waiter'));
 const profile = Vue.component('profile', require('./components/profile.vue'));

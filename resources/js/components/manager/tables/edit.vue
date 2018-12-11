@@ -18,9 +18,17 @@
 <script type="text/javascript">
 	module.exports={
 		props: ['table'],
+		data: function(){
+            return {        
+                currentTableNumber: null,
+            }
+        },
+		created: function () {
+            this.currentTableNumber = this.table.table_number;
+        },
 	    methods: {
 	        saveTable: function(){
-	            axios.put('api/tables/'+this.table.table_number, {table_number: document.getElementById("inputNumber").value})
+	            axios.put('api/tables/'+this.currentTableNumber, {table_number: document.getElementById("inputNumber").value})
 	                .then(response=>{
 	                	Object.assign(this.table, response.data.data);
 	                	this.$emit('table-saved', this.table)
@@ -30,7 +38,7 @@
                     });
 	        },
 	        cancelEdit: function(){
-	        	axios.get('api/tables/'+this.table.table_number)
+	        	axios.get('api/tables/'+this.currentTableNumber)
 	                .then(response=>{
 	                	Object.assign(this.table, response.data.data);
 	                	this.$emit('table-canceled', this.table);
