@@ -1,11 +1,11 @@
 <template>
-    <div class="box" >
+    <div class="box" :class="{'box-colapsed': !showMeal}">
         <div class="box-header with-border">
             <h3 class="box-title">Meal {{ meal.id }} - Table {{meal.table_number_id}}</h3>
 
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
-                        title="Collapse" v-on:click.prevent="toggleBox(meal.id)">
+                        title="Collapse" v-on:click.prevent="toggleMeal()">
                     <i class="fa fa-minus"></i></button>
             </div>
         </div>
@@ -50,9 +50,21 @@
 
     module.exports = {
         props: ['meal'],
+        data: function(){
+            return {
+                showMeal: true
+            }
+        },
         methods: {
             deleteOrder: function (order) {
                 this.$emit('delete-click', order);
+            },
+            toggleMeal: function () {
+                if(this.showMeal){
+                    this.showMeal = false;
+                } else {
+                    this.showMeal = true;
+                }
             }
         },
     }

@@ -83,7 +83,13 @@ class OrderControllerAPI extends Controller
 
     public function destroy($id)
     {
-        $order = Order::where('state', 'pending')->findOrFail($id);
+        $uid = Auth::user()->id;
+        $order = Order::whereIn('meal_id', function($query) use ($uid){
+            $query->select('id')
+                ->from(with(new Meal)->getTable())
+                ->where('responsible_waiter_id', $uid);
+        })->where('state', 'pending')->findOrFail($id);
+
         $dtime = Carbon\Carbon::now()->subSeconds(5);
 
         if($dtime < $order->created_at){

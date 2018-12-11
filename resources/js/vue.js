@@ -67,11 +67,11 @@ const app = new Vue({
     data: {},
     store,
     created() {
-        console.log('-----');
-        console.log(this.$store.state.user);
+        // console.log('-----');
+        // console.log(this.$store.state.user);
         // this.$store.commit('loadDepartments');
         this.$store.commit('loadTokenAndUserFromSession');
-        console.log(this.$store.state.user);
+        //console.log(this.$store.state.user);
     }
 }).$mount('#app');
 
