@@ -48,6 +48,6 @@ class MealControllerAPI extends Controller
             }
         }
 
-        return new OrderResource($baseQuery->get());
+        return OrderResource::collection($baseQuery->get());
     }
 }

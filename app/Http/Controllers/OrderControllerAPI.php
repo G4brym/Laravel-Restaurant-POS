@@ -34,7 +34,7 @@ class OrderControllerAPI extends Controller
             }
         }
 
-        return new OrderResource($baseQuery->paginate(50));
+        return OrderResource::collection($baseQuery->paginate(50));
     }
 
 // Trash code
