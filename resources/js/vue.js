@@ -13,6 +13,9 @@ window.Vue = require('vue');
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
+import VueSweetalert2 from 'vue-sweetalert2';
+Vue.use(VueSweetalert2);
+
 /*import VueSocketio from 'vue-socket.io';
 Vue.use(new VueSocketio({
     debug: true,

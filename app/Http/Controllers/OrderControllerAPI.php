@@ -52,12 +52,16 @@ class OrderControllerAPI extends Controller
     public function deliver($id)
     {
         $uid = Auth::user()->id;
-        $order = Order::join('meals', 'orders.meal_id', '=', 'meals.id')->where('meals.responsible_waiter_id', $uid)->where('orders.state', 'prepared')->findOrFail($id);
+        $order = Order::whereIn('meal_id', function($query) use ($uid){
+            $query->select('id')
+                ->from(with(new Meal)->getTable())
+                ->where('responsible_waiter_id', $uid);
+        })->where('orders.state', 'prepared')->findOrFail($id);
 
         $order->state = 'delivered';
         $order->save();
 
-        return response()->json(null, 200);
+        return response()->json(['status'=>'success'], 200);
     }
 
 // TODO: Diogo's Task

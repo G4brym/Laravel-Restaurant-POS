@@ -34,6 +34,7 @@ Route::delete('tables/{table_number}', 'TableControllerAPI@destroy');
 
 Route::middleware('auth:api')->get('orders', 'OrderControllerAPI@index');
 Route::middleware('auth:api')->get('orders/{id}', 'OrderControllerAPI@show');
+Route::middleware('auth:api')->post('orders/{id}/deliver', 'OrderControllerAPI@deliver');
 Route::middleware('auth:api')->post('orders', 'OrderControllerAPI@store');
 Route::middleware('auth:api')->put('orders/{id}', 'OrderControllerAPI@update');
 Route::middleware('auth:api')->delete('orders/{id}', 'OrderControllerAPI@destroy');
