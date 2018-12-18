@@ -97,6 +97,8 @@
                     </li>
                 </ul>
             </li>-->
+            <shift-button></shift-button>
+            <shift-counter></shift-counter>
             <li class="dropdown user user-menu" v-if="this.$store.state.user">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <img src="{{ URL::asset('img/avatar.png') }}" class="user-image" alt="User Image">
@@ -151,7 +153,6 @@
     <li><router-link to="/itemsMenu"><i class="fa fa-table"></i><span>Menu</span></router-link></li>
 
     <template v-if="this.$store.state.user">
-
         <template v-if="this.$store.state.user.type === 'waiter'">
             <li><router-link to="/waiter"><i class="fa fa-briefcase"></i> <span>Waiter</span></router-link></li>
         </template>
@@ -191,4 +192,4 @@
 
 @section('pagescript')
 <script src="js/vue.js"></script>
- @stop
+@stop

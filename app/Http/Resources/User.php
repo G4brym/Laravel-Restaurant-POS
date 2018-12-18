@@ -20,7 +20,10 @@ class User extends Resource
             'username' => $this->username,
             'email' => $this->email,
             'photo_url' => $this->photo_url,
-            'type' => $this->type
+            'type' => $this->type,
+            'last_shift_start' => $this->last_shift_start,
+            'last_shift_end' => $this->last_shift_end,
+            'shift_active' => $this->shift_active
         ];
     }
 }

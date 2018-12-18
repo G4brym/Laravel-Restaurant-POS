@@ -21,7 +21,7 @@
                         <td>{{ item.type }}</td>
                         <td>{{ item.description }}</td>
                         <td>{{ item.price }}</td>
-                        <td><img :src='"/storage/items/" + item.photo_url' alt="imagem" height="120px" width="120px"></img></td>
+                        <td><img :src='"/storage/items/" + item.photo_url' alt="imagem" height="120px" width="120px"/></td>
                     </tr>
                 </tbody>
             </table>

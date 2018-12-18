@@ -22,7 +22,7 @@
     <![endif]-->
 
 </head>
-<body class="hold-transition skin-yellow sidebar-mini layout-boxed">
+<body class="hold-transition skin-yellow sidebar-mini fixed">
 <!-- Site wrapper -->
 <div class="wrapper" id="app">
 

@@ -1,8 +1,14 @@
 <template>
     <div>
+        <div class="alert alert-danger" v-if="showFailure">
+            <button type="button" class="close" v-on:click="showFailure=false">×</button>
+            <h4><i class="icon fa fa-check"></i> Alert!</h4>
+            {{ failureMessage }}
+        </div>
         <div class="alert alert-success" v-if="showSuccess">
-            <button type="button" class="close-btn" v-on:click="showSuccess=false">&times;</button>
-            <strong>{{ successMessage }}</strong>
+            <button type="button" class="close" v-on:click="showSuccess=false">×</button>
+            <h4><i class="icon fa fa-check"></i> Alert!</h4>
+            {{ successMessage }}
         </div>
         <template v-if="changedUser">
             <div>
@@ -39,18 +45,15 @@
                 User has no profile photo<br/>
             </div>
 
-            <div>
-                <input
-                    type="file" style="background-color: white;"
-                    name="photo" id="inputAccPhoto" accept='image/*'
-                    @change='updateImage()'/>
-                <div v-show="showRevert">
-                    <a class="btn btn-light" @click.prevent="revertImg()">Revert</a>
-                </div>
+            <div class="form-group">
+                <input type="file" id="inputAccPhoto" name="photo" accept='image/*' @change='updateImage()'/>
+            </div>
+            <div v-show="showRevert">
+                <a class="btn btn-light" @click="revertImg()">Revert</a>
             </div>
             <br/>
             <div class="form-group">
-                <a class="btn btn-primary" @click.prevent="saveUser()">Save</a>
+                <a class="btn btn-primary" @click="saveUser()">Save</a>
             </div>
         </template>
     </div>
@@ -64,6 +67,8 @@
                 changedUser: null,
                 successMessage: null,
                 showSuccess: false,
+                failureMessage: null,
+                showFailure: false,
                 showRevert: false,
                 userImg: null,
                 currentImg: null,
@@ -91,12 +96,29 @@
                     );
                 };
 
-                let submitToStore = (message) => {
-                    Object.assign(this.changedUser, this.currentUser);
-                    this.$store.commit("setUser", this.currentUser);
+                let showSuccessBox = (message) => {
+                    if (this.showFailure) {
+                        this.showFailure = false;
+                    }
                     this.successMessage = message;
                     this.showSuccess = true;
                 };
+
+                let showFailureBox = (payload) => {
+                    if (this.showSuccess) {
+                        this.showSuccess = false;
+                    }
+                    this.failureMessage = payload.response.data.message;
+                    this.showFailure = true;
+                };
+
+                let submitToStore = (message) => {
+                    Object.assign(this.changedUser, this.currentUser);
+                    this.$store.commit("setUser", this.currentUser);
+                    showSuccessBox(message);
+                };
+
+
 
                 //////////////////////////////////////////////////////////////
 
@@ -120,12 +142,18 @@
                                 this.updatePhotoSource();
                                 submitToStore("User's Account and Photo Updated");
                             })
-                        );
+                        )
+                        .catch((payload) => {
+                            showFailureBox(payload);
+                        });
 
                     } else {
                         setUserData().then((response) => {
                             Object.assign(this.currentUser, response.data.data);
                             submitToStore("User's Account Updated");
+                        })
+                        .catch((payload) => {
+                            showFailureBox(payload);
                         });
                     }
                 } else if (this.userImg !== this.currentImg) {
@@ -133,11 +161,13 @@
                         this.currentUser.photo_url = response.data.data;
                         this.updatePhotoSource();
                         submitToStore("User's Photo Updated");
+                    })
+                    .catch((payload) => {
+                        showFailureBox(payload);
                     });
 
                 } else {
-                    this.successMessage = "No changes were submitted";
-                    this.showSuccess = true;
+                    showSuccessBox("No changes were submitted");
                 }
             },
             updateImage: function() {

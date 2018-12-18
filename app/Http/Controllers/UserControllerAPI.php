@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -103,5 +104,21 @@ class UserControllerAPI extends Controller
         $user->photo_url = $file->hashname();
         $user->save();
         return response()->json(["data" => $file->hashname()]);
+    }
+
+    public function toggleShift($id) {
+        $user = User::findOrFail($id);
+        if ($user->shift_active == 1) {
+            $shift_active = 0;
+            $user->last_shift_end = Carbon::now()->toDateTimeString();
+
+        } else {
+            $shift_active = 1;
+            $user->last_shift_start = Carbon::now()->toDateTimeString();
+        }
+
+        $user->shift_active = $shift_active;
+        $user->save();
+        return response()->json(["data" => $user]);
     }
 }

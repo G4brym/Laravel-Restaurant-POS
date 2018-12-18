@@ -14,9 +14,9 @@
 
         </div>
         <!-- /.box-body -->
-        <div class="box-footer">
+        <!--<div class="box-footer">
             Footer
-        </div>
+        </div>-->
         <!-- /.box-footer-->
     </div>
 </template>
