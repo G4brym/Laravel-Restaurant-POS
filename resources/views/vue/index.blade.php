@@ -115,7 +115,9 @@
                     <!-- Menu Footer-->
                     <li class="user-footer">
                         <div class="pull-left">
-                            <router-link to="/profile"  class="btn btn-default btn-flat"><i class="fa fa-briefcase"></i> <span>Profile</span></router-link>
+                            <router-link to="/account" class="btn btn-default btn-flat">
+                                <i class="fa fa-briefcase"></i> <span>Account</span>
+                            </router-link>
                         </div>
                     </li>
                 </ul>
@@ -188,4 +190,4 @@
 
 @section('pagescript')
 <script src="js/vue.js"></script>
- @stop  
+ @stop

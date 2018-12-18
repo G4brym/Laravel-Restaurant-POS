@@ -6,14 +6,14 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: { 
+    state: {
         token: "",
-        user: null, 
+        user: null,
         departments: [],
         orders: [],
         tables: [],
     },
-    mutations: { 
+    mutations: {
         clearUserAndToken: (state) => {
             state.user = null;
             state.token = "";
@@ -63,6 +63,9 @@ export default new Vuex.Store({
                 .then(response => {
                     state.tables = response.data.data;
                 });
+        },
+        loadProfilesFolder: (state) => {
+            state.profileFolder = "/storage/profiles";
         }
-    } 
+    }
 });

@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Facades\Storage;
 
 use App\Http\Resources\User as UserResource;
 use Illuminate\Support\Facades\DB;
 
 use App\User;
-use App\StoreUserRequest;
 use Hash;
 
 class UserControllerAPI extends Controller
@@ -52,13 +51,14 @@ class UserControllerAPI extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-                'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
-                'email' => 'required|email|unique:users,email,'.$id,
-                'age' => 'integer|between:18,75'
-            ]);
+        $data = $request->validate([
+            'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ0-9 ]+$/',
+            'username' => 'required|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ0-9 ]+$/',
+            'email' => 'required|email|unique:users,email,'.$id,
+        ]);
+
         $user = User::findOrFail($id);
-        $user->update($request->all());
+        $user->update($data);
         return new UserResource($user);
     }
 
@@ -82,5 +82,26 @@ class UserControllerAPI extends Controller
     public function myProfile(Request $request)
     {
         return new UserResource($request->user());
+    }
+
+    public function uploadPhoto(Request $request, $id) {
+        $data = $request->validate([
+            'photo' => 'required|image',
+        ]);
+
+        $user = User::findOrFail($id);
+        $file = $data['photo'];
+
+        if (!is_null($user->photo_url)) {
+            Storage::disk('public')->delete('profiles/'.$user->photo_url);
+        }
+
+        if (!Storage::disk('public')->exists('profiles/'.$file->hashname())) {
+            $file->store('profiles', 'public');
+        }
+
+        $user->photo_url = $file->hashname();
+        $user->save();
+        return response()->json(["data" => $file->hashname()]);
     }
 }

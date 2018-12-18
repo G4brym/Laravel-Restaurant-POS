@@ -27,7 +27,7 @@ import store from './stores/global-store';
 const table = Vue.component('tableMain', require('./components/manager/tables/table.vue'));
 const user = Vue.component('user', require('./components/user.vue'));
 const waiter = Vue.component('waiter', require('./components/waiter'));
-const profile = Vue.component('profile', require('./components/profile.vue'));
+const account = Vue.component('account', require('./components/account.vue'));
 const login = Vue.component('login', require('./components/login.vue'));
 const logout = Vue.component('logout', require('./components/logout.vue'));
 const itemsMenu = Vue.component('itemsMenu', require('./components/itemsMenu.vue'));
@@ -37,7 +37,7 @@ const routes = [
     { path: '/waiter', component: waiter, name: 'waiter'},
     { path: '/table', component: table, name: 'table'},
     { path: '/users', component: user, name: 'users'},
-    { path: '/profile', component: profile, name: 'profile'},
+    { path: '/account', component: account, name: 'account'},
     { path: '/login', component: login, name: 'login'},
     { path: '/logout', component: logout, name: 'logout'},
     { path: '/itemsMenu', component: itemsMenu, name: 'itemsMenu'},
@@ -48,9 +48,15 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if ((to.name == 'profile') || (to.name == 'logout')) {
-        if (!store.state.user) {
+    if ((to.name == 'account') || (to.name == 'logout')) {
+        if (!sessionStorage.getItem('user')) {
             next("/login");
+            return;
+        }
+    }
+    if (to.name == 'login') {
+        if (sessionStorage.getItem('user')) {
+            next("/");
             return;
         }
     }
@@ -71,6 +77,7 @@ const app = new Vue({
         // console.log(this.$store.state.user);
         // this.$store.commit('loadDepartments');
         this.$store.commit('loadTokenAndUserFromSession');
+        this.$store.commit('loadProfilesFolder');
         //console.log(this.$store.state.user);
     }
 }).$mount('#app');
