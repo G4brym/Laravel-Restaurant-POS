@@ -25,6 +25,7 @@ Vue.use(new VueSocketio({
 import store from './stores/global-store';
 
 const table = Vue.component('tableMain', require('./components/manager/tables/table.vue'));
+const item = Vue.component('item', require('./components/manager/items/item.vue'));
 const user = Vue.component('user', require('./components/user.vue'));
 const waiter = Vue.component('waiter', require('./components/waiter'));
 const account = Vue.component('account', require('./components/account.vue'));
@@ -35,7 +36,8 @@ const itemsMenu = Vue.component('itemsMenu', require('./components/itemsMenu.vue
 const routes = [
     { path: '/', redirect: '/users', name: 'root'},
     { path: '/waiter', component: waiter, name: 'waiter'},
-    { path: '/table', component: table, name: 'table'},
+    { path: '/tables', component: table, name: 'table'},
+    { path: '/items', component: item, name: 'item'},
     { path: '/users', component: user, name: 'users'},
     { path: '/account', component: account, name: 'account'},
     { path: '/login', component: login, name: 'login'},

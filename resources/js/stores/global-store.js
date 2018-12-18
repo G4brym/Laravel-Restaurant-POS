@@ -66,6 +66,12 @@ export default new Vuex.Store({
         },
         loadProfilesFolder: (state) => {
             state.profileFolder = "/storage/profiles";
+        },
+        loadItems: (state) => {
+            axios.get('api/items')
+                .then(response => {
+                    state.items = response.data.data;
+                });
         }
     }
 });

@@ -20,6 +20,7 @@ class Item extends JsonResource
             'type' => $this->type,
             'description' => $this->description,
             'photo_url' => $this->photo_url,
+            'deleted_at' => $this->deleted_at,
             'price' => $this->price
         ];
     }
