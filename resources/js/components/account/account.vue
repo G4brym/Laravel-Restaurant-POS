@@ -23,13 +23,14 @@
                               @update-field="changedUser.name = $event"
                               @update-valid="validName = $event"></account-validate>
 
-            <div class="form-group" v-if="currentImg">
+            <div class="form-group" >
                 <div style="margin-bottom: 5px;"><b>Photo</b></div>
-                <img :src="currentImg" alt="Profile Photo" id="accountPhoto"/>
-            </div>
-            <div class="form-group" v-else>
-                <div style="margin-bottom: 5px;"><b>Photo</b></div>
-                {{this.file ? "Invalid file" : "User has no profile photo"}}<br/>
+                <template v-if="currentImg">
+                    <img :src="currentImg" alt="Profile Photo" id="accountPhoto"/>
+                </template>
+                <template v-else>
+                    {{this.file ? "Invalid file" : "User has no profile photo"}}<br/>
+                </template>
             </div>
 
             <div class="form-group">
@@ -128,7 +129,6 @@
                     if (prop === 'photo_url') {
                         continue;
                     }
-                    console.log(this.changedUser[prop] + ' | ' + user[prop]);
 
                     if (user.hasOwnProperty(prop) && user[prop] !== this.changedUser[prop]) {
                         userInfoChanged = true;

@@ -28,7 +28,7 @@
         },
 	    methods: {
 	        saveItem: function(){
-	            axios.put('api/items/'+this.currentItemNumber, {item_number: document.getElementById("inputNumber").value})
+	            this.$http.put('api/items/'+this.currentItemNumber, {item_number: document.getElementById("inputNumber").value})
 	                .then(response=>{
 	                	Object.assign(this.item, response.data.data);
 	                	this.$emit('item-saved', this.item)
@@ -38,7 +38,7 @@
                     });
 	        },
 	        cancelEdit: function(){
-	        	axios.get('api/items/'+this.currentItemNumber)
+	        	this.$http.get('api/items/'+this.currentItemNumber)
 	                .then(response=>{
 	                	Object.assign(this.item, response.data.data);
 	                	this.$emit('item-canceled', this.item);

@@ -66,7 +66,7 @@
             },
 
             deleteItem: function(item){
-                axios.delete('api/items/'+item.id)
+                this.$http.delete('api/items/'+item.id)
                     .then(response => {
                         this.typeofmsg = "alert-success";
                         this.showMessage = true;
@@ -105,7 +105,7 @@
                 this.$refs.itemsListRef.editingItem = null;
             },
             getItems: function(){
-                axios.get('api/items')
+                this.$http.get('api/items')
                     .then(response=>{this.items = response.data.data; });
             },
             childMessage: function(message){

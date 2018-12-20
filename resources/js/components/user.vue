@@ -41,7 +41,7 @@
 	            this.showSuccess = false;
 	        },
 	        deleteUser: function(user){
-	            axios.delete('api/users/'+user.id)
+	            this.$http.delete('api/users/'+user.id)
 	                .then(response => {
 	                    this.showSuccess = true;
 	                    this.successMessage = 'User Deleted';
@@ -60,7 +60,7 @@
 	            this.showSuccess = false;
 	        },
 	        getUsers: function(){
-	            axios.get('api/users')
+	            this.$http.get('api/users')
 	                .then(response=>{this.users = response.data.data; });
 			},
 			childMessage: function(message){

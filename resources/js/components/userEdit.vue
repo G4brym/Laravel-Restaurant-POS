@@ -41,7 +41,7 @@
 		props: ['user', 'departments'],
 	    methods: {
 	        saveUser: function(){
-	            axios.put('api/users/'+this.user.id, this.user)
+	            this.$http.put('api/users/'+this.user.id, this.user)
 	                .then(response=>{
 	                	// Copy object properties from response.data.data to this.user
 	                	// without creating a new reference
@@ -50,7 +50,7 @@
 	                });
 	        },
 	        cancelEdit: function(){
-	        	axios.get('api/users/'+this.user.id)
+	        	this.$http.get('api/users/'+this.user.id)
 	                .then(response=>{
 	                	// Copy object properties from response.data.data to this.user
 	                	// without creating a new reference

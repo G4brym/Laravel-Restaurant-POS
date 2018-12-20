@@ -66,7 +66,7 @@
 	        },
 
 	        deleteTable: function(table){
-	            axios.delete('api/tables/'+table.table_number)
+	            this.$http.delete('api/tables/'+table.table_number)
 	                .then(response => {
 	                	this.typeofmsg = "alert-success";
 	                    this.showMessage = true;
@@ -105,7 +105,7 @@
 	            this.$refs.tablesListRef.editingTable = null;
 	        },
 	        getTables: function(){
-	            axios.get('api/tables')
+	            this.$http.get('api/tables')
 	                .then(response=>{this.tables = response.data.data; });
 			},
 			childMessage: function(message){

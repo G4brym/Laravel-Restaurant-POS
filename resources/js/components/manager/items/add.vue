@@ -18,7 +18,7 @@
 	module.exports={
 		methods: {
 	        addItem: function() {
-	            axios.post('api/items/', {item_number: document.getElementById("inputNumber").value})
+	            this.$http.post('api/items/', {item_number: document.getElementById("inputNumber").value})
 					.then(response => {
 				   		this.$emit('item-inserted')
 				   	})

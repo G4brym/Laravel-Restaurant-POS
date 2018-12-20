@@ -50,7 +50,7 @@
                 });
                 /////////////////////////////////////////
 
-                return axios.put('api/users/' + this.$store.state.user.id + "/toggleShift", null)
+                return this.$http.put('api/users/' + this.$store.state.user.id + "/toggleShift", null)
                     .then((response) => {
                         let responseUser = Object.assign({}, response.data.data);
                         this.$store.commit("setUser", responseUser);

@@ -56,7 +56,7 @@
                 this.$http.post('api/login', this.user)
                     .then(response => {
                         this.$store.commit('setToken',response.data.access_token);
-                        return axios.get('api/users/me');
+                        return this.$http.get('api/users/me');
                     })
                     .then(response => {
                         this.$store.commit('setUser', response.data.data);

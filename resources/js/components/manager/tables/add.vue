@@ -18,7 +18,7 @@
 	module.exports={
 		methods: {
 	        addTable: function() {
-	            axios.post('api/tables/', {table_number: document.getElementById("inputNumber").value})
+	            this.$http.post('api/tables/', {table_number: document.getElementById("inputNumber").value})
 					.then(response => {
 				   		this.$emit('table-inserted')
 				   	})
