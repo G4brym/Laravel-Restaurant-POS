@@ -52,10 +52,11 @@ class UserControllerAPI extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->merge(array_map('trim', $request->all()));
+
         $data = $request->validate([
-            'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ0-9 ]+$/',
-            'username' => 'required|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ0-9 ]+$/',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'name' => 'required|string|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
+            'username' => 'required|string|min:2|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ0-9_-]+$/|unique:users',
         ]);
 
         $user = User::findOrFail($id);

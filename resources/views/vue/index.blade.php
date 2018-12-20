@@ -97,17 +97,19 @@
                     </li>
                 </ul>
             </li>-->
-            <shift-button></shift-button>
-            <shift-counter></shift-counter>
+            <shift-button v-if="this.$store.state.user"></shift-button>
+            <shift-counter v-if="this.$store.state.user" ref="shiftCounter"></shift-counter>
             <li class="dropdown user user-menu" v-if="this.$store.state.user">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="{{ URL::asset('img/avatar.png') }}" class="user-image" alt="User Image">
+                    <img :src="this.$store.state.profileFolder + '/' + this.$store.state.user.photo_url"
+                         class="user-image" alt="User Image">
                     <span class="hidden-xs">@{{this.$store.state.user.name}}</span>
                 </a>
                 <ul class="dropdown-menu">
                     <!-- User image -->
                     <li class="user-header">
-                        <img src="{{ URL::asset('img/avatar.png') }}" class="img-circle" alt="User Image">
+                        <img :src="this.$store.state.profileFolder + '/' + this.$store.state.user.photo_url"
+                             class="img-circle" alt="User Image">
 
                         <p>
                             @{{this.$store.state.user.name}}
@@ -121,14 +123,12 @@
                                 <i class="fa fa-briefcase"></i> <span>Account</span>
                             </router-link>
                         </div>
+                        <logout></logout>
                     </li>
                 </ul>
             </li>
-            <li v-show="this.$store.state.user">
-                <router-link to="/logout"><i class="fa fa-briefcase"></i> <span>Logout</span></router-link>
-            </li>
             <li v-show="!this.$store.state.user">
-                <router-link to="/login"><i class="fa fa-briefcase"></i> <span>Login</span></router-link>
+                <router-link to="/login"><i class="fa fa-sign-in"></i> <span>Login</span></router-link>
             </li>
         </ul>
     </div>
@@ -139,7 +139,8 @@
 <!-- Sidebar user panel -->
 <div class="user-panel" v-if="this.$store.state.user">
     <div class="pull-left image">
-        <img src="{{ URL::asset('img/avatar.png') }}" class="img-circle" alt="User Image">
+        <img :src="this.$store.state.profileFolder + '/' + this.$store.state.user.photo_url"
+             class="img-circle" alt="User Image">
     </div>
     <div class="pull-left info">
         <p>@{{this.$store.state.user.name}}</p>
@@ -189,6 +190,14 @@
 @section('content')
     <router-view></router-view>
 @endsection
+
+@section('extrastyles')
+<style>
+    .swal2-popup {
+        font-size: 1.5rem !important;
+    }
+</style>
+    @endsection
 
 @section('pagescript')
 <script src="js/vue.js"></script>

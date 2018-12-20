@@ -16,6 +16,10 @@ Vue.use(VueRouter);
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
+import axios from 'axios'
+
+Vue.prototype.$http = axios;
+
 /*import VueSocketio from 'vue-socket.io';
 Vue.use(new VueSocketio({
     debug: true,
@@ -28,7 +32,7 @@ const table = Vue.component('tableMain', require('./components/manager/tables/ta
 const item = Vue.component('item', require('./components/manager/items/item.vue'));
 const user = Vue.component('user', require('./components/user.vue'));
 const waiter = Vue.component('waiter', require('./components/waiter'));
-const account = Vue.component('account', require('./components/account.vue'));
+const account = Vue.component('account', require('./components/account/account.vue'));
 const login = Vue.component('login', require('./components/login.vue'));
 const logout = Vue.component('logout', require('./components/logout.vue'));
 const itemsMenu = Vue.component('itemsMenu', require('./components/itemsMenu.vue'));
@@ -36,7 +40,7 @@ Vue.component('shift-counter', require('./components/shift_counter.vue'));
 Vue.component('shift-button', require('./components/shift_button.vue'));
 
 const routes = [
-    { path: '/', redirect: '/users', name: 'root'},
+    { path: '/', redirect: '/itemsMenu', name: 'root'},
     { path: '/waiter', component: waiter, name: 'waiter'},
     { path: '/tables', component: table, name: 'table'},
     { path: '/items', component: item, name: 'item'},
@@ -79,10 +83,15 @@ const app = new Vue({
     created() {
         // console.log('-----');
         // console.log(this.$store.state.user);
-        // this.$store.commit('loadDepartments');
         this.$store.commit('loadTokenAndUserFromSession');
         this.$store.commit('loadProfilesFolder');
+        this.$store.commit('loadItems');
         //console.log(this.$store.state.user);
+    },
+    methods: {
+        notifyCounter() {
+            this.$refs.shiftCounter.updateCounter(this.$store.state.user);
+        }
     }
 }).$mount('#app');
 

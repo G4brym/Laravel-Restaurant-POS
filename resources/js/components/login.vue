@@ -1,11 +1,10 @@
 <template>
-    <div>
-        <div class="alert" :class="typeofmsg" v-if="showMessage">             
-            <button type="button" class="close-btn" v-on:click="showMessage=false">&times;</button>
-            <strong>{{ message }}</strong>
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">Login</h3>
         </div>
-        <div class="jumbotron">
-            <h2>Login</h2>
+        <!-- /.box-header -->
+        <div class="box-body">
             <div class="form-group">
                 <label for="inputEmail">Email</label>
                 <input
@@ -23,6 +22,7 @@
                 <a class="btn btn-primary" v-on:click.prevent="login">Login</a>
             </div>
         </div>
+        <!-- /.box-body -->
     </div>
 </template>
 
@@ -31,34 +31,63 @@
         data: function(){
             return { 
                 user: {
-                    email:"",
-                    password:""
+                    email: "",
+                    password: ""
                 },
-                typeofmsg: "alert-success",
-                showMessage: false,
-                message: "",
             }
         },
         methods: {
             login() {
-                this.showMessage = false;
-                axios.post('api/login', this.user)
+                /////////////////////////////////////////
+                // SweetAlert
+                const toast = this.$swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false
+                });
+                toast({
+                    title: 'Logging in...',
+                    onBeforeOpen: () => {
+                        this.$swal.showLoading();
+                    }
+                });
+                /////////////////////////////////////////
+
+                this.$http.post('api/login', this.user)
                     .then(response => {
                         this.$store.commit('setToken',response.data.access_token);
                         return axios.get('api/users/me');
                     })
                     .then(response => {
-                        this.$store.commit('setUser',response.data.data);
-                        this.typeofmsg = "alert-success";
-                        this.message = "User authenticated correctly";
-                        this.showMessage = true;
+                        this.$store.commit('setUser', response.data.data);
+                        this.$router.push("itemsMenu");
+
+                        /////////////////////////////////////////
+                        // SweetAlert
+                        const toast = this.$swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        toast({
+                            type: 'success',
+                            title: 'Signed in successfully'
+                        });
+                        /////////////////////////////////////////
                     })
                     .catch(error => {
                         this.$store.commit('clearUserAndToken');
-                        this.typeofmsg = "alert-danger";
-                        this.message = "Invalid credentials";
-                        this.showMessage = true;
                         console.log(error);
+
+                        /////////////////////////////////////////
+                        // SweetAlert
+                        this.$swal({
+                            type: 'error',
+                            title: 'Login failed',
+                            text: 'Invalid credentials!'
+                        });
+                        /////////////////////////////////////////
                     });
             }
         },

@@ -31,7 +31,7 @@ export default new Vuex.Store({
             axios.defaults.headers.common.Authorization = undefined;
         },
         setUser: (state, user) => {
-            state.user =  user;
+            state.user = Object.assign({}, user);
             sessionStorage.setItem('user', JSON.stringify(user));
         },
         setToken: (state, token) => {

@@ -1,6 +1,6 @@
 <template>
     <li>
-        <button v-show="showShiftButton" :class="shiftButtonClass" @click="flipShiftActive()">
+        <button :class="shiftButtonClass" @click="flipShiftActive()">
             {{ buttonMessage }}
         </button>
     </li>
@@ -10,7 +10,6 @@
     export default {
         data: function() {
             return {
-                showShiftButton: false,
                 buttonMessage: "",
                 shiftButtonClass: null
             }
@@ -24,24 +23,75 @@
                     this.shiftButtonClass = "btn-success";
                     this.buttonMessage = "Start shift";
                 }
-                this.showShiftButton = true;
             },
-            flipShiftActive: function(user) {
+            flipShiftActive: function() {
+                let message = null;
+
+                /////////////////////////////////////////
+                // SweetAlert
+                if (this.$store.state.user.shift_active) {
+                    message = "Ending shift...";
+
+                } else {
+                    message = "Starting shift...";
+                }
+
+                const toast = this.$swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false
+                });
+
+                toast({
+                    title: message,
+                    onBeforeOpen: () => {
+                        this.$swal.showLoading();
+                    },
+                });
+                /////////////////////////////////////////
+
                 return axios.put('api/users/' + this.$store.state.user.id + "/toggleShift", null)
                     .then((response) => {
                         let responseUser = Object.assign({}, response.data.data);
                         this.$store.commit("setUser", responseUser);
+                        this.setButtonStatus(this.$store.state.user.shift_active);
+                        this.$root.notifyCounter();
+
+                        /////////////////////////////////////////
+                        // SweetAlert
+                        if (this.$store.state.user.shift_active) {
+                            message = "Shift has started";
+                        } else {
+                            message = "Shift has ended";
+                        }
+                        const toast = this.$swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        toast({
+                            title: message,
+                            type: 'info'
+                        });
+                        /////////////////////////////////////////
+
                     })
+                    .catch(() => {
+                        /////////////////////////////////////////
+                        // SweetAlert
+                        this.$swal({
+                            type: 'error',
+                            title: 'Oops',
+                            text: "Something went wrong..."
+                        });
+                        /////////////////////////////////////////
+
+                    });
             },
         },
         mounted() {
-            setInterval(() => {
-                if (this.$store.state.user) {
-                    this.setButtonStatus(this.$store.state.user.shift_active);
-                } else {
-                    this.showShiftButton = false;
-                }
-            }, 1000);
+            this.setButtonStatus(this.$store.state.user.shift_active);
         }
     }
 </script>

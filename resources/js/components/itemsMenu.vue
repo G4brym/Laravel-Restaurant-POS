@@ -5,26 +5,31 @@
         </div>
         <div class="box-body">
             <!--MENU LIST-->
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                        <th>Photo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in items" :key="item.id">
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.type }}</td>
-                        <td>{{ item.description }}</td>
-                        <td>{{ item.price }}</td>
-                        <td><img :src='"/storage/items/" + item.photo_url' alt="imagem" height="120px" width="120px"/></td>
-                    </tr>
-                </tbody>
-            </table>
+            <template v-if="items">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Photo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in items" :key="item.id">
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.type }}</td>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.price }}</td>
+                            <td><img :src='"/storage/items/" + item.photo_url' alt="imagem" height="120px" width="120px"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </template>
+            <div class="text-center" v-else>
+                Loading...
+            </div>
         </div>
     </div>
 </template>
@@ -33,17 +38,20 @@
     export default {
         data: function() {
             return { 
-		        items: []
+		        items: null
 			};
         },
         methods: {
-            getItems: function() {
-	            axios.get('api/items')
-	                .then((response) => {this.items = response.data.data; });
+            setItems: function() {
+                if (this.$store.state.items) {
+                    this.items = this.$store.state.items;
+                } else {
+                    setTimeout(this.setItems, 200);
+                }
 			},
         },
         mounted() {
-			this.getItems();
+            this.setItems();
 		}
     }
 </script>

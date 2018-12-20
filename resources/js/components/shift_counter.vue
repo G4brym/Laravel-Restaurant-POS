@@ -1,69 +1,58 @@
 <template>
     <li>
-        <a v-show="showShift" :class="shiftClass">{{ shiftMessage }}</a>
+        <a :class="shiftClass">{{ shiftMessage + valueMessage }}</a>
     </li>
 </template>
 
 <script>
     import moment from 'moment';
+    import countdown from 'countdown';
     export default {
         data: function() {
             return {
-                showShift: false,
                 shiftMessage: "",
-                shiftClass: null
+                valueMessage: "",
+                shiftClass: null,
+                interval: null,
             }
         },
         methods: {
-            updateShiftData: function(user) {
-                let duration = null;
-                let shiftStart = user.last_shift_start;
-
+            updateCounter: function(user) {
                 if (user.shift_active) {
-                    if (this.shiftClass !== "bg-green") {
-                        this.shiftClass = "bg-green";
-                    }
-                    duration = moment.duration(moment().diff(moment(shiftStart)));
-                    this.shiftMessage = "Shift started at: " + shiftStart + " | " + "Working time: ";
-                }
-                else {
-                    if (this.shiftClass === "bg-red") {
-                        return;
-                    } else {
-                        this.shiftClass = "bg-red";
-                    }
-                    let shiftEnd = user.last_shift_end;
-                    duration = moment.duration(moment(shiftEnd).diff(moment(shiftStart)));
-                    this.shiftMessage = "Shift ended at: " + shiftEnd + " | Worked for: ";
-                }
+                    this.shiftClass = "bg-green";
+                    this.shiftMessage = "Shift started at: " + user.last_shift_start + " | " + "Working time: ";
 
-                let days = Math.floor(duration.asDays());
-                let hours = Math.floor(duration.asHours() - (days * 24));
-                let minutes = Math.floor(duration.asMinutes() - ((days * 24 * 60) + hours * 60));
-                let seconds = Math.floor(duration.asSeconds() - (days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60));
+                    this.interval = countdown(moment(user.last_shift_start), (ts) => {
+                        this.valueMessage = ts.toString();
+                    }, countdown.DEFAULTS);
 
-                if (days !== 0) {
-                    this.shiftMessage += days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
                 } else {
-                    if (hours !== 0) {
-                        this.shiftMessage += hours + 'h ' + minutes + 'm ' + seconds + 's';
+                    if (this.interval) {
+                        clearInterval(this.interval);
                     }
-                    else {
-                        this.shiftMessage += minutes + 'm ' + seconds + 's';
-                    }
+
+                    this.shiftClass = "bg-red";
+                    this.shiftMessage = "Shift ended at: " + user.last_shift_end + " | Worked for: ";
+                    this.valueMessage =
+                        countdown(moment(user.last_shift_start), moment(user.last_shift_end), countdown.DEFAULTS).toString();
                 }
             }
         },
         mounted() {
-            setInterval(() => {
-                if (this.$store.state.user) {
-                    this.updateShiftData(this.$store.state.user);
-                    this.showShift = true;
-                } else {
-                    this.showShift = false;
-
+            countdown.setFormat(
+                {
+                    'singular': '|s|m |h |d ',
+                    'plural': '|s|m |h |d ',
+                    'last': ''
                 }
-            }, 1000);
+            );
+
+            this.updateCounter(this.$store.state.user);
         },
+        beforeDestroy() {
+            if (this.interval) {
+                clearInterval(this.interval);
+            }
+        }
     }
 </script>

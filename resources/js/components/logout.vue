@@ -1,43 +1,61 @@
 <template>
-    <div>
-        <div class="alert" :class="typeofmsg" v-if="showMessage">             
-            <button type="button" class="close-btn" v-on:click="showMessage=false">&times;</button>
-            <strong>{{ message }}</strong>
-        </div>
-        <div class="jumbotron">
-            <h2>Confirmar Logout</h2>
-            <div class="form-group">
-                <a class="btn btn-primary" v-on:click.prevent="logout">Logout</a>
-            </div>
-        </div>
-    </div>
+    <button class="pull-right btn btn-flat btn-default" @click="logout()">
+        <i class="fa fa-sign-out"></i><span>Logout</span>
+    </button>
 </template>
 
-<script type="text/javascript">    
+<script type="text/javascript">
     export default {
-        data: function(){
-            return { 
-                typeofmsg: "alert-success",
-                showMessage: false,
-                message: ""
-            }
-        },
         methods: {
             logout() {
-                this.showMessage = false;
-                axios.post('api/logout')
-                    .then(response => {
+                /////////////////////////////////////////
+                // SweetAlert
+                const toast = this.$swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false
+                });
+                toast({
+                    title: 'Logging out...',
+                    onBeforeOpen: () => {
+                        this.$swal.showLoading();
+                    }
+                });
+                /////////////////////////////////////////
+
+                this.$http.post('api/logout')
+                    .then(() => {
                         this.$store.commit('clearUserAndToken');
-                        this.typeofmsg = "alert-success";
-                        this.message = "User has logged out correctly";
-                        this.showMessage = true;
+                        this.$router.push("itemsMenu");
+
+                        /////////////////////////////////////////
+                        // SweetAlert
+                        const toast = this.$swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        toast({
+                            type: 'success',
+                            title: 'Signed out successfully'
+                        });
+                        /////////////////////////////////////////
                     })
                     .catch(error => {
                         this.$store.commit('clearUserAndToken');
-                        this.typeofmsg = "alert-danger";
-                        this.message = "Logout incorrect. But local credentials were discarded";
-                        this.showMessage = true;
+                        this.$router.push("itemsMenu");
                         console.log(error);
+
+                        /////////////////////////////////////////
+                        // SweetAlert
+                        this.$swal({
+                            type: 'error',
+                            title: 'Logout failed',
+                            text: 'However, local credentials have been discarded'
+                        });
+                        /////////////////////////////////////////
+
                     })            
                 }
         }
