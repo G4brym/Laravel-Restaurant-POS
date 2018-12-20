@@ -11,8 +11,8 @@
 	        <tr v-for="table in tables"  :key="table.table_number" :class="{activerow: editingTable === table}">
 	        	<template v-if="table.deleted_at === null">
 	                <td>{{ table.table_number }}</td>
-	                <td>{{ table.created_at }}</td>
-	                <td>{{ table.updated_at }}</td>
+	                <td>{{ table.created_at.date }}</td>
+	                <td>{{ table.updated_at.date }}</td>
 	                <td>
 		                <a class="btn btn-sm btn-primary" v-on:click.prevent="editTable(table)">Edit</a>
 		                <a class="btn btn-sm btn-danger" v-on:click.prevent="deleteTable(table)">Delete</a>
