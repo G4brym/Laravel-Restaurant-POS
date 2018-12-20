@@ -2,7 +2,7 @@
     <div>
         <prepared-orders :preparedOrders="preparedOrders" @deliver-click="deliverOrder" ref="preparedOrdersRef"></prepared-orders>
 
-        <meals :waiterMeals="waiterMeals" @delete-click="deleteOrder" ref="mealsRef"></meals>
+        <meals :waiterMeals="waiterMeals" @terminate-meal="terminateMeal" @delete-click="deleteOrder" ref="mealsRef"></meals>
     </div>
 </template>
 
@@ -33,14 +33,21 @@
                         // TODO
                         axios.delete('api/users/' + user.id)
                             .then(response => {
-                                Swal(
-                                    'Deleted!',
-                                    'Your file has been deleted.',
-                                    'success'
-                                )
+                                this.$swal({
+                                    type: 'success',
+                                    title: 'Deleted',
+                                    text: 'This order was deleted',
+                                });
                             });
                     }
                 })
+            },
+            terminateMeal: function (meal, index) {
+                this.$swal({
+                    type: 'success',
+                    title: 'Delivered',
+                    text: 'This order was delivered',
+                });
             },
             deliverOrder: function (order, index) {
                 axios.post('api/orders/' + order.id + '/deliver')

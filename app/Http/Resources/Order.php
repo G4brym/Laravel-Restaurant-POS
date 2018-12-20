@@ -21,11 +21,9 @@ class Order extends Resource
             'state' => $this->state,
             'start' => $this->start,
             'end' => $this->end,
-            'item_id' => $this->item->id,
-            'item' => $this->item->name,
+            'item' => $this->item,
             'meal' => $this->meal->id,
-            'responsible_cook_id' => $this->responsible_cook->id,
-            'responsible_cook' => $this->responsible_cook->name,
+            'responsible_cook' => $this->responsible_cook,
         ];
 
     }
