@@ -1,5 +1,5 @@
 <template>
-    <div class="box" :class="{'box-colapsed': this.showMeal}">
+    <div class="box" :id="'box' + meal.id" data-widget="box-widget">
         <div class="box-header with-border">
             <h3 class="box-title">Meal {{ meal.id }} - Table {{meal.table_number_id}}</h3>
 
@@ -59,7 +59,6 @@
         props: ['meal', 'index'],
         data: function(){
             return {
-                showMeal: true,
                 showAllOrders: false,
                 totalPrice: 0,
                 compactedOrders: [],
@@ -97,12 +96,7 @@
                 }
             },
             toggleMeal: function () {
-                console.log(this.showMeal)
-                if(this.showMeal){
-                    this.showMeal = false;
-                } else {
-                    this.showMeal = true;
-                }
+                $("#box" + this.meal.id).boxWidget('toggle');
             }
         },
     }

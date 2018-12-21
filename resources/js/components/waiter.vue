@@ -31,7 +31,7 @@
                 }).then((result) => {
                     if (result.value) {
                         // TODO
-                        axios.delete('api/users/' + user.id)
+                        this.$http.delete('api/users/' + user.id)
                             .then(response => {
                                 this.$swal({
                                     type: 'success',
@@ -50,7 +50,7 @@
                 });
             },
             deliverOrder: function (order, index) {
-                axios.post('api/orders/' + order.id + '/deliver')
+                this.$http.post('api/orders/' + order.id + '/deliver')
                     .then(response => {
                         if (response.status == 200) {
                             this.preparedOrders.splice(index, 1);
@@ -70,13 +70,13 @@
                     });
             },
             getPreparedOrders: function(){
-                axios.get('api/orders?states=prepared')
+                this.$http.get('api/orders?states=prepared')
                     .then(response=>{
                         this.preparedOrders = response.data.data;
                     });
             },
             getWaiterMeals: function(){
-                axios.get('api/meals?waiter=true&unfinished=true')
+                this.$http.get('api/meals?waiter=true&unfinished=true')
                     .then(response=>{
                         this.waiterMeals = response.data.data;
                     });

@@ -1,5 +1,5 @@
 <template>
-    <div class="box" :class="{'box-colapsed': !showPrepared}">
+    <div class="box" :class="{'box-colapsed': !showPrepared}" data-widget="box-widget">
         <div class="box-header with-border">
             <h3 class="box-title">Prepared Orders</h3>
 
