@@ -46,9 +46,11 @@ class UserControllerAPI extends Controller
     public function blockUnblock(Request $request, $id)
     {
         if($request->operation == 1) {
-            Table::where('id', $id)->update(array('blocked' => 1));
+            DB::table('users')->where('id', $id)->update(array('blocked' => 1));
         } else if($request->operation == 0) {
-            Table::where('id', $id)->update(array('blocked' => 0));
+            DB::table('users')->where('id', $id)->update(array('blocked' => 0));
+        } else {
+            return response()->json("Error with operation number", 400);
         }
     }
 
@@ -68,8 +70,15 @@ class UserControllerAPI extends Controller
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        $item = User::findOrFail($id);
+        try {
+            $item->delete();
+        }
+        catch (\Exception $e) {
+            $date=date_create();
+            date_timestamp_get($date);
+            User::where('id', $id)->update(array('deleted_at' => date_format($date,"Y-m-d H:i:s")));
+        }
         return response()->json(null, 204);
     }
     public function emailAvailable(Request $request)

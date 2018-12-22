@@ -52,7 +52,7 @@
         },
         methods: {
             unblockUser: function(user) {
-                this.$http.put('api/users/blockUnblock'+user.id, {operation: 0})
+                this.$http.put('api/users/blockUnblock/'+user.id, {operation: 0})
                     .then(response => {
                         this.typeofmsg = "alert-success";
                         this.message = "User Unblocked";
@@ -66,7 +66,7 @@
                     });
             },
             blockUser: function(user) {
-                this.$http.put('api/users/blockUnblock'+user.id, {operation: 1})
+                this.$http.put('api/users/blockUnblock/'+user.id, {operation: 1})
                     .then(response => {
                         this.typeofmsg = "alert-success";
                         this.message = "User Blocked";
