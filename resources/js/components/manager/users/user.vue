@@ -22,8 +22,8 @@
 </template>
 
 <script type="text/javascript">
-	import UserList from './userList.vue';
-	import UserEdit from './userEdit.vue';
+	import UserList from './list.vue';
+	import UserEdit from './edit.vue';
 	
 	export default {
 		data: function(){

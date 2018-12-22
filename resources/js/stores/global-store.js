@@ -9,9 +9,9 @@ export default new Vuex.Store({
     state: {
         token: "",
         user: null,
-        departments: [],
         orders: [],
         tables: [],
+        items: [],
     },
     mutations: {
         clearUserAndToken: (state) => {

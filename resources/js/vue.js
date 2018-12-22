@@ -30,7 +30,7 @@ import store from './stores/global-store';
 
 const table = Vue.component('tableMain', require('./components/manager/tables/table.vue'));
 const item = Vue.component('item', require('./components/manager/items/item.vue'));
-const user = Vue.component('user', require('./components/user.vue'));
+const user = Vue.component('user', require('./components/manager/users/user.vue'));
 const waiter = Vue.component('waiter', require('./components/waiter'));
 const account = Vue.component('account', require('./components/account/account.vue'));
 const login = Vue.component('login', require('./components/login.vue'));

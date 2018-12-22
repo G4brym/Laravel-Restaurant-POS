@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Table extends Model
 {
 
-	protected  $primaryKey = 'table_number';
+	protected $primaryKey = 'table_number';
 
 	protected $table = 'restaurant_tables';
 
