@@ -1,33 +1,44 @@
 <template>
 	<table class="table table-striped">
-	    <thead>
-	        <tr>
-	            <th>Name</th>
-	            <th>Email</th>
-	            <th>Age</th>
-	            <th>Department</th>
-	            <th>Actions</th>
-	        </tr>
-	    </thead>
-	    <tbody>
-	        <tr v-for="user in users"  :key="user.id" :class="{activerow: editingUser === user}">
-	            <td>{{ user.name }}</td>
-	            <td>{{ user.email }}</td>
-	            <td>{{ user.age }}</td>
-	            <td>{{ user.department }}</td>
-	            <td>
-					<a class="btn btn-sm btn-success" v-on:click.prevent="definePlayer(user,1)">P1</a>
-					<a class="btn btn-sm btn-success" v-on:click.prevent="definePlayer(user,2)">P2</a>
-	                <a class="btn btn-sm btn-primary" v-on:click.prevent="editUser(user)">Edit</a>
-	                <a class="btn btn-sm btn-danger" v-on:click.prevent="deleteUser(user)">Delete</a>
-	            </td>
-	        </tr>
-	    </tbody>
-	</table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Photo</th>
+                <th>Block</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="user in users" :key="user.id">
+               
+                <td>{{ user.name }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.type }}</td>
+                <td><img :src='"/storage/profiles/" + user.photo_url' alt="imagem" height="120px" width="120px"></img></td>
+                <td>
+                    <template v-if="user.blocked === 1">
+                        <a class="fa fa-lock" v-on:click.prevent="unblock(user)"></a>
+                    </template>  
+                    <template v-else>
+                        <a class="fa fa-unlock" v-on:click.prevent="block(user)"></a>
+                    </template>
+                </td>
+                <td>
+                    <template v-if="user.id !== $store.state.user.id">
+	                   <a class="btn btn-sm btn-primary" v-on:click.prevent="editUser(user)">Edit</a>
+	                   <a class="btn btn-sm btn-danger" v-on:click.prevent="deleteUser(user)">Delete</a>
+                    </template>
+        		</td>
+            </tr>
+            <a class="btn btn-sm btn-primary" v-on:click.prevent="addUser()">Add new user</a>
+        </tbody>
+    </table>
 </template>
 
 <script type="text/javascript">
-	// Component code (not registered)
 	module.exports={
 		props: ['users'],
 		data: function(){
@@ -41,21 +52,22 @@
                 this.$emit('edit-click', user);
             },		
             deleteUser: function(user){
-                this.editingUser = null;
+                this.editingUser = user;
                 this.$emit('delete-click', user);
 			},
-			definePlayer: function(user,player){
-				this.$root.$data['player'+player] = user;
-				this.$emit('message', user.name+' selected as Player'+player);
-			}
+			addUser: function(){
+				this.$emit('add-click');
+			},
+            unblock: function(user){
+                this.$emit('unblock-user', user);
+            },
+            block: function(user){
+                this.$emit('block-user', user);
+            },
         },		
 	}
 </script>
 
 <style scoped>
-	tr.activerow {
-  		background: #123456  !important;
-  		color: #fff          !important;
-}
 
 </style>

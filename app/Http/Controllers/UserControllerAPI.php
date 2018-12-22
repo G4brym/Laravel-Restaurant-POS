@@ -17,17 +17,10 @@ class UserControllerAPI extends Controller
     public function index(Request $request)
     {
         if ($request->has('page')) {
-            return UserResource::collection(User::paginate(5));
+            return UserResource::collection(User::paginate(50));
         } else {
             return UserResource::collection(User::all());
         }
-
-        /*Caso não se pretenda fazer uso de Eloquent API Resources (https://laravel.com/docs/5.5/eloquent-resources), é possível implementar com esta abordagem:
-        if ($request->has('page')) {
-            return User::with('department')->paginate(5);;
-        } else {
-            return User::with('department')->get();;
-        }*/
     }
 
     public function show($id)
@@ -48,6 +41,15 @@ class UserControllerAPI extends Controller
         $user->password = Hash::make($user->password);
         $user->save();
         return response()->json(new UserResource($user), 201);
+    }
+
+    public function blockUnblock(Request $request, $id)
+    {
+        if($request->operation == 1) {
+            Table::where('id', $id)->update(array('blocked' => 1));
+        } else if($request->operation == 0) {
+            Table::where('id', $id)->update(array('blocked' => 0));
+        }
     }
 
     public function update(Request $request, $id)

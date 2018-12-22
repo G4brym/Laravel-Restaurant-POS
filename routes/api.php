@@ -25,6 +25,7 @@ Route::get('users/{id}', 'UserControllerAPI@show');
 Route::post('users', 'UserControllerAPI@store');
 Route::put('users/{id}', 'UserControllerAPI@update');
 Route::delete('users/{id}', 'UserControllerAPI@destroy');
+Route::put('users/blockUnblock/{id}', 'UserControllerAPI@blockUnblock');
 Route::middleware('auth:api')->post('users/{id}/uploadPhoto', 'UserControllerAPI@uploadPhoto');
 Route::middleware('auth:api')->put('users/{id}/toggleShift', 'UserControllerAPI@toggleShift');
 
