@@ -16,10 +16,11 @@
                 <label for="inputPassword">Password</label>
                 <input
                     type="password" class="form-control" v-model="user.password"
-                    name="password" id="inputPassword"/>
+                    @keyup.13="login" name="password" id="inputPassword"
+                    placeholder="Password"/>
             </div>
             <div class="form-group">
-                <a class="btn btn-primary" v-on:click.prevent="login">Login</a>
+                <a class="btn btn-primary" @click="login">Login</a>
             </div>
         </div>
         <!-- /.box-body -->

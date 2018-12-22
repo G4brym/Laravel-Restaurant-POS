@@ -34,16 +34,18 @@
                     this.shiftClass = "bg-red";
                     this.shiftMessage = "Shift ended at: " + user.last_shift_end + " | Worked for: ";
                     this.valueMessage =
-                        countdown(moment(user.last_shift_start), moment(user.last_shift_end), countdown.DEFAULTS).toString();
+                        countdown(moment(user.last_shift_start), moment(user.last_shift_end), countdown.DEFAULTS)
+                            .toString();
                 }
             }
         },
         mounted() {
             countdown.setFormat(
                 {
-                    'singular': '|s|m |h |d ',
-                    'plural': '|s|m |h |d ',
-                    'last': ''
+                    'singular': '|s|m|h|d',
+                    'plural': '|s|m|h|d',
+                    'last': ' ',
+                    'delim': ' '
                 }
             );
 

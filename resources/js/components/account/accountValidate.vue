@@ -2,7 +2,7 @@
     <div class="form-group" :class="{'has-error': !valid}">
         <label :for="inputId">{{ fieldName.charAt(0).toUpperCase() + fieldName.substr(1) }}</label>
         <input
-            type="text" class="form-control" v-model="mutableField"
+            type="text" class="form-control" v-model.trim="mutableField"
             :name="fieldName" :id="inputId"
             :placeholder="fieldName.charAt(0).toUpperCase() + fieldName.substr(1)"
             @change="verify()"/>
@@ -31,7 +31,7 @@
         },
         methods: {
             verify: function () {
-                let field = this.mutableField.trim();
+                let field = this.mutableField;
                 let errors = [];
                 if (field.length < this.length) {
                     errors.push(this.fieldName.charAt(0).toUpperCase() + this.fieldName.substr(1) +
