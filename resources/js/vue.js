@@ -38,6 +38,7 @@ const logout = Vue.component('logout', require('./components/logout.vue'));
 const itemsMenu = Vue.component('itemsMenu', require('./components/itemsMenu.vue'));
 Vue.component('shift-counter', require('./components/shift_counter.vue'));
 Vue.component('shift-button', require('./components/shift_button.vue'));
+Vue.component('notifications', require('./components/notifications'));
 
 const routes = [
     { path: '/', redirect: '/itemsMenu', name: 'root'},

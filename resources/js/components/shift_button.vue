@@ -1,6 +1,6 @@
 <template>
     <li>
-        <button :class="shiftButtonClass" @click="flipShiftActive()">
+        <button class="btn" :class="shiftButtonClass" @click="flipShiftActive()">
             {{ buttonMessage }}
         </button>
     </li>
@@ -99,6 +99,6 @@
 <style scoped>
     button {
         margin-right: 15px;
-        margin-top: 12px;
+        margin-top: 8px;
     }
 </style>
