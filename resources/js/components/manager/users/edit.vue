@@ -9,32 +9,34 @@
 	            placeholder="User Name"/>
 	    </div>
 	    <div class="form-group">
+	        <label for="inputUsername">Username</label>
+	        <input
+	            type="text" class="form-control" v-model="user.username"
+	            name="username" id="username"
+	            placeholder="Username"/>
+	    </div>
+	    <div class="form-group">
+	        <label for="inputEmail">Email</label>
+	        <input
+	            type="email" class="form-control" v-model="user.email"
+	            name="email" id="userEmail"
+	            placeholder="User Email"/>
+	    </div>
+	    <div class="form-group">
 	        <label for="inputType">Type</label>
 	        <select class="form-control" id="userType" name="type" v-model="user.type" >
-	            <option>dish</option>
-	            <option>drink</option>
+	            <option>manager</option>
+	            <option>waiter</option>
+	            <option>cook</option>
+	            <option>cashier</option>
 	        </select>
-	    </div>
-	    <div class="form-group">
-	        <label for="inputDescription">Description</label>
-	        <input
-	            type="text" class="form-control" v-model="user.description"
-	            name="description" id="userDescription"
-	            placeholder="User Description"/>
-	    </div>
-	    <div class="form-group">
-	        <label for="inputPrice">Price</label>
-	        <input
-	            type="number" class="form-control" v-model="user.price"
-	            name="price" id="userPrice"
-	            placeholder="User Price"/>
 	    </div>
 	    <div class="form-group">
 	    	<template v-if="currentImg">
             	<img :src="currentImg" alt="photo" height="120px" width="120px" id="uploadedPhoto"></img>
             </template>
             <template v-else>
-            	<img :src='"/storage/users/" + user.photo_url' alt="photo" height="120px" width="120px" id="userCurrentPhoto"></img>
+            	<img :src='"/storage/profiles/" + user.photo_url' alt="photo" height="120px" width="120px" id="userCurrentPhoto"></img>
             </template>
 	    </div>
 	    <div class="form-group">

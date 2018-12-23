@@ -32,16 +32,41 @@ class UserControllerAPI extends Controller
     public function store(Request $request)
     {
         $request->validate([
-                'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
-                'email' => 'required|email|unique:users,email',
-                'age' => 'integer|between:18,75',
-                'password' => 'min:3'
-            ]);
-        $user = new User();
-        $user->fill($request->all());
-        $user->password = Hash::make($user->password);
-        $user->save();
-        return response()->json(new UserResource($user), 201);
+            'username' => 'required|string|max:255|unique:users',
+            'email' => 'required|email|unique:users'
+        ]);
+
+        if($request->password !== $request->confirmationPassword) {
+            $image = $request->photo_url;
+            if($image != null) {
+                $image = str_replace('data:image/jpeg;base64,', '', $image);
+                $image = str_replace(' ', '+', $image);
+                $imageName = str_random(10).'.'.'jpeg';
+                \File::put(storage_path().'/app/public/profiles/'.$imageName, base64_decode($image));
+                $date=date_create();
+                date_timestamp_get($date);
+                
+                DB::table('users')->insert(
+                    [
+                        "name" => $request->name,
+                        "username" => $request->username,
+                        "email" => $request->email,
+                        "password" => Hash::make($request->password),
+                        "type" => $request->type,
+                        "blocked" => 0,
+                        "photo_url" => $imageName,
+                        "shift_active" => 0,
+                        "created_at" => date_format($date,"Y-m-d H:i:s"),
+                        "updated_at" => date_format($date,"Y-m-d H:i:s")
+                    ] 
+                );
+                return response()->json(null, 201);
+            } else {
+                return response()->json("Photo missing", 400);
+            }    
+        } else {
+            return response()->json("Passwords missmatch", 400);
+        } 
     }
 
     public function blockUnblock(Request $request, $id)

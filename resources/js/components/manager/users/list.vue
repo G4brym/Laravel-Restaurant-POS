@@ -19,11 +19,13 @@
                 <td>{{ user.type }}</td>
                 <td><img :src='"/storage/profiles/" + user.photo_url' alt="imagem" height="120px" width="120px"></img></td>
                 <td>
-                    <template v-if="user.blocked === 1">
-                        <a class="fa fa-lock" v-on:click.prevent="unblock(user)"></a>
-                    </template>  
-                    <template v-else>
-                        <a class="fa fa-unlock" v-on:click.prevent="block(user)"></a>
+                    <template v-if="user.id !== $store.state.user.id">
+                        <template v-if="user.blocked === 1">
+                            <a class="fa fa-lock" v-on:click.prevent="unblock(user)"></a>
+                        </template>  
+                        <template v-else>
+                            <a class="fa fa-unlock" v-on:click.prevent="block(user)"></a>
+                        </template>
                     </template>
                 </td>
                 <td>

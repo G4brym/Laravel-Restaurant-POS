@@ -9,25 +9,41 @@
 	            placeholder="User Name"/>
 	    </div>
 	    <div class="form-group">
-	        <label for="inputType">Type</label>
-	        <select class="form-control" id="userType" name="type">
-	            <option>dish</option>
-	            <option>drink</option>
-	        </select>
-	    </div>
-	    <div class="form-group">
-	        <label for="inputDescription">Description</label>
+	        <label for="inputUsername">Username</label>
 	        <input
 	            type="text" class="form-control"
-	            name="description" id="userDescription"
-	            placeholder="User Description"/>
+	            name="username" id="username"
+	            placeholder="Username"/>
 	    </div>
 	    <div class="form-group">
-	        <label for="inputPrice">Price</label>
+	        <label for="inputPassword">Password</label>
 	        <input
-	            type="number" class="form-control"
-	            name="price" id="userPrice"
-	            placeholder="User Price"/>
+	            type="password" class="form-control"
+	            name="password" id="userPassword"
+	            placeholder="Password"/>
+	    </div>
+	    <div class="form-group">
+	        <label for="inputPassword">Confirmation Password</label>
+	        <input
+	            type="password" class="form-control"
+	            name="confirmationPassword" id="userConfirmationPassword"
+	            placeholder="Confirmation Password"/>
+	    </div>
+	    <div class="form-group">
+	        <label for="inputEmail">Email</label>
+	        <input
+	            type="email" class="form-control"
+	            name="email" id="userEmail"
+	            placeholder="User Email"/>
+	    </div>
+	    <div class="form-group">
+	        <label for="inputType">Type</label>
+	        <select class="form-control" id="userType" name="type" >
+	            <option>manager</option>
+	            <option>waiter</option>
+	            <option>cook</option>
+	            <option>cashier</option>
+	        </select>
 	    </div>
 	    <div class="form-group">
 			<template v-if="currentImg">
@@ -72,11 +88,14 @@
             },
 	        addUser: function() {
 	        	name = document.getElementById("userName").value;
-	        	photo_url = this.currentImg;
+	        	username = document.getElementById("username").value;
+	        	email = document.getElementById("userEmail").value;
 	        	type = document.getElementById("userType").value;
-	        	description = document.getElementById("userDescription").value;
-	        	price = document.getElementById("userPrice").value;
-	            this.$http.post('api/users/', {name: name, photo_url: photo_url, type: type, description: description, price: price})
+	        	password = document.getElementById("userPassword").value;
+	        	confirmationPassword = document.getElementById("userType").value;
+	        	photo_url = this.currentImg;
+	           	
+	            this.$http.post('api/users/', {name: name, photo_url: photo_url, type: type, username: username, password: password, confirmationPassword: confirmationPassword, email: email})
 	                .then(response=>{
 	                	this.$emit('user-inserted')
 	                })
