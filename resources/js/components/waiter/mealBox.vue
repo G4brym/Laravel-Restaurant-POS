@@ -62,26 +62,51 @@
                 showAllOrders: false,
                 totalPrice: 0,
                 compactedOrders: [],
-                orders: []
+                orders: [],
+                expanded: true,
+                safeTerminate: false
             }
         },
         mounted() {
             let tmp_price = 0;
+            let safeTermination = true;
+
             for (var i = 0; i < this.meal.orders.length; i++) {
                 tmp_price += parseFloat(this.meal.orders[i].item.price);
                 if(this.meal.orders[i].state === 'pending' || this.meal.orders[i].state === 'confirmed'){
                     this.compactedOrders.push(this.meal.orders[i])
                 }
+
+                if(this.meal.orders[i].state !== 'delivered'){
+                    safeTermination = false;
+                }
             }
             this.totalPrice = tmp_price.toFixed(2);
 
             this.orders = this.compactedOrders;
+            this.safeTerminate = safeTermination;
 
 
         },
         methods: {
             terminateMeal: function (meal, index) {
-                this.$emit('terminate-meal', meal, index);
+                if(!this.safeTerminate){
+                    this.$swal({
+                        title: 'Are you sure?',
+                        text: "One or more orders are still not delivered",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, Terminate it!'
+                    }).then((result) => {
+                        if (result.value) {
+                            this.$emit('terminate-meal', meal, index);
+                        }
+                    })
+                } else {
+                    this.$emit('terminate-meal', meal, index);
+                }
             },
             deleteOrder: function (order) {
                 this.$emit('delete-click', order);
@@ -96,7 +121,12 @@
                 }
             },
             toggleMeal: function () {
-                $("#box" + this.meal.id).boxWidget('toggle');
+                if(this.expanded){
+                    $("#box" + this.meal.id).boxWidget('collapse');
+                } else {
+                    $("#box" + this.meal.id).boxWidget('expand');
+                }
+
             }
         },
     }

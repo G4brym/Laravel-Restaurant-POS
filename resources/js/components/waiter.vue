@@ -43,11 +43,24 @@
                 })
             },
             terminateMeal: function (meal, index) {
-                this.$swal({
-                    type: 'success',
-                    title: 'Delivered',
-                    text: 'This order was delivered',
-                });
+                this.$http.post('api/meals/' + meal.id + '/terminate')
+                    .then(response => {
+                        if (response.status == 200) {
+                            this.preparedOrders.splice(index, 1);
+                            //this.getPreparedOrders();
+                            this.$swal({
+                                type: 'success',
+                                title: 'Terminated',
+                                text: 'This meal was terminated',
+                            });
+                        } else {
+                            this.$swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            });
+                        }
+                    });
             },
             deliverOrder: function (order, index) {
                 this.$http.post('api/orders/' + order.id + '/deliver')
