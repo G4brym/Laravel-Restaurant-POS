@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateTableRequest extends FormRequest
+class StoreOrderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,10 @@ class UpdateTableRequest extends FormRequest
     public function rules()
     {
         return [
-            'table_number' => 'required|integer',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'photo_url' => 'required|url',
+            'price' => 'required|numeric|between:10.00,00.00',
         ];
     }
 }

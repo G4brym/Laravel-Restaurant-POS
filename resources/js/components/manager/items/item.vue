@@ -53,12 +53,12 @@
         methods: {
             insertError: function() {
                 this.typeofmsg = "alert-danger";
-                this.message = "Invalid item number";
+                this.message = "Missing arguments";
                 this.showMessage = true;
             },
             editError: function() {
                 this.typeofmsg = "alert-danger";
-                this.message = "Invalid number";
+                this.message = "Invalid name";
                 this.showMessage = true;
             },
             editItem: function(item){

@@ -9,6 +9,11 @@ class Item extends Model
     protected $fillable = [
         'id',
         'name',
+        'type',
+        'description',
+        'photo_url',
+        'deleted_at',
+        'price'
     ];
 
 }
