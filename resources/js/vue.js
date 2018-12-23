@@ -36,6 +36,7 @@ const account = Vue.component('account', require('./components/account/account.v
 const login = Vue.component('login', require('./components/login.vue'));
 const logout = Vue.component('logout', require('./components/logout.vue'));
 const itemsMenu = Vue.component('itemsMenu', require('./components/itemsMenu.vue'));
+const cookOrders = Vue.component('cookOrders', require('./components/cook/cookOrders.vue'));
 Vue.component('shift-counter', require('./components/shift_counter.vue'));
 Vue.component('shift-button', require('./components/shift_button.vue'));
 Vue.component('notifications', require('./components/notifications'));
@@ -50,6 +51,7 @@ const routes = [
     { path: '/login', component: login, name: 'login'},
     { path: '/logout', component: logout, name: 'logout'},
     { path: '/itemsMenu', component: itemsMenu, name: 'itemsMenu'},
+    { path: '/cookOrders', component: cookOrders, name: 'cookOrders'},
 ];
 
 const router = new VueRouter({
@@ -86,11 +88,12 @@ const app = new Vue({
         // console.log(this.$store.state.user);
         this.$store.commit('loadTokenAndUserFromSession');
         this.$store.commit('loadProfilesFolder');
-        this.$store.commit('loadItems');
-        //console.log(this.$store.state.user);
+
+        this.$store.dispatch('loadItems');
+        this.$store.dispatch('loadOrders');
     },
     methods: {
-        notifyCounter() {
+        notifyCounter: function() {
             this.$refs.shiftCounter.updateCounter(this.$store.state.user);
         }
     }

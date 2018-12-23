@@ -1,5 +1,5 @@
 <template>
-    <div class="box">
+    <div class="box box-info">
         <div class="box-header with-border">
             <h3 class="box-title">Menu</h3>
         </div>
@@ -36,23 +36,11 @@
 
 <script type="text/javascript">    
     export default {
-        data: function() {
-            return { 
-		        items: null
-			};
-        },
-        methods: {
-            setItems: function() {
-                if (this.$store.state.items) {
-                    this.items = this.$store.state.items;
-                } else {
-                    setTimeout(this.setItems, 200);
-                }
-			},
-        },
-        mounted() {
-            this.setItems();
-		}
+        computed: {
+            items: function() {
+                return this.$store.state.items;
+            }
+        }
     }
 </script>
 

@@ -99,7 +99,7 @@
             </li>-->
             <shift-button v-if="this.$store.state.user"></shift-button>
             <shift-counter v-if="this.$store.state.user" ref="shiftCounter"></shift-counter>
-            <notifications></notifications>
+            <notifications v-if="this.$store.state.user"></notifications>
             <li class="dropdown user user-menu" v-if="this.$store.state.user">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <img :src="this.$store.state.profileFolder + '/' + this.$store.state.user.photo_url"
@@ -157,6 +157,10 @@
     <template v-if="this.$store.state.user">
         <template v-if="this.$store.state.user.type === 'waiter'">
             <li><router-link to="/waiter"><i class="fa fa-briefcase"></i> <span>Waiter</span></router-link></li>
+        </template>
+
+        <template v-if="this.$store.state.user.type === 'cook'">
+            <li><router-link to="/cookOrders"><i class="fa fa-briefcase"></i> <span>Cook</span></router-link></li>
         </template>
 
         <template v-if="this.$store.state.user.type === 'manager'">

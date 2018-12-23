@@ -13,25 +13,38 @@ class OrderControllerAPI extends Controller
 {
     public function index(Request $request)
     {
-        $uid = Auth::user()->id;
-        $baseQuery = Order::whereIn('meal_id', function($query) use ($uid){
-            $query->select('id')
-                ->from(with(new Meal)->getTable())
-                ->where('responsible_waiter_id', $uid);
-        })->orderBy('updated_at', 'desc');
+        $uid = Auth::id();
+        $user = Auth::user();
+        if ($user->type === 'waiter') {
+            $baseQuery = Order::whereIn('meal_id', function ($query) use ($uid) {
+                $query->select('id')
+                    ->from(with(new Meal)->getTable())
+                    ->where('responsible_waiter_id', $uid);
+            })->orderBy('updated_at', 'desc');
 
-        if ($request->has('states')) {
-            $pieces = explode(',', $request->get('states'));
-            $i = 1;
-            foreach ($pieces as &$value) {
-                if($i == 1){
-                    $baseQuery = $baseQuery->where('state', $value);
-                } else {
-                    $baseQuery = $baseQuery->orWhere('state', $value);
+            if ($request->has('states')) {
+                $pieces = explode(',', $request->get('states'));
+                $i = 1;
+                foreach ($pieces as &$value) {
+                    if ($i == 1) {
+                        $baseQuery = $baseQuery->where('state', $value);
+                    } else {
+                        $baseQuery = $baseQuery->orWhere('state', $value);
+                    }
+
+                    $i++;
                 }
-
-                $i++;
             }
+
+        } else if ($user->type === 'cook') {
+            $baseQuery = Order::whereIn('state', ['confirmed', 'in preparation'])
+                              ->where('responsible_cook_id', $uid)
+                              ->orWhereNull('responsible_cook_id')
+                              ->orderBy('state', 'desc')
+                              ->orderBy('updated_at', 'desc');
+
+        } else {
+            return response()->json(null, 401);
         }
 
         return OrderResource::collection($baseQuery->paginate(50));

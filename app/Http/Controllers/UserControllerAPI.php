@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 use App\Http\Resources\User as UserResource;
-use Illuminate\Support\Facades\DB;
 
 use App\User;
 use Hash;
@@ -52,6 +53,10 @@ class UserControllerAPI extends Controller
 
     public function update(Request $request, $id)
     {
+        if ($id != Auth::id()) {
+            return response()->json(null, 401);
+        }
+
         $request->merge(array_map('trim', $request->all()));
 
         $data = $request->validate([
@@ -59,7 +64,7 @@ class UserControllerAPI extends Controller
             'username' => 'required|string|min:2|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ0-9_-]+$/|unique:users',
         ]);
 
-        $user = User::findOrFail($id);
+        $user = User::findOrFail(Auth::id());
         $user->update($data);
         return new UserResource($user);
     }
@@ -70,6 +75,7 @@ class UserControllerAPI extends Controller
         $user->delete();
         return response()->json(null, 204);
     }
+
     public function emailAvailable(Request $request)
     {
         $totalEmail = 1;
@@ -78,6 +84,7 @@ class UserControllerAPI extends Controller
         } else if ($request->has('email')) {
             $totalEmail = DB::table('users')->where('email', '=', $request->email)->count();
         }
+
         return response()->json($totalEmail == 0);
     }
 
@@ -87,6 +94,10 @@ class UserControllerAPI extends Controller
     }
 
     public function uploadPhoto(Request $request, $id) {
+        if ($id != Auth::id()) {
+            return response()->json(null, 401);
+        }
+
         $data = $request->validate([
             'photo' => 'required|image',
         ]);
@@ -108,6 +119,10 @@ class UserControllerAPI extends Controller
     }
 
     public function toggleShift($id) {
+        if ($id != Auth::id()) {
+            return response()->json(null, 401);
+        }
+
         $user = User::findOrFail($id);
         if ($user->shift_active == 1) {
             $shift_active = 0;

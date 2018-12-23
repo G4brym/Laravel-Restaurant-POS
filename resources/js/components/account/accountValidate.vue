@@ -2,7 +2,7 @@
     <div class="form-group" :class="{'has-error': !valid}">
         <label :for="inputId">{{ fieldName.charAt(0).toUpperCase() + fieldName.substr(1) }}</label>
         <input
-            type="text" class="form-control" v-model.trim="mutableField"
+            type="text" class="form-control" v-model.trim.lazy="mutableValue"
             :name="fieldName" :id="inputId"
             :placeholder="fieldName.charAt(0).toUpperCase() + fieldName.substr(1)"
             @change="verify()"/>
@@ -21,17 +21,17 @@
 
 <script>
     export default {
-        props: ["inputId", "field", "fieldName", "length", "regex", "regexError"],
+        props: ["inputId", "value", "fieldName", "length", "regex", "regexError"],
         data: function() {
             return {
-                mutableField: this.field,
+                mutableValue: this.value,
                 valid: true,
                 errors: []
             }
         },
         methods: {
             verify: function () {
-                let field = this.mutableField;
+                let field = this.mutableValue;
                 let errors = [];
                 if (field.length < this.length) {
                     errors.push(this.fieldName.charAt(0).toUpperCase() + this.fieldName.substr(1) +
@@ -52,8 +52,8 @@
             },
         },
         watch: {
-            mutableField: function(newField) {
-                this.$emit('update-field', newField);
+            mutableValue: function(newValue) {
+                this.$emit('input', newValue);
             },
             valid: function(newValid) {
                 this.$emit('update-valid', newValid);

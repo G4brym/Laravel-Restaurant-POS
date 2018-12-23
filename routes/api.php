@@ -23,7 +23,7 @@ Route::middleware('auth:api')->get('users/me', 'UserControllerAPI@myProfile');
 
 Route::get('users/{id}', 'UserControllerAPI@show');
 Route::post('users', 'UserControllerAPI@store');
-Route::put('users/{id}', 'UserControllerAPI@update');
+Route::middleware('auth:api')->put('users/{id}', 'UserControllerAPI@update');
 Route::delete('users/{id}', 'UserControllerAPI@destroy');
 Route::middleware('auth:api')->post('users/{id}/uploadPhoto', 'UserControllerAPI@uploadPhoto');
 Route::middleware('auth:api')->put('users/{id}/toggleShift', 'UserControllerAPI@toggleShift');

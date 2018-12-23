@@ -9,18 +9,16 @@
                 <label for="inputEmail">Email</label>
                 <div class="form-control" id="inputEmail" style="background-color:#eee">{{ changedUser.email }}</div>
             </div>
-            <account-validate input-id="inputUsername" :field="changedUser.username"
+            <account-validate input-id="inputUsername" v-model="changedUser.username"
                               field-name="username" length="2"
                               :regex="new RegExp('^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ0-9_-]+$')"
                               regex-error="Username can only contain letters, numbers and underscores"
-                              @update-field="changedUser.username = $event"
                               @update-valid="validUsername = $event"></account-validate>
 
-            <account-validate input-id="inputName" :field="changedUser.name"
+            <account-validate input-id="inputName" v-model="changedUser.name"
                               field-name="name" length="3"
                               :regex="new RegExp('^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$')"
                               regex-error="Name can only contain letters and whitespaces"
-                              @update-field="changedUser.name = $event"
                               @update-valid="validName = $event"></account-validate>
 
             <div class="form-group" >
@@ -37,11 +35,11 @@
                 <input type="file" id="inputAccPhoto" name="photo" @change='loadImage()'/>
             </div>
             <div v-show="showRevert">
-                <a class="btn btn-default" @click="revertImg()">Revert</a>
+                <button class="btn btn-default" @click="revertImg()">Revert</button>
             </div>
             <br/>
             <div class="form-group">
-                <a class="btn btn-primary" @click="saveUser()">Save</a>
+                <button class="btn btn-primary" @click="saveUser()">Save</button>
             </div>
         </div>
         <!-- /.box-body -->

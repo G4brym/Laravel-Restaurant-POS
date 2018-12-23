@@ -20,7 +20,7 @@
                     placeholder="Password"/>
             </div>
             <div class="form-group">
-                <a class="btn btn-primary" @click="login">Login</a>
+                <button class="btn btn-primary" @click="login">Login</button>
             </div>
         </div>
         <!-- /.box-body -->
@@ -61,6 +61,8 @@
                     })
                     .then(response => {
                         this.$store.commit('setUser', response.data.data);
+                        this.$store.dispatch('loadOrders');
+
                         this.$router.push("itemsMenu");
 
                         /////////////////////////////////////////

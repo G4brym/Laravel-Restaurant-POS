@@ -25,37 +25,38 @@
 
                 this.$http.post('api/logout')
                     .then(() => {
-                        this.$store.commit('clearUserAndToken');
-                        this.$router.push("itemsMenu");
+                        this.$store.dispatch('clearAuthData').then(() => {
+                            this.$router.push("itemsMenu");
 
-                        /////////////////////////////////////////
-                        // SweetAlert
-                        const toast = this.$swal.mixin({
-                            toast: true,
-                            position: 'top',
-                            showConfirmButton: false,
-                            timer: 3000
+                            /////////////////////////////////////////
+                            // SweetAlert
+                            const toast = this.$swal.mixin({
+                                toast: true,
+                                position: 'top',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            toast({
+                                type: 'success',
+                                title: 'Signed out successfully'
+                            });
+                            /////////////////////////////////////////);
                         });
-                        toast({
-                            type: 'success',
-                            title: 'Signed out successfully'
-                        });
-                        /////////////////////////////////////////
                     })
                     .catch(error => {
-                        this.$store.commit('clearUserAndToken');
-                        this.$router.push("itemsMenu");
-                        console.log(error);
+                        this.$store.dispatch('clearAuthData').then(() => {
+                            this.$router.push("itemsMenu");
+                            console.log(error);
 
-                        /////////////////////////////////////////
-                        // SweetAlert
-                        this.$swal({
-                            type: 'error',
-                            title: 'Logout failed',
-                            text: 'However, local credentials have been discarded'
+                            /////////////////////////////////////////
+                            // SweetAlert
+                            this.$swal({
+                                type: 'error',
+                                title: 'Logout failed',
+                                text: 'However, local credentials have been discarded'
+                            });
+                            /////////////////////////////////////////
                         });
-                        /////////////////////////////////////////
-
                     })            
                 }
         }

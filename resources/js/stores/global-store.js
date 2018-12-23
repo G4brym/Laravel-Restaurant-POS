@@ -2,15 +2,17 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
+import axios from 'axios';
 
 Vue.use(Vuex);
-import axios from 'axios';
+
 export default new Vuex.Store({
     state: {
         token: "",
         user: null,
         departments: [],
-        orders: [],
+        orders: null,
+        items: null,
         tables: [],
     },
     mutations: {
@@ -29,6 +31,9 @@ export default new Vuex.Store({
             state.token = "";
             sessionStorage.removeItem('token');
             axios.defaults.headers.common.Authorization = undefined;
+        },
+        clearOrders (state) {
+            state.orders = null;
         },
         setUser: (state, user) => {
             state.user = Object.assign({}, user);
@@ -52,11 +57,8 @@ export default new Vuex.Store({
                 state.user = JSON.parse(user);
             }
         },
-        loadOrders: (state) => {
-            axios.get('api/orders')
-                .then(response => {
-                    state.orders = response.data.data;
-                });
+        loadOrders (state, orders) {
+            state.orders = orders;
         },
         loadTables: (state) => {
             axios.get('api/tables')
@@ -67,10 +69,29 @@ export default new Vuex.Store({
         loadProfilesFolder: (state) => {
             state.profileFolder = "/storage/profiles";
         },
-        loadItems: (state) => {
+        loadItems (state, items) {
+            state.items = items;
+        },
+    },
+    actions: {
+        clearAuthData (context) {
+            context.commit('clearUserAndToken');
+            if (context.state.orders) {
+                context.commit('clearOrders');
+            }
+        },
+        loadOrders (context) {
+            if (context.state.user && ['waiter', 'cook'].includes(context.state.user.type)) {
+                axios.get('api/orders')
+                    .then(response => {
+                        context.commit('loadOrders', response.data.data);
+                    });
+            }
+        },
+        loadItems ({ commit }) {
             axios.get('api/items')
                 .then(response => {
-                    state.items = response.data.data;
+                    commit('loadItems', response.data.data);
                 });
         }
     }

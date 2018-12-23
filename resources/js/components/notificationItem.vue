@@ -9,11 +9,6 @@
 <script>
     export default {
         props: ["classes", "text"],
-        data: function() {
-            return {
-
-            }
-        }
     }
 </script>
 
