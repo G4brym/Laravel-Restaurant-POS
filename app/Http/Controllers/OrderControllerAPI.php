@@ -62,6 +62,23 @@ class OrderControllerAPI extends Controller
         return new OrderResource(Order::find($id));
     }
 
+    public function update(Request $request, $id) {
+        if (Auth::user()->type === 'cook' && Auth::user()->shift_active === 1) {
+            $order = Order::find($id);
+
+            $order->state = $request->get('state');
+
+            if ($order->responsible_cook_id === null) {
+                $order->responsible_cook_id = Auth::id();
+            }
+
+            $order->save();
+            return new OrderResource($order);
+        }
+
+        return response()->json(null, 401);
+    }
+
     public function deliver($id)
     {
         $uid = Auth::user()->id;

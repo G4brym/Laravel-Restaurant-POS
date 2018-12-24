@@ -16,6 +16,12 @@ Vue.use(VueRouter);
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
+import VueSocketio from 'vue-socket.io';
+Vue.use(new VueSocketio({
+    debug: true,
+    connection: 'http://127.0.0.1:8080'
+}));
+
 import axios from 'axios'
 
 Vue.prototype.$http = axios;
@@ -85,19 +91,56 @@ const app = new Vue({
     router,
     data: {},
     store,
+    methods: {
+        notifyCounter: function() {
+            this.$refs.shiftCounter.updateCounter(this.$store.state.user);
+        },
+        loadActiveData: function() {
+            if (this.$store.state.user && this.$store.state.user.shift_active) {
+                if (this.$store.state.user.type === 'cook') {
+                    this.$store.dispatch('loadOrders').then(() => {
+                        if (this.$store.state.user && this.$store.state.user.type === 'cook') {
+                            console.log('"cook" connect');
+                            this.$socket.emit('joinCook');
+                        }
+                    });
+                } else if (this.$store.state.user.type === 'waiter') {
+                    this.$store.dispatch('loadOrders');
+                }
+            }
+        },
+        clearAuthData: function(logout) {
+            if (this.$store.state.user && this.$store.state.user.type === 'cook'
+                && !this.$store.state.user.shift_active) {
+
+                this.$socket.emit('leaveCook');
+            }
+
+            this.$store.dispatch('clearActiveData').then(() => {
+                if (logout) {
+                    this.$store.commit('clearUserAndToken')
+                }
+            });
+        }
+    },
+    sockets: {
+        connect: function() {
+            console.log('socket connected');
+        },
+        propagateCookOrder: function(order) {
+            this.$refs.notifications.addNotif("Order " + order.item.name +
+                " has been picked up by another cook",
+                "fa-coffee text-red", "/#/cookOrders");
+            this.$store.commit('deleteOrder', order);
+        }
+    },
     created() {
         // console.log('-----');
         // console.log(this.$store.state.user);
         this.$store.commit('loadTokenAndUserFromSession');
         this.$store.commit('loadProfilesFolder');
-
         this.$store.dispatch('loadItems');
-        this.$store.dispatch('loadOrders');
-    },
-    methods: {
-        notifyCounter: function() {
-            this.$refs.shiftCounter.updateCounter(this.$store.state.user);
-        }
+        this.loadActiveData();
     }
 }).$mount('#app');
 

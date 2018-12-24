@@ -57,13 +57,16 @@
                         this.setButtonStatus(this.$store.state.user.shift_active);
                         this.$root.notifyCounter();
 
-                        /////////////////////////////////////////
-                        // SweetAlert
                         if (this.$store.state.user.shift_active) {
                             message = "Shift has started";
+                            this.$root.loadActiveData();
                         } else {
                             message = "Shift has ended";
+                            this.$root.clearAuthData(false);
                         }
+
+                        /////////////////////////////////////////
+                        // SweetAlert
                         const toast = this.$swal.mixin({
                             toast: true,
                             position: 'top',

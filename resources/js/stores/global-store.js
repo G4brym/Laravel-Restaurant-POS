@@ -72,21 +72,33 @@ export default new Vuex.Store({
         loadItems (state, items) {
             state.items = items;
         },
+        updateOrders (state, order) {
+            for (let index in state.orders) {
+                if (order.id === state.orders[index].id) {
+                    state.orders.splice(index, 1);
+                    state.orders.unshift(order);
+                }
+            }
+        },
+        deleteOrder (state, order) {
+            for (let index in state.orders) {
+                if (order.id === state.orders[index].id) {
+                    Vue.delete(state.orders, index);
+                }
+            }
+        },
     },
     actions: {
-        clearAuthData (context) {
-            context.commit('clearUserAndToken');
+        clearActiveData (context) {
             if (context.state.orders) {
                 context.commit('clearOrders');
             }
         },
         loadOrders (context) {
-            if (context.state.user && ['waiter', 'cook'].includes(context.state.user.type)) {
-                axios.get('api/orders')
-                    .then(response => {
-                        context.commit('loadOrders', response.data.data);
-                    });
-            }
+            axios.get('api/orders')
+                .then(response => {
+                    context.commit('loadOrders', response.data.data);
+                });
         },
         loadItems ({ commit }) {
             axios.get('api/items')

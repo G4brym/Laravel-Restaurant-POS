@@ -1,14 +1,14 @@
 <template>
     <li>
-        <a href="#">
-            <i class="fa fa-users text-aqua" :class="classes"></i> {{ text }}
+        <a :href="href">
+            <i class="fa" :class="classes"></i> {{ text }}
         </a>
     </li>
 </template>
 
 <script>
     export default {
-        props: ["classes", "text"],
+        props: ["classes", "text", "href"],
     }
 </script>
 

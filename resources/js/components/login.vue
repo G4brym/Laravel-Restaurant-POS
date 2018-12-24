@@ -9,13 +9,13 @@
                 <label for="inputEmail">Email</label>
                 <input
                     type="email" class="form-control" v-model.trim="user.email"
-                    name="email" id="inputEmail"
+                    @keyup.13="focusPwd" name="email" id="inputEmail"
                     placeholder="Email address"/>
             </div>
             <div class="form-group">
                 <label for="inputPassword">Password</label>
                 <input
-                    type="password" class="form-control" v-model="user.password"
+                    type="password" class="form-control" v-model="user.password" ref="passwordBox"
                     @keyup.13="login" name="password" id="inputPassword"
                     placeholder="Password"/>
             </div>
@@ -38,6 +38,9 @@
             }
         },
         methods: {
+            focusPwd: function() {
+                this.$refs.passwordBox.focus();
+            },
             login() {
                 /////////////////////////////////////////
                 // SweetAlert
@@ -61,7 +64,7 @@
                     })
                     .then(response => {
                         this.$store.commit('setUser', response.data.data);
-                        this.$store.dispatch('loadOrders');
+                        this.$root.loadActiveData();
 
                         this.$router.push("itemsMenu");
 

@@ -2,7 +2,7 @@
     <li class="dropdown notifications-menu" ref="notifMenu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" @click="resetCounter">
             <i class="fa fa-bell-o"></i>
-            <span class="label label-danger" v-show="notifNum">{{ notifNum }}</span>
+            <span class="label label-danger" v-show="notifNum">{{ notifNum > 10 ? "10+" : notifNum }}</span>
         </a>
         <ul class="dropdown-menu">
             <li class="header">You have {{ notifNum === 0 ? "no" : notifNum}} new notifications</li>
@@ -50,12 +50,17 @@
             }
         },
         methods: {
-            addNotif: function() {
+            addNotif: function(text, classes, href) {
                 if (this.$refs.notifItems.children.length === 15) {
                     this.$refs.notifItems.lastChild.remove();
                 }
+
                 let ComponentClass = Vue.extend(notifItem);
-                let instance = new ComponentClass();
+                let instance = new ComponentClass({
+                    propsData: { text: text,
+                                 classes: classes,
+                                 href: href }
+                });
                 instance.$mount();
                 this.$refs.notifItems.insertBefore(instance.$el, this.$refs.notifItems.firstChild);
                 if (!this.$refs.notifMenu.classList.contains("open")) {
@@ -65,10 +70,12 @@
             resetCounter: function() {
                 this.notifNum = 0;
             }
-        },
+        }
     }
 </script>
 
 <style scoped>
-
+    .dropdown-menu {
+        width: 500px !important;
+    }
 </style>

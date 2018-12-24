@@ -25,23 +25,23 @@
 
                 this.$http.post('api/logout')
                     .then(() => {
-                        this.$store.dispatch('clearAuthData').then(() => {
-                            this.$router.push("itemsMenu");
+                        this.$root.clearAuthData(true);
 
-                            /////////////////////////////////////////
-                            // SweetAlert
-                            const toast = this.$swal.mixin({
-                                toast: true,
-                                position: 'top',
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                            toast({
-                                type: 'success',
-                                title: 'Signed out successfully'
-                            });
-                            /////////////////////////////////////////);
+                        this.$router.push("itemsMenu");
+
+                        /////////////////////////////////////////
+                        // SweetAlert
+                        const toast = this.$swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 3000
                         });
+                        toast({
+                            type: 'success',
+                            title: 'Signed out successfully'
+                        });
+                        /////////////////////////////////////////);
                     })
                     .catch(error => {
                         this.$store.dispatch('clearAuthData').then(() => {
