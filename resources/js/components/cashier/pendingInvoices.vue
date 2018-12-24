@@ -26,7 +26,7 @@
                         <td>{{ invoice.waiter }}</td>
                         <td>{{ invoice.total_price }}</td>
                         <td>
-                            <a class="btn btn-sm btn-warning" v-on:click.prevent="deliverOrder(order, index)">Deliver</a>
+                            <a class="btn btn-sm btn-success" v-on:click.prevent="markPaid(invoice, index)">Mark as Paid</a>
                         </td>
                     </tr>
                 </template>
@@ -47,8 +47,8 @@
             }
         },
         methods: {
-            deliverOrder: function (order, index) {
-                this.$emit('deliver-click', order, index);
+            markPaid: function (invoice, index) {
+                this.$emit('mark-paid', invoice, index);
             },
             togglePendingBox: function () {
                 if(this.showPending){

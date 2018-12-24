@@ -29,14 +29,13 @@
                         <td>{{order.sub_total_price}}</td>
                     </tr>
                 </template>
-                <tr>
-                    <td>Total Price:</td>
-                    <td>{{ invoice.totalPrice }}€</td>
-                    <td></td>
-                    <td></td>
+                <tr class="table-warning">
                     <td>
-                        <a class="btn btn-sm btn-success" v-if="this.showAllOrders" v-on:click.prevent="moreDetails()">Print to PDF</a>
+                        <a class="btn btn-sm btn-default" v-on:click.prevent="printPDF()">Print to PDF</a>
                     </td>
+                    <td></td>
+                    <td>Total Price:</td>
+                    <td>{{ invoice.total_price }}€</td>
                 </tr>
                 </tbody>
             </table>
@@ -51,20 +50,17 @@
         props: ['invoice', 'index'],
         data: function(){
             return {
-                expanded: true,
             }
         },
         mounted() {
-
+            $("#box" + this.invoice.id).boxWidget('collapse');
+        },
+        updated() {
+            $("#box" + this.invoice.id).boxWidget('collapse');
         },
         methods: {
             toggleInvoice: function () {
-                if(this.expanded){
-                    $("#box" + this.invoice.id).boxWidget('collapse');
-                } else {
-                    $("#box" + this.invoice.id).boxWidget('expand');
-                }
-
+                $("#box" + this.invoice.id).boxWidget('collapse');
             }
         },
     }
