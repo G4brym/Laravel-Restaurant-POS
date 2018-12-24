@@ -136,20 +136,36 @@
 
                 if (userInfoChanged) {
                     if (this.userImg !== this.currentImg) {
-                        this.$http.all([setUserData(), setUserPhoto()]).then(
-                            this.$http.spread((userData, photoUrl) => {
-                                Object.assign(this.changedUser, userData.data.data);
-                                this.changedUser.photo_url = photoUrl.data.data;
+                        setUserData().then((response) => {
+                            Object.assign(this.changedUser, response.data.data);
+                            setUserPhoto().then((response) => {
+                                this.changedUser.photo_url = response.data.data;
                                 submitToStore("User's Account and Photo Updated");
                                 this.updatePhotoSource();
                             })
-                        )
-                        .catch(() => {
-                            this.$swal({
-                                type: 'error',
-                                title: 'Oops',
-                                text: "Something went wrong..."
+                            .catch(() => {
+                                this.$swal({
+                                    type: 'error',
+                                    title: 'Oops',
+                                    text: "Something went wrong..."
+                                });
                             });
+                        })
+                        .catch((response) => {
+                            if (response.response.data && response.response.data.errors) {
+                                this.$swal({
+                                    type: 'error',
+                                    title: 'Username taken',
+                                    text: "Please, choose another one"
+                                });
+
+                            } else {
+                                this.$swal({
+                                    type: 'error',
+                                    title: 'Oops',
+                                    text: "Something went wrong..."
+                                });
+                            }
                         });
 
                     } else {
@@ -157,12 +173,21 @@
                             Object.assign(this.changedUser, response.data.data);
                             submitToStore("User's Account Updated");
                         })
-                        .catch(() => {
-                            this.$swal({
-                                type: 'error',
-                                title: 'Oops',
-                                text: "Something went wrong..."
-                            });
+                        .catch((response) => {
+                            if (response.response.data && response.response.data.errors) {
+                                this.$swal({
+                                    type: 'error',
+                                    title: 'Username taken',
+                                    text: "Please, choose another one"
+                                });
+
+                            } else {
+                                this.$swal({
+                                    type: 'error',
+                                    title: 'Oops',
+                                    text: "Something went wrong..."
+                                });
+                            }
                         });
                     }
                 } else if (this.userImg !== this.currentImg) {
