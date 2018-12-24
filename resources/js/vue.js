@@ -50,16 +50,16 @@ Vue.component('notifications', require('./components/notifications'));
 
 const routes = [
     { path: '/', redirect: '/itemsMenu', name: 'root'},
-    { path: '/waiter', component: waiter, name: 'waiter'},
-    { path: '/cashier', component: cashier, name: 'cashier'},
-    { path: '/tables', component: table, name: 'table'},
-    { path: '/items', component: item, name: 'item'},
-    { path: '/users', component: user, name: 'users'},
-    { path: '/account', component: account, name: 'account'},
-    { path: '/login', component: login, name: 'login'},
-    { path: '/logout', component: logout, name: 'logout'},
+    { path: '/waiter', component: waiter, name: 'waiter', meta: { requiresAuth: true, isWaiter: true }},
+    { path: '/cashier', component: cashier, name: 'cashier', meta: { requiresAuth: true, isCashier: true }},
+    { path: '/tables', component: table, name: 'table', meta: { requiresAuth: true, isManager: true }},
+    { path: '/items', component: item, name: 'item', meta: { requiresAuth: true, isManager: true }},
+    { path: '/users', component: user, name: 'users', meta: { requiresAuth: true, isManager: true }},
+    { path: '/account', component: account, name: 'account', meta: { requiresAuth: true }},
+    { path: '/login', component: login, name: 'login', meta: { guest: true }},
+    { path: '/logout', component: logout, name: 'logout', meta: { requiresAuth: true }},
     { path: '/itemsMenu', component: itemsMenu, name: 'itemsMenu'},
-    { path: '/cookOrders', component: cookOrders, name: 'cookOrders'},
+    { path: '/cookOrders', component: cookOrders, name: 'cookOrders', meta: { requiresAuth: true, isCook: true }},
 ];
 
 const router = new VueRouter({
@@ -67,19 +67,32 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if ((to.name == 'account') || (to.name == 'logout')) {
-        if (!sessionStorage.getItem('user')) {
+    if(to.matched.some(record => record.meta.requiresAuth)) {
+        let user = JSON.parse(sessionStorage.getItem('user'));
+        if (!user) {
             next("/login");
-            return;
+
+        } else {
+            if ((to.matched.some(record => record.meta.isCook) && user.type !== 'cook') ||
+               (to.matched.some(record => record.meta.isCashier) && user.type !== 'cashier') ||
+               (to.matched.some(record => record.meta.isManager) && user.type !== 'manager') ||
+               (to.matched.some(record => record.meta.isWaiter) && user.type !== 'waiter')) {
+
+                next('/');
+
+            } else {
+                next();
+            }
         }
-    }
-    if (to.name == 'login') {
+    } else if(to.matched.some(record => record.meta.guest)) {
         if (sessionStorage.getItem('user')) {
             next("/");
-            return;
         }
+
+    } else {
+        next();
     }
-    next();
+
 });
 
 // Change the base URL to your REST API URL
