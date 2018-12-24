@@ -100,9 +100,9 @@ class UserControllerAPI extends Controller
 
     public function destroy($id)
     {
-        $item = User::findOrFail($id);
+        $user = User::findOrFail($id);
         try {
-            $item->delete();
+            $user->delete();
         }
         catch (\Exception $e) {
             $date=date_create();
