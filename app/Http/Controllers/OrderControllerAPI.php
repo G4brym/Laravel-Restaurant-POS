@@ -41,7 +41,7 @@ class OrderControllerAPI extends Controller
                               ->where('responsible_cook_id', $uid)
                               ->orWhereNull('responsible_cook_id')
                               ->orderBy('state', 'desc')
-                              ->orderBy('updated_at', 'desc');
+                              ->orderBy('updated_at');
 
         } else {
             return response()->json(null, 401);

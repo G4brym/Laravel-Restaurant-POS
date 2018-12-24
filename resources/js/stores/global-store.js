@@ -89,7 +89,7 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        clearActiveData (context) {
+        clearUserData (context) {
             if (context.state.orders) {
                 context.commit('clearOrders');
             }

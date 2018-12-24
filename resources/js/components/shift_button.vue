@@ -62,7 +62,7 @@
                             this.$root.loadActiveData();
                         } else {
                             message = "Shift has ended";
-                            this.$root.clearAuthData(false);
+                            this.$root.clearUserData(false);
                         }
 
                         /////////////////////////////////////////

@@ -96,27 +96,24 @@ const app = new Vue({
             this.$refs.shiftCounter.updateCounter(this.$store.state.user);
         },
         loadActiveData: function() {
-            if (this.$store.state.user && this.$store.state.user.shift_active) {
-                if (this.$store.state.user.type === 'cook') {
-                    this.$store.dispatch('loadOrders').then(() => {
-                        if (this.$store.state.user && this.$store.state.user.type === 'cook') {
-                            console.log('"cook" connect');
-                            this.$socket.emit('joinCook');
-                        }
-                    });
-                } else if (this.$store.state.user.type === 'waiter') {
-                    this.$store.dispatch('loadOrders');
-                }
+            if (this.$store.state.user.type === 'cook') {
+                this.$store.dispatch('loadOrders').then(() => {
+                    console.log('"cook" connect');
+                    this.$socket.emit('joinCook');
+                });
+
+            } else if (this.$store.state.user.type === 'waiter') {
+                this.$store.dispatch('loadOrders');
             }
         },
-        clearAuthData: function(logout) {
-            if (this.$store.state.user && this.$store.state.user.type === 'cook'
-                && !this.$store.state.user.shift_active) {
-
-                this.$socket.emit('leaveCook');
+        clearUserData: function(logout) {
+            if (this.$store.state.user.type === 'cook') {
+                if (!logout || (logout && this.$store.state.user.shift_active)) {
+                    this.$socket.emit('leaveCook');
+                }
             }
 
-            this.$store.dispatch('clearActiveData').then(() => {
+            this.$store.dispatch('clearUserData').then(() => {
                 if (logout) {
                     this.$store.commit('clearUserAndToken')
                 }
@@ -140,7 +137,9 @@ const app = new Vue({
         this.$store.commit('loadTokenAndUserFromSession');
         this.$store.commit('loadProfilesFolder');
         this.$store.dispatch('loadItems');
-        this.loadActiveData();
+        if (this.$store.state.user && this.$store.state.user.shift_active) {
+            this.loadActiveData();
+        }
     }
 }).$mount('#app');
 

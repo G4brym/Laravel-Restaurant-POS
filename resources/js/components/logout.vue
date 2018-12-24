@@ -25,8 +25,7 @@
 
                 this.$http.post('api/logout')
                     .then(() => {
-                        this.$root.clearAuthData(true);
-
+                        this.$root.clearUserData(true);
                         this.$router.push("itemsMenu");
 
                         /////////////////////////////////////////
@@ -44,20 +43,19 @@
                         /////////////////////////////////////////);
                     })
                     .catch(error => {
-                        this.$store.dispatch('clearAuthData').then(() => {
-                            this.$router.push("itemsMenu");
-                            console.log(error);
+                        this.$root.clearUserData(true);
+                        this.$router.push("itemsMenu");
+                        console.log(error);
 
-                            /////////////////////////////////////////
-                            // SweetAlert
-                            this.$swal({
-                                type: 'error',
-                                title: 'Logout failed',
-                                text: 'However, local credentials have been discarded'
-                            });
-                            /////////////////////////////////////////
+                        /////////////////////////////////////////
+                        // SweetAlert
+                        this.$swal({
+                            type: 'error',
+                            title: 'Logout failed',
+                            text: 'However, local credentials have been discarded'
                         });
-                    })            
+                        /////////////////////////////////////////
+                    });
                 }
         }
     }

@@ -164,7 +164,7 @@
         </template>
 
         <template v-if="this.$store.state.user.type === 'cook'">
-            <li><router-link to="/cookOrders"><i class="fa fa-briefcase"></i> <span>Cook</span></router-link></li>
+            <li><router-link to="/cookOrders"><i class="fa fa-coffee"></i> <span>Orders</span></router-link></li>
         </template>
 
         <template v-if="this.$store.state.user.type === 'manager'">

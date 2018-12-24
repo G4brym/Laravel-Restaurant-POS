@@ -64,7 +64,10 @@
                     })
                     .then(response => {
                         this.$store.commit('setUser', response.data.data);
-                        this.$root.loadActiveData();
+
+                        if (this.$store.state.user.shift_active) {
+                            this.$root.loadActiveData();
+                        }
 
                         this.$router.push("itemsMenu");
 
