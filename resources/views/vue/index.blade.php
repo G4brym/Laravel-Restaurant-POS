@@ -159,6 +159,10 @@
             <li><router-link to="/waiter"><i class="fa fa-briefcase"></i> <span>Waiter</span></router-link></li>
         </template>
 
+        <template v-if="this.$store.state.user.type === 'cashier'">
+            <li><router-link to="/cashier"><i class="fa fa-briefcase"></i> <span>Cashier</span></router-link></li>
+        </template>
+
         <template v-if="this.$store.state.user.type === 'cook'">
             <li><router-link to="/cookOrders"><i class="fa fa-briefcase"></i> <span>Cook</span></router-link></li>
         </template>

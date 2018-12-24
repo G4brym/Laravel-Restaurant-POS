@@ -32,6 +32,7 @@ const table = Vue.component('tableMain', require('./components/manager/tables/ta
 const item = Vue.component('item', require('./components/manager/items/item.vue'));
 const user = Vue.component('user', require('./components/manager/users/user.vue'));
 const waiter = Vue.component('waiter', require('./components/waiter'));
+const cashier = Vue.component('cashier', require('./components/cashier'));
 const account = Vue.component('account', require('./components/account/account.vue'));
 const login = Vue.component('login', require('./components/login.vue'));
 const logout = Vue.component('logout', require('./components/logout.vue'));
@@ -44,6 +45,7 @@ Vue.component('notifications', require('./components/notifications'));
 const routes = [
     { path: '/', redirect: '/itemsMenu', name: 'root'},
     { path: '/waiter', component: waiter, name: 'waiter'},
+    { path: '/cashier', component: cashier, name: 'cashier'},
     { path: '/tables', component: table, name: 'table'},
     { path: '/items', component: item, name: 'item'},
     { path: '/users', component: user, name: 'users'},

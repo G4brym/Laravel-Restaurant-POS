@@ -2,14 +2,16 @@
     <div>
         <prepared-orders :preparedOrders="preparedOrders" @deliver-click="deliverOrder" ref="preparedOrdersRef"></prepared-orders>
 
-        <meals :waiterMeals="waiterMeals" @terminate-meal="terminateMeal" @delete-click="deleteOrder" ref="mealsRef"></meals>
+        <template v-for="(meal, index) in waiterMeals">
+            <meal-box :meal="meal" :index="index" @terminate-meal="terminateMeal" @delete-click="deleteOrder" ref="mealsRef"></meal-box>
+        </template>
     </div>
 </template>
 
 <script type="text/javascript">
     // Component code
     import PreparedOrders from './waiter/preparedOrders.vue';
-    import Meals from './waiter/meals.vue';
+    import MealBox from './waiter/mealBox.vue';
 
     export default {
         data: function(){
@@ -30,7 +32,7 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.value) {
-                        // TODO
+                        // TODO Gabriel
                         this.$http.delete('api/users/' + user.id)
                             .then(response => {
                                 this.$swal({
@@ -46,8 +48,8 @@
                 this.$http.post('api/meals/' + meal.id + '/terminate')
                     .then(response => {
                         if (response.status == 200) {
-                            this.preparedOrders.splice(index, 1);
-                            //this.getPreparedOrders();
+                            this.getWaiterMeals();
+
                             this.$swal({
                                 type: 'success',
                                 title: 'Terminated',
@@ -67,7 +69,7 @@
                     .then(response => {
                         if (response.status == 200) {
                             this.preparedOrders.splice(index, 1);
-                            //this.getPreparedOrders();
+
                             this.$swal({
                                 type: 'success',
                                 title: 'Delivered',
@@ -101,7 +103,7 @@
         },
         components: {
             'prepared-orders': PreparedOrders,
-            'meals': Meals
+            'meal-box': MealBox
         },
     }
 </script>

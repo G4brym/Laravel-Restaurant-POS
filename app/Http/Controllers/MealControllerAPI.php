@@ -6,7 +6,7 @@ use App\Http\Resources\Meal as MealResource;
 use App\Http\Resources\Order as OrderResource;
 
 use App\Invoice;
-use App\Invoice_item;
+use App\InvoiceItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Order;
@@ -29,7 +29,7 @@ class MealControllerAPI extends Controller
 
             return MealResource::collection($baseQuery->paginate(50));
         } else {
-            // TODO
+            return MealResource::collection(Meal::orderBy('updated_at', 'desc')->paginate(50));
         }
     }
 
@@ -78,7 +78,7 @@ class MealControllerAPI extends Controller
                 $order->state = 'not delivered';
                 $order->save();
             } else {
-                $inv_item = Invoice_item::where('invoice_id', $invoice->id)
+                $inv_item = InvoiceItem::where('invoice_id', $invoice->id)
                                         ->where('item_id', $order->item_id)->first();
 
                 if($inv_item == null){

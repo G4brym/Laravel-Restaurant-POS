@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Invoice_item extends Model
+class InvoiceItem extends Model
 {
     protected $table = 'invoice_items';
     public $timestamps = false;
