@@ -84,15 +84,16 @@ router.beforeEach((to, from, next) => {
                 next();
             }
         }
+        return;
+
     } else if(to.matched.some(record => record.meta.guest)) {
         if (sessionStorage.getItem('user')) {
             next("/");
+            return;
         }
-
-    } else {
-        next();
     }
 
+    next();
 });
 
 // Change the base URL to your REST API URL

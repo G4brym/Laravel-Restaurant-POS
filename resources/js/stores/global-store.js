@@ -73,10 +73,17 @@ export default new Vuex.Store({
             state.items = items;
         },
         updateOrders (state, order) {
+            let found = false;
+            let indexFirstConfirm = null;
             for (let index in state.orders) {
+                if (!found && state.orders[index].state === 'confirmed') {
+                    indexFirstConfirm = index;
+                    found = true;
+                }
+
                 if (order.id === state.orders[index].id) {
                     state.orders.splice(index, 1);
-                    state.orders.unshift(order);
+                    state.orders.splice(indexFirstConfirm, 0, order);
                 }
             }
         },
