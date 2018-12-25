@@ -8,6 +8,7 @@
     </div>
 </template>
 
+
 <script type="text/javascript">
     // Component code
     import PreparedOrders from './waiter/preparedOrders.vue';
