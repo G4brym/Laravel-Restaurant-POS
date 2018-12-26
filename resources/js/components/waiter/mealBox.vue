@@ -25,7 +25,7 @@
                     <tr :class="{'table-warning': order.state === 'pending', 'table-green': order.state === 'confirmed'}">
                         <td><i class="fa" :class="{'fa-glass': order.item.type == 'drink', 'fa-cutlery': order.item.type == 'dish'}" aria-hidden="true"></i> {{ order.item.name }}</td>
                         <td>{{ order.item.price }}€</td>
-                        <td>{{ order.responsible_cook.name }}</td>
+                        <td>{{ order.responsible_cook ? order.responsible_cook.name : 'No cook yet' }}</td>
                         <td><span class="label label-info"
                                   :class="{'label-warning': order.state === 'pending', 'label-success': order.state === 'confirmed'}">{{ order.state }}</span>
                         </td>

@@ -1,5 +1,7 @@
 <template>
     <div>
+        <router-link to="/waiter/meal" class="btn btn-lg btn-block btn-info">Create new meal</router-link>
+        <br/>
         <prepared-orders :preparedOrders="preparedOrders" @deliver-click="deliverOrder" ref="preparedOrdersRef"></prepared-orders>
 
         <template v-for="(meal, index) in waiterMeals">

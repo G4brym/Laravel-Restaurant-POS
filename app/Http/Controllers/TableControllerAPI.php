@@ -3,8 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
 use App\Http\Resources\Table as TableResource;
+use App\Http\Resources\Meal as MealResource;
+
 use App\Table;
+use App\Meal;
 
 class TableControllerAPI extends Controller
 {
@@ -57,4 +63,24 @@ class TableControllerAPI extends Controller
         return new TableResource($table);
     }
 
+    public function checkTable($table_number) {
+        if (Auth::user()->type !== 'waiter') {
+            return response()->json(null, 401);
+        }
+
+        if (!Table::where('table_number', $table_number)->exists()) {
+            return response()->json(null, 404);
+        }
+
+        if (Meal::where('table_number', $table_number)->where('state', 'active')->exists()) {
+            return response()->json(['data' => 'taken']);
+        }
+
+        $meal = new Meal;
+        $meal->fill(['state' => 'active', 'table_number' => $table_number,
+                     'start' => Carbon::now(), 'responsible_waiter_id' => Auth::id()]);
+        $meal->save();
+
+        return new MealResource($meal);
+    }
 }

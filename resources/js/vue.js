@@ -44,13 +44,16 @@ const login = Vue.component('login', require('./components/login.vue'));
 const logout = Vue.component('logout', require('./components/logout.vue'));
 const itemsMenu = Vue.component('itemsMenu', require('./components/itemsMenu.vue'));
 const cookOrders = Vue.component('cookOrders', require('./components/cook/cookOrders.vue'));
+const waiterNewMeal = Vue.component('waiterNewMeal', require('./components/waiter/waiterNewMeal.vue'));
 Vue.component('shift-counter', require('./components/shift_counter.vue'));
 Vue.component('shift-button', require('./components/shift_button.vue'));
 Vue.component('notifications', require('./components/notifications'));
 
 const routes = [
     { path: '/', redirect: '/itemsMenu', name: 'root'},
-    { path: '/waiter', component: waiter, name: 'waiter', meta: { requiresAuth: true, isWaiter: true }},
+    { path: '/waiter', component: waiter, name: '/waiter', meta: { requiresAuth: true, isWaiter: true }},
+    { path: '/waiter/meal', component: waiterNewMeal, name: 'waiterNewMeal',
+        meta: { requiresAuth: true, isWaiter: true }},
     { path: '/cashier', component: cashier, name: 'cashier', meta: { requiresAuth: true, isCashier: true }},
     { path: '/tables', component: table, name: 'table', meta: { requiresAuth: true, isManager: true }},
     { path: '/items', component: item, name: 'item', meta: { requiresAuth: true, isManager: true }},

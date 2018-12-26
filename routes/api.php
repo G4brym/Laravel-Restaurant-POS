@@ -37,6 +37,7 @@ Route::delete('items/{id}', 'ItemControllerAPI@destroy');
 
 Route::get('tables', 'TableControllerAPI@index');
 Route::get('tables/{table_number}', 'TableControllerAPI@show');
+Route::middleware('auth:api')->get('tables/{table_number}/check', 'TableControllerAPI@checkTable');
 Route::post('tables', 'TableControllerAPI@store');
 Route::put('tables/{table_number}', 'TableControllerAPI@update');
 Route::delete('tables/{table_number}', 'TableControllerAPI@destroy');
@@ -44,6 +45,7 @@ Route::delete('tables/{table_number}', 'TableControllerAPI@destroy');
 Route::middleware('auth:api')->get('orders', 'OrderControllerAPI@index');
 Route::middleware('auth:api')->get('orders/{id}', 'OrderControllerAPI@show');
 Route::middleware('auth:api')->post('orders/{id}/deliver', 'OrderControllerAPI@deliver');
+Route::middleware('auth:api')->put('orders/{id}/confirm', 'OrderControllerAPI@confirm');
 Route::middleware('auth:api')->post('orders', 'OrderControllerAPI@store');
 Route::middleware('auth:api')->put('orders/{id}', 'OrderControllerAPI@update');
 Route::middleware('auth:api')->delete('orders/{id}', 'OrderControllerAPI@destroy');

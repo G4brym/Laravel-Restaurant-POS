@@ -5,10 +5,16 @@
             <span class="label label-danger" v-show="notifNum">{{ notifNum > 10 ? "10+" : notifNum }}</span>
         </a>
         <ul class="dropdown-menu">
-            <li class="header">You have {{ notifNum === 0 ? "no" : notifNum}} new notifications</li>
+            <li class="header">You have {{ notifNum === 0 ? "no" : notifNum }} new notifications</li>
             <li>
                 <!-- inner menu: contains the actual data -->
                 <ul class="menu" ref="notifItems">
+                    <template v-for="notif in notifications">
+                        <notification-item :classes="notif.classes"
+                                           :href="notif.href"
+                                           :text="notif.text">
+                        </notification-item>
+                    </template>
                     <!--<li>
                         <a href="#">
                             <i class="fa fa-users text-aqua"></i> 5 new members joined today
@@ -44,25 +50,22 @@
 <script>
     import notifItem from "./notificationItem.vue"
     export default {
+        components: {
+            'notification-item': notifItem
+        },
         data: function() {
             return {
+                notifications: [],
                 notifNum: 0,
             }
         },
         methods: {
             addNotif: function(text, classes, href) {
-                if (this.$refs.notifItems.children.length === 15) {
-                    this.$refs.notifItems.lastChild.remove();
+                if (notifications.length === 15) {
+                    notifications.pop();
                 }
+                notifications.unshift({'text': text, 'classes': classes, 'href': href});
 
-                let ComponentClass = Vue.extend(notifItem);
-                let instance = new ComponentClass({
-                    propsData: { text: text,
-                                 classes: classes,
-                                 href: href }
-                });
-                instance.$mount();
-                this.$refs.notifItems.insertBefore(instance.$el, this.$refs.notifItems.firstChild);
                 if (!this.$refs.notifMenu.classList.contains("open")) {
                     this.notifNum++;
                 }

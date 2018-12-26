@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Order as OrderResource;
 
 use App\Meal;
+use App\Item;
 use Illuminate\Http\Request;
 use App\Order;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class OrderControllerAPI extends Controller
 {
@@ -94,22 +96,33 @@ class OrderControllerAPI extends Controller
         return response()->json(['status'=>'success'], 200);
     }
 
-// TODO: Diogo's Task
-//
-//    public function store(Request $request)
-//    {
-//        $request->validate([
-//            'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
-//            'email' => 'required|email|unique:users,email',
-//            'age' => 'integer|between:18,75',
-//            'password' => 'min:3'
-//        ]);
-//        $user = new User();
-//        $user->fill($request->all());
-//        $user->password = Hash::make($user->password);
-//        $user->save();
-//        return response()->json(new UserResource($user), 201);
-//    }
+    public function store(Request $request)
+    {
+        if (Auth::user()->type !== 'waiter') {
+            return response()->json(null, 401);
+        }
+
+        // firstOrFail
+        $data = $request->validate([
+          'itemName' => 'required|string',
+          'mealId' => 'required|numeric',
+        ]);
+
+        if (!Meal::where('id', $data['mealId'])->exists()) {
+            return response()->json(['error' => 'no meal'], 404);
+        }
+
+        $item = Item::where('name', $data['itemName'])->firstOrFail();
+
+        $order = new Order;
+        $order->state = 'pending';
+        $order->item_id = $item->id;
+        $order->meal_id = $data['mealId'];
+        $order->start = Carbon::now();
+        $order->save();
+
+        return response()->json(['data' => $order], 201);
+  }
 
     public function destroy($id)
     {
@@ -120,7 +133,7 @@ class OrderControllerAPI extends Controller
                 ->where('responsible_waiter_id', $uid);
         })->where('state', 'pending')->findOrFail($id);
 
-        $dtime = Carbon\Carbon::now()->subSeconds(5);
+        $dtime = Carbon::now()->subSeconds(5);
 
         if($dtime < $order->created_at){
             $order->delete();
@@ -128,5 +141,23 @@ class OrderControllerAPI extends Controller
         }
 
         return response()->json(null, 406);
+    }
+
+    public function confirm($id)
+    {
+        if (!Auth::user()->type === 'waiter') {
+            return response()->json(null, 401);
+        }
+
+        $order = Order::findOrFail($id);
+
+        if (Auth::id() != $order->meal->responsible_waiter_id) {
+            return response()->json(null, 401);
+        }
+
+        $order->state = 'confirmed';
+        $order->save();
+
+        return response()->json(null, 200);
     }
 }
