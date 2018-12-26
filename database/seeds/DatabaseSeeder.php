@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement("SET foreign_key_checks=0");
+        //DB::statement("SET foreign_key_checks=0");
 
         DB::table('restaurant_tables')->delete();
         DB::table('users')->delete();
@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         DB::statement('ALTER TABLE invoices AUTO_INCREMENT = 0');
         DB::statement('ALTER TABLE invoice_items AUTO_INCREMENT = 0');
         
-        DB::statement("SET foreign_key_checks=1");
+        //DB::statement("SET foreign_key_checks=1");
 
         $this->call(RestaurantTablesSeeder::class);
         $this->call(UsersSeeder::class);
