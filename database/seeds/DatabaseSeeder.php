@@ -21,12 +21,12 @@ class DatabaseSeeder extends Seeder
         DB::table('invoices')->delete();
         DB::table('invoice_items')->delete();
 
-        DB::statement('ALTER TABLE users AUTO_INCREMENT = 0');
-        DB::statement('ALTER TABLE items AUTO_INCREMENT = 0');
-        DB::statement('ALTER TABLE meals AUTO_INCREMENT = 0');
-        DB::statement('ALTER TABLE orders AUTO_INCREMENT = 0');
-        DB::statement('ALTER TABLE invoices AUTO_INCREMENT = 0');
-        DB::statement('ALTER TABLE invoice_items AUTO_INCREMENT = 0');
+//        DB::statement('ALTER TABLE users AUTO_INCREMENT = 0');
+//        DB::statement('ALTER TABLE items AUTO_INCREMENT = 0');
+//        DB::statement('ALTER TABLE meals AUTO_INCREMENT = 0');
+//        DB::statement('ALTER TABLE orders AUTO_INCREMENT = 0');
+//        DB::statement('ALTER TABLE invoices AUTO_INCREMENT = 0');
+//        DB::statement('ALTER TABLE invoice_items AUTO_INCREMENT = 0');
         
         //DB::statement("SET foreign_key_checks=1");
 

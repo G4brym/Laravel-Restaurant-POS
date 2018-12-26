@@ -17,10 +17,17 @@ import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
 import VueSocketio from 'vue-socket.io';
-Vue.use(new VueSocketio({
-    debug: true,
-    connection: 'http://127.0.0.1:8080'
-}));
+if(window.location.hostname == 'dad.technic.pt'){
+    Vue.use(new VueSocketio({
+        debug: false,
+        connection: 'http://dad.technic.pt:8080'
+    }));
+} else {
+    Vue.use(new VueSocketio({
+        debug: true,
+        connection: 'http://127.0.0.1:8080'
+    }));
+}
 
 import axios from 'axios'
 
