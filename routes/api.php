@@ -59,6 +59,7 @@ Route::middleware('auth:api')->post('meals/{id}/terminate', 'MealControllerAPI@t
 //Route::middleware('auth:api')->delete('meals/{id}', 'MealControllerAPI@destroy');
 
 Route::middleware('auth:api')->get('invoices', 'InvoiceControllerAPI@index');
+Route::middleware('auth:api')->post('invoices/{id}/markpaid', 'InvoiceControllerAPI@markPaid');
 
 Route::post('login', 'LoginControllerAPI@login')->name('login');
  

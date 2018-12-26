@@ -10,6 +10,7 @@
     </div>
 </template>
 
+
 <script type="text/javascript">
     // Component code
     import PreparedOrders from './waiter/preparedOrders.vue';
@@ -51,6 +52,7 @@
                     .then(response => {
                         if (response.status == 200) {
                             this.getWaiterMeals();
+                            this.$socket.emit('propagateTerminateOrder');
 
                             this.$swal({
                                 type: 'success',
@@ -71,6 +73,7 @@
                     .then(response => {
                         if (response.status == 200) {
                             this.preparedOrders.splice(index, 1);
+                            this.$socket.emit('propagateWaiterDeliveries');
 
                             this.$swal({
                                 type: 'success',

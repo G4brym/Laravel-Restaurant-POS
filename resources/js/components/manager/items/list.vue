@@ -38,8 +38,7 @@
 		},
         methods: {
             editItem: function(item){
-                this.editingItem = item;
-                
+                this.editingItem = item; 
                 this.$emit('edit-click', item);
             },		
             deleteItem: function(item){
