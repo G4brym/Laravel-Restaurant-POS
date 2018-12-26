@@ -8,12 +8,7 @@
 	            <div class="panel panel-info">
 	                <div class="panel-body">
 	                	<!--TABLE LIST-->
-						<table-list :tables="tables" @edit-click="editTable" @delete-click="deleteTable" @add-click="addingTable" @message="childMessage" ref="tablesListRef"></table-list>
-
-	                    <div class="alert" :class="typeofmsg" v-if="showMessage">             
-				            <button type="button" class="close-btn" v-on:click="showMessage=false">&times;</button>
-				            <strong>{{ message }}</strong>
-				        </div>
+						<table-list :tables="tables" @edit-click="editTable" @delete-click="deleteTable" @add-click="addingTable" ref="tablesListRef"></table-list>
 
 			            <!--TABLE ADD-->	
 			            <table-add @insert-error="insertError" @table-canceled="addTableCancel" @table-inserted="addTable" v-if="adding"></table-add>
@@ -42,9 +37,6 @@
 	export default {
 		data: function(){
 			return { 
-                typeofmsg: "",
-                showMessage: false,
-                message: "",
 		        currentTable: null,
 		        adding: false,
 		        tables: [],
@@ -52,14 +44,16 @@
 		},
 	    methods: {
 	    	insertError: function() {
-	    		this.typeofmsg = "alert-danger";
-                this.message = "Invalid table number";
-                this.showMessage = true;
+	    		this.$swal({
+                    type: 'error',
+                    text: 'Oh no! We suspect that number is taken.'
+                });
 	    	},
 	    	editError: function() {
-	    		this.typeofmsg = "alert-danger";
-                this.message = "Invalid number";
-                this.showMessage = true;
+	    		this.$swal({
+                    type: 'error',
+                    text: 'Oh no! Probably that number was taken.'
+                });
 	    	},
 	        editTable: function(table){
 	            this.currentTable = Object.assign({},table);
@@ -68,25 +62,29 @@
 	        deleteTable: function(table){
 	            this.$http.delete('api/tables/'+table.table_number)
 	                .then(response => {
-	                	this.typeofmsg = "alert-success";
-	                    this.showMessage = true;
-	                    this.message = 'Table Deleted';
-	                    this.getTables();
-	                })
-	                .catch(error => {
-                    	this.typeofmsg = "alert-danger";
-		                this.message = "Unable to delete";
-		                this.showMessage = true;
+                        this.$swal({
+                            type: 'success',
+                            title: 'Success',
+                            text: 'Table deleted successfully!'
+                        });
+                        this.getTables();
+                    })
+                    .catch(error => {
+                        this.$swal({
+                            type: 'error',
+                            text: "Oh no, we hope it doens't happen again!"
+                        });
                     });
 	        },
 	        addingTable: function(){
 	  			this.adding = true;
 	        },
 	        addTable: function(){
-	        	this.typeofmsg = "alert-success";
-	  			this.message = "Table inserted";
-	            this.showMessage = true;
-	  			this.adding = false;
+	        	this.$swal({
+                    type: 'success',
+                    title: 'Success',
+                    text: 'Table inserted successfully!'
+                });
 	  			this.getTables();
 	        },
 	        addTableCancel: function(){
@@ -95,9 +93,11 @@
 	        savedTable: function(){
 	            this.currentTable = null;
 	            this.$refs.tablesListRef.editingTable = null;
-	            this.typeofmsg = "alert-success";
-	            this.message = "Table updated";
-	            this.showMessage = true;
+	            this.$swal({
+                    type: 'success',
+                    title: 'Success',
+                    text: 'Table updated successfully!'
+                });
 	            this.getTables();
 	        },
 	        cancelEdit: function(){
@@ -106,11 +106,14 @@
 	        },
 	        getTables: function(){
 	            this.$http.get('api/tables')
-	                .then(response=>{this.tables = response.data.data; });
-			},
-			childMessage: function(message){
-				this.message = message;
-	            this.showMessage = true;
+                    .then(response => {
+                        this.tables = response.data.data; 
+                    }).catch(error => {
+                        this.$swal({
+                            type: 'error',
+                            text: "Oh no, getting tables from DB is not working!"
+                        });
+                    });
 			}
 	    },
 	    components: {
