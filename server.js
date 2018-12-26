@@ -70,8 +70,37 @@ io.on('connection', function (socket) {
         console.log('client ' + socket.id + ' has left "cook"');
     });
 
+	socket.on('joinWaiter', function() {
+	    socket.join('waiter');
+        console.log('client ' + socket.id + ' has joined "waiter"');
+    });
+
+    socket.on('leaveWaiter', function() {
+        socket.leave('waiter');
+        console.log('client ' + socket.id + ' has left "waiter"');
+    });
+
+	socket.on('joinCashier', function() {
+	    socket.join('cashier');
+        console.log('client ' + socket.id + ' has joined "cashier"');
+    });
+
+    socket.on('leaveCashier', function() {
+        socket.leave('cashier');
+        console.log('client ' + socket.id + ' has left "cashier"');
+    });
+
 	socket.on('propagateCookOrder', function(order) {
 	    socket.broadcast.to('cook').emit('propagateCookOrder', order);
+    });
+
+	socket.on('propagateWaiterDeliveries', function() {
+	    socket.broadcast.to('waiter').emit('propagateWaiterDeliveries');
+    });
+
+	socket.on('propagateTerminateOrder', function() {
+	    socket.broadcast.to('waiter').emit('propagateTerminateOrder');
+	    socket.broadcast.to('cashier').emit('propagateTerminateOrder');
     });
 
 	/*socket.on('msg_from_client', (msg, userInfo) => {

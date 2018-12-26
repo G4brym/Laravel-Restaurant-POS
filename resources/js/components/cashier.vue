@@ -1,6 +1,6 @@
 <template>
     <div>
-        <pending-invoices :pendingInvoices="pendingInvoices" ref="pendingInvoicesRef"></pending-invoices>
+        <pending-invoices :pendingInvoices="pendingInvoices" @mark-paid="markInvoicePaid" ref="pendingInvoicesRef"></pending-invoices>
 
         <div>
             <template v-for="(invoice, index) in cashierInvoices">
@@ -37,6 +37,29 @@
                         this.cashierInvoices = response.data.data;
 
                         this.paginatorData = response.data;
+                    });
+            },
+            markInvoicePaid: function(invoice, index, name, nif){
+                this.$http.post('api/invoices/'+invoice.id+'/markpaid', {'name': name, 'nif': nif})
+                    .then(response=>{
+                        if (response.status == 200) {
+                            this.getPendingInvoices()
+                            this.getCashierInvoices()
+
+                            $('#markAsPaid').modal('hide');
+
+                            this.$swal({
+                                type: 'success',
+                                title: 'Paied',
+                                text: 'Invoice marked as paied',
+                            });
+                        } else {
+                            this.$swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            });
+                        }
                     });
             },
             getPendingInvoices: function(){

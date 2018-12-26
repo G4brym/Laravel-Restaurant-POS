@@ -10,7 +10,8 @@
             </div>
         </div>
         <div class="box-body">
-            <span>Waiter: {{invoice.waiter}}</span>
+            <p>Waiter: {{invoice.waiter}}</p>
+            <p>Costumer: {{invoice.name}} PT{{invoice.nif}}</p>
             <table class="table table-striped">
                 <thead>
                 <tr>

@@ -118,6 +118,9 @@ const app = new Vue({
 
             } else if (this.$store.state.user.type === 'waiter') {
                 this.$store.dispatch('loadOrders');
+                this.$socket.emit('joinWaiter');
+            } else if (this.$store.state.user.type === 'cashier') {
+                this.$socket.emit('joinCashier');
             }
         },
         clearUserData: function(logout) {
