@@ -6,7 +6,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="form-group">
-                <label for="inputEmail">Email</label>
+                <label for="inputEmail">Email or Username</label>
                 <input
                     type="email" class="form-control" v-model.trim="user.email"
                     @keyup.13="focusPwd" name="email" id="inputEmail"
@@ -34,14 +34,27 @@
                 user: {
                     email: "",
                     password: ""
-                },
+                }
             }
         },
         methods: {
             focusPwd: function() {
                 this.$refs.passwordBox.focus();
             },
-            login() {
+            login: function() {
+                if (this.user.email === "" || this.user.password === "") {
+                    /////////////////////////////////////////
+                    // SweetAlert
+                    this.$swal({
+                        type: 'info',
+                        title: "Can't login",
+                        text: 'You must fill in all fields'
+                    });
+
+                    return;
+                    /////////////////////////////////////////
+                }
+
                 /////////////////////////////////////////
                 // SweetAlert
                 const toast = this.$swal.mixin({

@@ -9,6 +9,11 @@
                 <label for="inputEmail">Email</label>
                 <div class="form-control" id="inputEmail" style="background-color:#eee">{{ changedUser.email }}</div>
             </div>
+
+            <div class="form-group">
+                <button class="btn btn-info" @click="$router.push('password')">Change password</button>
+            </div>
+
             <account-validate input-id="inputUsername" v-model="changedUser.username"
                               field-name="username" length="2"
                               :regex="new RegExp('^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ0-9_-]+$')"
@@ -72,7 +77,7 @@
                     /////////////////////////////////////////
                     // SweetAlert
                     this.$swal({
-                        type: 'error',
+                        type: 'warning',
                         title: 'Invalid information',
                         text: "Please, insert valid data"
                     });
@@ -84,7 +89,7 @@
                     /////////////////////////////////////////
                     // SweetAlert
                     this.$swal({
-                        type: 'error',
+                        type: 'warning',
                         title: 'Invalid file',
                         text: "Did you upload a photo?"
                     });
@@ -92,11 +97,40 @@
                     return;
                 }
 
+                /////////////////////////////////////////
+                // SweetAlert
+                const toast = this.$swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false
+                });
+                toast({
+                    title: 'Updating account...',
+                    onBeforeOpen: () => {
+                        this.$swal.showLoading();
+                    }
+                });
+                /////////////////////////////////////////
+
                 let user = this.$store.state.user;
                 let userInfoChanged = false;
 
                 let setUserData = () => {
-                    return this.$http.put('api/users/' + user.id, this.changedUser);
+                    if (this.changedUser.username !== this.$store.state.user.username) {
+                        if (this.changedUser.name !== this.$store.state.user.name) {
+                            return this.$http.put('api/users/' + user.id, this.changedUser);
+
+                        } else {
+                            return this.$http.put('api/users/' + user.id,
+                                { 'username': this.changedUser.username });
+                        }
+
+                    } else {
+                        if (this.changedUser.name !== this.$store.state.user.name) {
+                            return this.$http.put('api/users/' + user.id,
+                                { 'name': this.changedUser.name });
+                        }
+                    }
                 };
 
                 let setUserPhoto = () => {

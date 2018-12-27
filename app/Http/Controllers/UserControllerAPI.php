@@ -89,9 +89,13 @@ class UserControllerAPI extends Controller
         $request->merge(array_map('trim', $request->all()));
 
         $data = $request->validate([
-            'name' => 'required|string|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
-            'username' => 'required|string|min:2|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ0-9_-]+$/|unique:users',
+            'name' => 'string|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
+            'username' => 'string|min:2|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ0-9_-]+$/|unique:users',
         ]);
+
+        if (empty($data)) {
+            return response()->json(null, 400);
+        }
 
         $user = User::findOrFail(Auth::id());
         $user->update($data);
@@ -172,5 +176,21 @@ class UserControllerAPI extends Controller
         $user->shift_active = $shift_active;
         $user->save();
         return response()->json(["data" => $user]);
+    }
+
+    public function changePassword(Request $request, $id) {
+        if ($id != Auth::id()) {
+            return response()->json(null, 401);
+        }
+
+        if ($request->password === null) {
+            return response()->json(null, 400);
+        }
+
+        $user = User::findOrFail($id);
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return new UserResource($user);
     }
 }

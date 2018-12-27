@@ -26,8 +26,12 @@ Route::post('users', 'UserControllerAPI@store');
 Route::middleware('auth:api')->put('users/{id}', 'UserControllerAPI@update');
 Route::delete('users/{id}', 'UserControllerAPI@destroy');
 Route::put('users/blockUnblock/{id}', 'UserControllerAPI@blockUnblock');
+Route::middleware('auth:api')->put('users/{id}/changePassword', 'UserControllerAPI@changePassword');
 Route::middleware('auth:api')->post('users/{id}/uploadPhoto', 'UserControllerAPI@uploadPhoto');
 Route::middleware('auth:api')->put('users/{id}/toggleShift', 'UserControllerAPI@toggleShift');
+
+Route::post('verify/check', 'VerificationControllerAPI@check');
+Route::post('verify', 'VerificationControllerAPI@verify');
 
 Route::get('items', 'ItemControllerAPI@index');
 Route::get('items/{id}', 'ItemControllerAPI@show');

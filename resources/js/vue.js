@@ -45,6 +45,8 @@ const logout = Vue.component('logout', require('./components/logout.vue'));
 const itemsMenu = Vue.component('itemsMenu', require('./components/itemsMenu.vue'));
 const cookOrders = Vue.component('cookOrders', require('./components/cook/cookOrders.vue'));
 const waiterNewMeal = Vue.component('waiterNewMeal', require('./components/waiter/waiterNewMeal.vue'));
+const verify = Vue.component('verify', require('./components/verify.vue'));
+const password = Vue.component('verify', require('./components/account/password.vue'));
 Vue.component('shift-counter', require('./components/shift_counter.vue'));
 Vue.component('shift-button', require('./components/shift_button.vue'));
 Vue.component('notifications', require('./components/notifications'));
@@ -63,6 +65,8 @@ const routes = [
     { path: '/logout', component: logout, name: 'logout', meta: { requiresAuth: true }},
     { path: '/itemsMenu', component: itemsMenu, name: 'itemsMenu'},
     { path: '/cookOrders', component: cookOrders, name: 'cookOrders', meta: { requiresAuth: true, isCook: true }},
+    { path: '/verify', component: verify, name: 'verify', meta: { guest: true }},
+    { path: '/password', component: password, name: 'password', meta: { requiresAuth: true }}
 ];
 
 const router = new VueRouter({
