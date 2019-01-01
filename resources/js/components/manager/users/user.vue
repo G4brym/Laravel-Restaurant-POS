@@ -7,6 +7,12 @@
             <div class="box-body">
                 <div class="panel panel-info">
                     <div class="panel-body">
+                        <select id="filter" @change="getUsers()">
+                          <option value="all">All</option>
+                          <option value="blocked">Blocked</option>
+                          <option value="unblocked">Unblocked</option>
+                          <option value="soft_deleted">Soft Deleted</option>
+                        </select>
                         <!--TABLE LIST-->
                         <user-list :users="users" @edit-click="editUser" @unblock-user="unblockUser" @block-user="blockUser" @delete-click="deleteUser" @add-click="addingUser" ref="usersListRef"></user-list>
 
@@ -151,15 +157,17 @@
                 this.$refs.usersListRef.editingUser = null;
             },
             getUsers: function(){
-                this.$http.get('api/users')
-                    .then(response => {
-                        this.users = response.data.data; 
-                    }).catch(error => {
-                        this.$swal({
-                            type: 'error',
-                            text: "Oh no, getting users from DB is not working!"
-                        });
+                var select = document.getElementById("filter");
+                var option = select.options[select.selectedIndex].text;
+                this.$http.get('api/users', {params: {filter: option}}) 
+                .then(response => {
+                    this.users = response.data.data; 
+                }).catch(error => {
+                    this.$swal({
+                        type: 'error',
+                        text: "Oh no, getting users from DB is not working!"
                     });
+                });
             }
         },
         components: {
