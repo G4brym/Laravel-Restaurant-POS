@@ -16,6 +16,8 @@
                         <!--TABLE LIST-->
                         <user-list :users="users" @edit-click="editUser" @unblock-user="unblockUser" @block-user="blockUser" @delete-click="deleteUser" @add-click="addingUser" ref="usersListRef"></user-list>
 
+                        <paginator :data="paginatorData" @change-page="getUsers"></paginator>
+
                         <!--TABLE ADD-->    
                         <user-add @insert-error="insertError" @user-canceled="addUserCancel" @user-inserted="addUser" v-if="adding"></user-add>
 
@@ -39,6 +41,7 @@
     import UserEdit from './edit.vue';
     import UserList from './list.vue';
     import UserAdd from './add.vue';
+    import Paginator from './../../paginator.vue';
     
     export default {
         data: function(){
@@ -46,6 +49,7 @@
                 currentUser: null,
                 adding: false,
                 users: [],
+                paginatorData: null,
             }
         },
         methods: {
@@ -156,12 +160,16 @@
                 this.currentUser = null;
                 this.$refs.usersListRef.editingUser = null;
             },
-            getUsers: function(){
+            getUsers: function(page){
+                if(page == null){
+                    page = 1
+                }
                 var select = document.getElementById("filter");
                 var option = select.options[select.selectedIndex].text;
-                this.$http.get('api/users', {params: {filter: option}}) 
+                this.$http.get('api/users', {params: {page: page, filter: option}}) 
                 .then(response => {
                     this.users = response.data.data; 
+                    this.paginatorData = response.data;
                 }).catch(error => {
                     this.$swal({
                         type: 'error',
@@ -173,7 +181,8 @@
         components: {
             'user-list': UserList,
             'user-edit': UserEdit,
-            'user-add': UserAdd
+            'user-add': UserAdd,
+            'paginator': Paginator
         },
         mounted() {
             this.getUsers();

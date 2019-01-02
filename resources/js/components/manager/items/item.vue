@@ -10,6 +10,8 @@
                         <!--TABLE LIST-->
                         <item-list :items="items" @edit-click="editItem" @delete-click="deleteItem" @add-click="addingItem" ref="itemsListRef"></item-list>
 
+                        <paginator :data="paginatorData" @change-page="getItems"></paginator>
+
                         <!--TABLE ADD-->    
                         <item-add @insert-error="insertError" @item-canceled="addItemCancel" @item-inserted="addItem" v-if="adding"></item-add>
 
@@ -33,6 +35,7 @@
     import ItemEdit from './edit.vue';
     import ItemList from './list.vue';
     import ItemAdd from './add.vue';
+    import Paginator from './../../paginator.vue';
     
     export default {
         data: function(){
@@ -40,6 +43,7 @@
                 currentItem: null,
                 adding: false,
                 items: [],
+                paginatorData: null,
             }
         },
         methods: {
@@ -104,10 +108,14 @@
                 this.currentItem = null;
                 this.$refs.itemsListRef.editingItem = null;
             },
-            getItems: function(){
-                this.$http.get('api/items')
+            getItems: function(page){
+                if(page == null){
+                    page = 1
+                }
+                this.$http.get('api/items?page='+page)
                     .then(response => {
                         this.items = response.data.data; 
+                        this.paginatorData = response.data;
                     }).catch(error => {
                         this.$swal({
                             type: 'error',
@@ -119,7 +127,8 @@
         components: {
             'item-list': ItemList,
             'item-edit': ItemEdit,
-            'item-add': ItemAdd
+            'item-add': ItemAdd,
+            'paginator': Paginator
         },
         mounted() {
             this.getItems();

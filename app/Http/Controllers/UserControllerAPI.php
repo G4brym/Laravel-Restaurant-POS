@@ -17,16 +17,16 @@ class UserControllerAPI extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::all();
+        $query = User::paginate(10);
         switch ($request->filter) {
             case "Blocked":
-                $query = User::where('blocked', 1)->get();
+                $query = User::where('blocked', 1)->paginate(10);
                 break;
             case "Unblocked":
-                $query = User::where('blocked', 0)->get();
+                $query = User::where('blocked', 0)->paginate(10);
                 break;
             case "Soft Deleted":
-                $query = User::where('deleted_at', '!=' , null)->get();
+                $query = User::where('deleted_at', '!=' , null)->paginate(10);
                 break;
         }
         return UserResource::collection($query);
