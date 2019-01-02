@@ -12,11 +12,63 @@ class InvoiceControllerAPI extends Controller
     public function index(Request $request)
     {
         if ($request->has('pending')) {
-            $baseQuery = Invoice::where('state', 'pending')->orderBy('id', 'desc');
 
+            $baseQuery = Invoice::where('state', 'pending')->orderBy('id', 'desc');
             return InvoiceResource::collection($baseQuery->get());
+
+        } else if ($request->has('filter')) {
+            
+            if ($request->waiter == "false") {
+                if ($request->date != "") {
+                    $query = Invoice::where('state', 'pending')->where('date', $request->date)->paginate(10);
+                    switch ($request->filter) {
+                        case "Paid":
+                            $query = Invoice::where('state', 'paid')->where('date', $request->date)->paginate(10);
+                            break;
+                        case "Not Paid":
+                            $query = Invoice::where('state', 'not paid')->where('date', $request->date)->paginate(10);
+                            break;
+                    }
+                } else {
+                    $query = Invoice::where('state', 'pending')->paginate(10);
+                    switch ($request->filter) {
+                        case "Paid":
+                            $query = Invoice::where('state', 'paid')->paginate(10);
+                            break;
+                        case "Not Paid":
+                            $query = Invoice::where('state', 'not paid')->paginate(10);
+                            break;
+                    }
+                }
+            } else {
+                /*if ($request->date != "") {
+                    $query = Invoice::where('state', 'pending')->where('date', $request->date)->get();
+                    switch ($request->filter) {
+                        case "Paid":
+                            $query = Invoice::where('state', 'paid')->where('date', $request->date)->get();
+                            break;
+                        case "Not Paid":
+                            $query = Invoice::where('state', 'not paid')->where('date', $request->date)->get();
+                            break;
+                    }
+                } else {
+                    $query = Invoice::where('state', 'pending')->get();
+                    switch ($request->filter) {
+                        case "Paid":
+                            $query = Invoice::where('state', 'paid')->get();
+                            break;
+                        case "Not Paid":
+                            $query = Invoice::where('state', 'not paid')->get();
+                            break;
+                    }
+                }*/
+            }
+            return InvoiceResource::collection($query);
+    
         } else {
+
             return InvoiceResource::collection(Invoice::where('state', '<>', 'pending')->orderBy('id', 'desc')->paginate(10));
+
         }
     }
 

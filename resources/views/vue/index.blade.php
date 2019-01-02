@@ -173,6 +173,7 @@
             <li><router-link to="/items"><i class="fa fa-circle"></i> <span>Items</span></router-link></li>
             <li><router-link to="/users"><i class="fa fa-users"></i> <span>Users</span></router-link></li>
             <li><router-link to="/stats"><i class="fa fa-circle"></i> <span>Stats</span></router-link></li>
+            <li><router-link to="/invoices"><i class="fa fa-briefcase"></i> <span>Invoices</span></router-link></li>
         </template>
 
     </template>

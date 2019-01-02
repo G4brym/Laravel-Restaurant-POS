@@ -17,7 +17,7 @@ class UserControllerAPI extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::paginate(10);
+        $query = User::where('deleted_at', null)->paginate(10);
         switch ($request->filter) {
             case "Blocked":
                 $query = User::where('blocked', 1)->paginate(10);
