@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Meal as MealResource;
 use App\Http\Resources\Order as OrderResource;
 
-use App\Invoice;
-use App\InvoiceItem;
+use App\Meal;
+use App\MealItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Order;
-use App\Meal;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -28,6 +27,84 @@ class MealControllerAPI extends Controller
             }
 
             return MealResource::collection($baseQuery->paginate(50));
+        } else if ($request->has('filter')) {
+
+            if ($request->waiterName != "") {
+                $waiterId = DB::table('users')->where('name', $request->waiterName)->pluck('id');
+                if ($request->date != "") {
+                    $query = Meal::whereIn('state', ['terminated', 'active'])->whereDate('start', $request->date)->where('responsible_waiter_id', $waiterId)->paginate(10);
+                    switch ($request->filter) {
+                        case "Active":
+                            $query = Meal::where('state', 'active')->whereDate('start', $request->date)->where('responsible_waiter_id', $waiterId)->paginate(10);
+                            break;
+                        case "Terminated":
+                            $query = Meal::where('state', 'terminated')->whereDate('start', $request->date)->where('responsible_waiter_id', $waiterId)->paginate(10);
+                            break;
+                        case "Paid":
+                            $query = Meal::where('state', 'paid')->whereDate('start', $request->date)->where('responsible_waiter_id', $waiterId)->paginate(10);
+                            break;
+                        case "Not Paid":
+                            $query = Meal::where('state', 'not paid')->whereDate('start', $request->date)->where('responsible_waiter_id', $waiterId)->paginate(10);
+                            break;
+                    }
+                } else {
+                    $query = Meal::whereIn('state', ['terminated', 'active'])->where('responsible_waiter_id', $waiterId)->paginate(10);
+                    switch ($request->filter) {
+                        case "Active":
+                            $query = Meal::where('state', 'active')->where('responsible_waiter_id', $waiterId)->paginate(10);
+                            break;
+                        case "Terminated":
+                            $query = Meal::where('state', 'terminated')->where('responsible_waiter_id', $waiterId)->paginate(10);
+                            break;
+                        case "Paid":
+                            $query = Meal::where('state', 'paid')->where('responsible_waiter_id', $waiterId)->paginate(10);
+                            break;
+                        case "Not Paid":
+                            $query = Meal::where('state', 'not paid')->where('responsible_waiter_id', $waiterId)->paginate(10);
+                            break;
+                    }
+                }
+
+            } else {
+
+                if ($request->date != "") {
+                    $query = Meal::where('state', 'active')->orWhere('state', 'terminated')->whereDate('start', $request->date)->paginate(10);
+                    switch ($request->filter) {
+                        case "Active":
+                            $query = Meal::where('state', 'active')->whereDate('start', $request->date)->paginate(10);
+                            break;
+                        case "Terminated":
+                            $query = Meal::where('state', 'terminated')->whereDate('start', $request->date)->paginate(10);
+                            break;
+                        case "Paid":
+                            $query = Meal::where('state', 'paid')->whereDate('start', $request->date)->paginate(10);
+                            break;
+                        case "Not Paid":
+                            $query = Meal::where('state', 'not paid')->whereDate('start', $request->date)->paginate(10);
+                            break;
+                    }
+                } else {
+                    $query = Meal::where('state', 'active')->orWhere('state', 'terminated')->paginate(10);
+                    switch ($request->filter) {
+                        case "Active":
+                            $query = Meal::where('state', 'active')->paginate(10);
+                            break;
+                        case "Terminated":
+                            $query = Meal::where('state', 'terminated')->paginate(10);
+                            break;
+                        case "Paid":
+                            $query = Meal::where('state', 'paid')->paginate(10);
+                            break;
+                        case "Not Paid":
+                            $query = Meal::where('state', 'not paid')->paginate(10);
+                            break;
+                    }
+                }
+              
+            }
+           
+            return MealResource::collection($query);
+
         } else {
             return MealResource::collection(Meal::orderBy('updated_at', 'desc')->paginate(50));
         }
@@ -64,7 +141,7 @@ class MealControllerAPI extends Controller
             return response()->json(['status'=>'already terminated'], 402);
         }
 
-        $invoice = new Invoice();
+        $invoice = new Meal();
         $invoice->state = 'pending';
         $invoice->meal_id = $meal->id;
         $invoice->date = Carbon::today();
@@ -78,7 +155,7 @@ class MealControllerAPI extends Controller
                 $order->state = 'not delivered';
                 $order->save();
             } else {
-                $inv_item = InvoiceItem::where('invoice_id', $invoice->id)
+                $inv_item = MealItem::where('invoice_id', $invoice->id)
                                         ->where('item_id', $order->item_id)->first();
 
                 if($inv_item == null){

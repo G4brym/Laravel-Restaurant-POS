@@ -20,6 +20,7 @@
                         <invoice-box :invoice="invoice" :index="index" ref="invoicesRef"></invoice-box>
                 </template>   
             </template>
+            <paginator v-show="invoices.length != 0" :data="paginatorData" @change-page="getInvoices"></paginator>
         </div>
     </div>
 </template>
@@ -54,12 +55,12 @@
                     });
             },
         },
-        mounted: function () {
-            this.getInvoices();
-        },
         components: {
             'invoice-box': InvoiceBox,
             'paginator': Paginator,
+        },
+        mounted() {
+            this.getInvoices();
         },
     }
 </script>
