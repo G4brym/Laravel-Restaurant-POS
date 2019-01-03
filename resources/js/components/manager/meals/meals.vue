@@ -52,10 +52,27 @@
                     page = 1
                 }
                 
+                this.$swal({
+                    text: 'Loading Meals',
+                    onBeforeOpen: () => {
+                        this.$swal.showLoading();
+                    }
+                });
                 this.$http.get('api/meals', {params: {page: page, filter: option, date: date, waiterName: waiter}})
                     .then(response=>{
+                        this.$swal({
+                            type: 'success',
+                            title: 'Success',
+                            text: 'Done!'
+                        });
                         this.meals = response.data.data;
                         this.paginatorData = response.data;
+                    })
+                    .catch(error => {
+                        this.$swal({
+                            type: 'error',
+                            text: 'Oh no, something went wrong!! Try again!'
+                        });
                     });
             },
         },

@@ -41,6 +41,7 @@ Vue.use(new VueSocketio({
 
 import store from './stores/global-store';
 
+const stat = Vue.component('stat', require('./components/manager/stats/stats.vue'))
 const meal = Vue.component('meal', require('./components/manager/meals/meals.vue'))
 const invoice = Vue.component('invoice', require('./components/manager/invoices/invoices.vue'))
 const table = Vue.component('tableMain', require('./components/manager/tables/table.vue'));
@@ -68,6 +69,7 @@ const routes = [
     { path: '/items', component: item, name: 'item', meta: { requiresAuth: true, isManager: true }},
     { path: '/users', component: user, name: 'users', meta: { requiresAuth: true, isManager: true }},
     { path: '/invoices', component: invoice, name: 'invoice', meta: { requiresAuth: true, isManager: true }},
+    { path: '/stats', component: stat, name: 'stat', meta: { requiresAuth: true, isManager: true }},
     { path: '/meals', component: meal, name: 'meal', meta: { requiresAuth: true, isManager: true }},
     { path: '/account', component: account, name: 'account', meta: { requiresAuth: true }},
     { path: '/login', component: login, name: 'login', meta: { guest: true }},

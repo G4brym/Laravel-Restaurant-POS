@@ -29,6 +29,8 @@ Route::put('users/blockUnblock/{id}', 'UserControllerAPI@blockUnblock');
 Route::middleware('auth:api')->post('users/{id}/uploadPhoto', 'UserControllerAPI@uploadPhoto');
 Route::middleware('auth:api')->put('users/{id}/toggleShift', 'UserControllerAPI@toggleShift');
 
+Route::get('stats', 'StatsControllerAPI@index');
+
 Route::get('items', 'ItemControllerAPI@index');
 Route::get('items/{id}', 'ItemControllerAPI@show');
 Route::post('items', 'ItemControllerAPI@store');

@@ -17,7 +17,7 @@
             </template>
             <template v-else>
                 <template v-for="(invoice, index) in invoices">
-                        <invoice-box :invoice="invoice" :index="index" ref="invoicesRef"></invoice-box>
+                    <invoice-box :invoice="invoice" :index="index" ref="invoicesRef"></invoice-box>
                 </template>   
             </template>
             <paginator v-show="invoices.length != 0" :data="paginatorData" @change-page="getInvoices"></paginator>
@@ -48,10 +48,27 @@
                     page = 1
                 }
 
+                this.$swal({
+                    text: 'Loading Invoices',
+                    onBeforeOpen: () => {
+                        this.$swal.showLoading();
+                    }
+                });
                 this.$http.get('api/invoices', {params: {page: page, filter: option, date: date}})
                     .then(response=>{
+                        this.$swal({
+                            type: 'success',
+                            title: 'Success',
+                            text: 'Done!'
+                        });
                         this.invoices = response.data.data;
                         this.paginatorData = response.data;
+                    })
+                    .catch(error => {
+                        this.$swal({
+                            type: 'error',
+                            text: 'Oh no, something went wrong!! Try again!'
+                        });
                     });
             },
         },
