@@ -11,7 +11,7 @@ class ItemControllerAPI extends Controller
 {
     public function index()
     {
-        return ItemResource::collection(Item::where('deleted_at', null)->paginate(10));
+        return ItemResource::collection(Item::all());
     }
 
     public function show($id)
