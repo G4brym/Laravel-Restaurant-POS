@@ -175,6 +175,7 @@
             <li><router-link to="/meals"><i class="fa fa-briefcase"></i> <span>Meals</span></router-link></li>
             <li><router-link to="/Invoices"><i class="fa fa-briefcase"></i> <span>Invoices</span></router-link></li>
             <li><router-link to="/stats"><i class="fa fa-circle"></i> <span>Stats</span></router-link></li>
+            <li><router-link to="/performance"><i class="fa fa-flag-o"></i> <span>Restaurant Performance</span></router-link></li>
         </template>
 
     </template>

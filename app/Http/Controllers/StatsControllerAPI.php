@@ -45,19 +45,6 @@ class StatsControllerAPI extends Controller
     		} else {
     			return response()->json("Type dont match", 400);
     		}
-
-    		
-    		
-
-    		/*$avgPerDay = DB::select('Select AVG(dayOrders) FROM (
-											SELECT COUNT(*) AS "dayOrders"
-											FROM `orders`
-											WHERE responsible_cook_id = '.$user'
-											GROUP BY DATE(`start`) 
-										) dayOrdersTable;');*/
-
-
-    		
     	
     		$collection = collect($stats);
 	        $currentPage = LengthAwarePaginator::resolveCurrentPage();
@@ -68,8 +55,45 @@ class StatsControllerAPI extends Controller
 
 	        return $paginated;
 
+    	} else if ($request->has('year')) {
+
+    		$year = $request->year;
+    		$months = [];
+    		$months = DB::select('SELECT DISTINCT MONTH(created_at) AS "month"
+    							  FROM meals 
+    							  WHERE YEAR(created_at) = '.$request->year.' 
+    							  ORDER BY MONTH(created_at);');
+
+    		$info = [];
+    		
+    		foreach ($months as $month) {
+
+    			$nOrders = DB::select('SELECT COUNT(*) AS "orders"
+									   FROM orders
+									   WHERE YEAR(created_at) = '.$year.' AND MONTH(created_at) = '.$month->month.';');
+				
+				$nMeals = DB::select('SELECT COUNT(*) AS "meals"
+									   FROM meals
+									   WHERE YEAR(created_at) = '.$year.' AND MONTH(created_at) = '.$month->month.';');
+
+				$avgMealTime = DB::select('SELECT AVG(TIMESTAMPDIFF(second, created_at, end)) AS "avgMealTime"
+										  FROM meals
+										  Where MONTH(created_at) = '.$month->month.';');
+
+    			array_push($info,["month" => $month->month, "nOrders" => $nOrders[0]->orders, "nMeals" => $nMeals[0]->meals, "avgMealTime" => gmdate("H:i:s", $avgMealTime[0]->avgMealTime)]);
+    		}
+    		return $info;
+
     	}
    	 
+    }
+
+    public function years(Request $request) 
+    {
+    	$years = [];
+    	$years = DB::select('SELECT DISTINCT YEAR(created_at) AS "Years" FROM meals;');
+
+    	return $years;
     }
   
 }
