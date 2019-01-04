@@ -80,7 +80,24 @@ class StatsControllerAPI extends Controller
 										  FROM meals
 										  Where MONTH(created_at) = '.$month->month.';');
 
-    			array_push($info,["month" => $month->month, "nOrders" => $nOrders[0]->orders, "nMeals" => $nMeals[0]->meals, "avgMealTime" => gmdate("H:i:s", $avgMealTime[0]->avgMealTime)]);
+				$orders = [];
+				$items = [];
+				$items = DB::select('SELECT DISTINCT item_id FROM orders WHERE month(created_at) = '.$month->month.' and year(created_at) = '.$year.';');
+
+				foreach ($items as $item) {
+					$avgOrderTime = DB::select('SELECT AVG(TIMESTAMPDIFF(second, created_at, end)) AS "avgOrderTime"
+												FROM orders
+												WHERE month(created_at) = '.$month->month.' 
+													AND year(created_at) = '.$year.' 
+													AND end is not null 
+													AND item_id = '.$item->item_id.';');
+
+					$itemName = DB::select('SELECT name FROM items WHERE id = '.$item->item_id.';');
+					
+					array_push($orders,["time" => gmdate("H:i:s", $avgOrderTime[0]->avgOrderTime), "name" => $itemName[0]->name]);
+				}
+
+    			array_push($info,["month" => $month->month, "nOrders" => $nOrders[0]->orders, "nMeals" => $nMeals[0]->meals, "avgMealTime" => gmdate("H:i:s", $avgMealTime[0]->avgMealTime), "orders" => $orders]);
     		}
     		return $info;
 

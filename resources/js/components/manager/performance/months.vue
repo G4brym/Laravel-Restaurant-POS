@@ -37,12 +37,27 @@
                     </tr>       
                 </tbody>
             </table>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Item AVG Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="order in info.orders">
+                        <tr>         
+                            <td>{{ order.name }}</td>
+                            <td>{{ order.time }}</td>
+                        </tr>  
+                    </template>    
+                </tbody>
+            </table>
         </div>
     </div>
 </template>
 
 <script type="text/javascript">
-    // Component code
 
     module.exports = {
         props: ['info', 'index'],
