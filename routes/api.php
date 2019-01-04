@@ -33,6 +33,8 @@ Route::middleware('auth:api')->put('users/{id}/toggleShift', 'UserControllerAPI@
 Route::post('verify/check', 'VerificationControllerAPI@check');
 Route::post('verify', 'VerificationControllerAPI@verify');
 
+Route::get('stats', 'StatsControllerAPI@index');
+
 Route::get('items', 'ItemControllerAPI@index');
 Route::get('items/{id}', 'ItemControllerAPI@show');
 Route::post('items', 'ItemControllerAPI@store');

@@ -12,7 +12,6 @@ class Item extends Model
         'type',
         'description',
         'photo_url',
-        'deleted_at',
         'price'
     ];
 

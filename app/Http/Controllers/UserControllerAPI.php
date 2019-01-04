@@ -17,11 +17,19 @@ class UserControllerAPI extends Controller
 {
     public function index(Request $request)
     {
-        if ($request->has('page')) {
-            return UserResource::collection(User::paginate(50));
-        } else {
-            return UserResource::collection(User::all());
+        $query = User::where('deleted_at', null)->paginate(10);
+        switch ($request->filter) {
+            case "Blocked":
+                $query = User::where('blocked', 1)->paginate(10);
+                break;
+            case "Unblocked":
+                $query = User::where('blocked', 0)->paginate(10);
+                break;
+            case "Soft Deleted":
+                $query = User::where('deleted_at', '!=' , null)->paginate(10);
+                break;
         }
+        return UserResource::collection($query);
     }
 
     public function show($id)

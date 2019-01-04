@@ -10,6 +10,8 @@
 	                	<!--TABLE LIST-->
 						<table-list :tables="tables" @edit-click="editTable" @delete-click="deleteTable" @add-click="addingTable" ref="tablesListRef"></table-list>
 
+						<paginator :data="paginatorData" @change-page="getTables"></paginator>
+
 			            <!--TABLE ADD-->	
 			            <table-add @insert-error="insertError" @table-canceled="addTableCancel" @table-inserted="addTable" v-if="adding"></table-add>
 
@@ -33,6 +35,7 @@
 	import TableEdit from './edit.vue';
 	import TableList from './list.vue';
 	import TableAdd from './add.vue';
+	import Paginator from './../../paginator.vue';
 	
 	export default {
 		data: function(){
@@ -40,6 +43,7 @@
 		        currentTable: null,
 		        adding: false,
 		        tables: [],
+		        paginatorData: null,
 			}
 		},
 	    methods: {
@@ -104,10 +108,14 @@
 	            this.currentTable = null;
 	            this.$refs.tablesListRef.editingTable = null;
 	        },
-	        getTables: function(){
-	            this.$http.get('api/tables')
+	        getTables: function(page){
+	        	if(page == null){
+                    page = 1
+                }
+	            this.$http.get('api/tables?page='+page)
                     .then(response => {
                         this.tables = response.data.data; 
+                        this.paginatorData = response.data;
                     }).catch(error => {
                         this.$swal({
                             type: 'error',
@@ -119,7 +127,8 @@
 	    components: {
 	    	'table-list': TableList,
 	    	'table-edit': TableEdit,
-	    	'table-add': TableAdd
+	    	'table-add': TableAdd,
+	    	'paginator': Paginator
 	    },
 	    mounted() {
 			this.getTables();

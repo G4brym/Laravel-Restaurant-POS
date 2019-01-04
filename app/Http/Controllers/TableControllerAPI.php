@@ -17,7 +17,7 @@ class TableControllerAPI extends Controller
 
     public function index()
     {
-        return TableResource::collection(Table::paginate(50));
+        return TableResource::collection(Table::where('deleted_at', null)->paginate(10));
     }
 
     public function show($table_number)

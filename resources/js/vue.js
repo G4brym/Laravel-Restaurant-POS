@@ -17,10 +17,17 @@ import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
 import VueSocketio from 'vue-socket.io';
-Vue.use(new VueSocketio({
-    debug: true,
-    connection: 'http://127.0.0.1:8080'
-}));
+if(window.location.hostname == 'dad.technic.pt'){
+    Vue.use(new VueSocketio({
+        debug: false,
+        connection: 'http://dad.technic.pt:8080'
+    }));
+} else {
+    Vue.use(new VueSocketio({
+        debug: true,
+        connection: 'http://127.0.0.1:8080'
+    }));
+}
 
 import axios from 'axios'
 
@@ -34,6 +41,9 @@ Vue.use(new VueSocketio({
 
 import store from './stores/global-store';
 
+const stat = Vue.component('stat', require('./components/manager/stats/stats.vue'))
+const meal = Vue.component('meal', require('./components/manager/meals/meals.vue'))
+const invoice = Vue.component('invoice', require('./components/manager/invoices/invoices.vue'))
 const table = Vue.component('tableMain', require('./components/manager/tables/table.vue'));
 const item = Vue.component('item', require('./components/manager/items/item.vue'));
 const user = Vue.component('user', require('./components/manager/users/user.vue'));
@@ -60,6 +70,9 @@ const routes = [
     { path: '/tables', component: table, name: 'table', meta: { requiresAuth: true, isManager: true }},
     { path: '/items', component: item, name: 'item', meta: { requiresAuth: true, isManager: true }},
     { path: '/users', component: user, name: 'users', meta: { requiresAuth: true, isManager: true }},
+    { path: '/invoices', component: invoice, name: 'invoice', meta: { requiresAuth: true, isManager: true }},
+    { path: '/stats', component: stat, name: 'stat', meta: { requiresAuth: true, isManager: true }},
+    { path: '/meals', component: meal, name: 'meal', meta: { requiresAuth: true, isManager: true }},
     { path: '/account', component: account, name: 'account', meta: { requiresAuth: true }},
     { path: '/login', component: login, name: 'login', meta: { guest: true }},
     { path: '/logout', component: logout, name: 'logout', meta: { requiresAuth: true }},

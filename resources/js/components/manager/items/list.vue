@@ -11,17 +11,15 @@
         </thead>
         <tbody>
             <tr v-for="item in items" :key="item.id">
-                <template v-if="item.deleted_at === null">
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.type }}</td>
-                    <td>{{ item.description }}</td>
-                    <td>{{ item.price }}</td>
-                    <td><img :src='"/storage/items/" + item.photo_url' alt="imagem" height="120px" width="120px"></img></td>
-                    <td>
-    	                <a class="btn btn-sm btn-primary" v-on:click.prevent="editItem(item)">Edit</a>
-    	                <a class="btn btn-sm btn-danger" v-on:click.prevent="deleteItem(item)">Delete</a>
-            		</td>
-                </template>
+                <td>{{ item.name }}</td>
+                <td>{{ item.type }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.price }}</td>
+                <td><img :src='"/storage/items/" + item.photo_url' alt="imagem" height="120px" width="120px"></img></td>
+                <td>
+	                <a class="btn btn-sm btn-primary" v-on:click.prevent="editItem(item)">Edit</a>
+	                <a class="btn btn-sm btn-danger" v-on:click.prevent="deleteItem(item)">Delete</a>
+        		</td>
             </tr>
             <a class="btn btn-sm btn-primary" v-on:click.prevent="addItem()">Add new item</a>
         </tbody>
