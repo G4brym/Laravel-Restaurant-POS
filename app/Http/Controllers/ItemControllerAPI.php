@@ -9,8 +9,12 @@ use Illuminate\Support\Facades\DB;
 
 class ItemControllerAPI extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->has('page')) {
+            return ItemResource::collection(Item::where('deleted_at', null)->paginate(10));
+        }
+
         return ItemResource::collection(Item::all());
     }
 
