@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
+use App\Item;
 
 class InvoiceItem extends Resource
 {
@@ -21,7 +22,7 @@ class InvoiceItem extends Resource
           'quantity' => $this->quantity,
           'unit_price' => $this->unit_price,
           'sub_total_price' => $this->sub_total_price,
-          'item' => $this->item,
+          'item' => Item::withTrashed()->find($this->item_id)
         ];
     }
 }
