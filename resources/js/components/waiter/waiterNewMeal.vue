@@ -4,38 +4,82 @@
             <h3 class="box-title">Meal {{ meal.id }} - Table {{meal.table_number_id}}</h3>
         </div>
         <div class="box-body">
-            <template v-for="order in orders" v-if="order.info">
+            <table class="table table-striped" v-if="completedOrders.length !== 0">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Cooker</th>
+                        <th>State</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <template v-for="order in completedOrders">
+                    <tr :class="{'table-warning': order.state === 'pending',
+                                 'table-green': order.state === 'confirmed'}" :key="order.id">
+                        <td><i class="fa" :class="{'fa-glass': order.item.type === 'drink',
+                                                    'fa-cutlery': order.item.type === 'dish'}"
+                               aria-hidden="true"></i>
+                            {{ order.item.name }}
+                        </td>
+                        <td>{{ order.item.price }}€</td>
+                        <td>
+                            {{ order.responsible_cook ? order.responsible_cook.name : 'No cook yet' }}
+                        </td>
+                        <td>
+                            <span class="label label-info"
+                                  :class="{'label-warning': order.state === 'pending',
+                                           'label-success': order.state === 'confirmed'}">
+                                {{ order.state }}
+                            </span>
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-danger" v-if="order.state === 'pending'"
+                               @click="deleteOrder($event.target, order)">Delete</a>
+                        </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+            <template v-for="order in newOrders" v-if="order.info">
                 <order :num="order.num" :meal-id="meal.id" :list="'itemsList'"
-                       @set-order-info="setOrderInfo(order, $event)"></order>
+                       @set-order-info="setOrderInfo(order, $event)" :key="order.num"/>
             </template>
 
-            <datalist id="itemsList">
-                <option v-for="item in this.$store.state.items">{{ item.name }}</option>
-            </datalist>
             <button class="btn btn-link" @click="addOrderElement">   + Add order to meal</button>
         </div>
         <div class="box-footer">
-            <button type="button" class="btn btn-primary pull-left" @click="doneMeal">Done</button>
+            <button type="button" class="btn btn-primary pull-left"
+                    @click="doneMeal">Done</button>
         </div>
     </div>
 </template>
 
 <script>
     import orderElem from './order.vue';
+
     export default {
+        props: ['meal'],
         components: {
             'order': orderElem
         },
         data: function() {
             return {
-                meal: null,
-                orders: [],
+                newOrders: [],
+                completedOrders: [],
+                timeouts: {},
                 counter: 0
             }
         },
         methods: {
-            setOrderInfo: function(order, info) {
-                order.info = info;
+            setOrderInfo: function(order, completedOrder) {
+                this.deleteElem(this.newOrders, order);
+                this.completedOrders.push(completedOrder);
+                this.timeouts[completedOrder.id] =
+                    setTimeout(() => {
+                        this.confirmOrder(completedOrder);
+                    }, 5000);
             },
             getNewOrder: function() {
                 return {
@@ -44,56 +88,23 @@
                 };
             },
             addOrderElement: function() {
-                this.orders.push(this.getNewOrder())
+                this.newOrders.push(this.getNewOrder());
             },
-            doneMeal: function() {
-                this.$router.push('/waiter');
-            }
-        },
-        mounted: function() {
-            this.$swal({
-                title: 'Table number?',
-                input: 'number',
-                showCancelButton: true,
-                confirmButtonText: 'Submit',
-                showLoaderOnConfirm: true,
-                allowOutsideClick: false,
-                preConfirm: (tableNumber) => {
-                    return this.$http.get(`/api/tables/${tableNumber}/check`)
-                        .then(response => {
-                            console.log(response);
-                            if (response.data.data) {
-                                if (response.data.data === 'taken') {
-                                    return {'status': 'taken'};
+            deleteOrder: function(htmlElem, order) {
+                clearTimeout(this.timeouts[order.id]);
+                delete this.timeouts[order.id];
 
-                                } else {
-                                    this.meal = response.data.data;
-                                    this.orders.push(this.getNewOrder());
-                                    return {'status': 'success'};
-                                }
-                            }
-                        })
-                        .catch(payload => {
-                            return {'status': 'fail', 'code': payload.response.status};
-                        });
-                }
-            }).then((result) => {
-                if (result.dismiss === this.$swal.DismissReason.cancel) {
-                    this.$router.push('/waiter');
+                htmlElem.setAttribute("disabled", "");
+                this.$http.delete(
+                    `/api/orders/${order.id}`
+                ).then(() => {
+                    this.deleteElem(this.completedOrders, order);
 
-                } else if (result.value.status === 'taken') {
-                    this.$router.push('/waiter');
+                }).catch((payload) => {
+                    if (payload.response.status) {
+                        order.state = "confirmed";
+                    }
 
-                    /////////////////////////////////////////
-                    // SweetAlert
-                    this.$swal({
-                        type: 'error',
-                        title: 'Table is taken',
-                        text: "An active meal already exists on this table"
-                    });
-                    /////////////////////////////////////////
-
-                } else if (result.value.status === 'success') {
                     /////////////////////////////////////////
                     // SweetAlert
                     const toast = this.$swal.mixin({
@@ -103,35 +114,40 @@
                         timer: 3000
                     });
                     toast({
-                        title: `Active meal created at table number ${this.meal.table_number_id}`,
-                        type: 'success'
+                        title: `Could not delete order`,
+                        type: 'error'
                     });
                     /////////////////////////////////////////
+                });
+            },
+            confirmOrder: function(order) {
+                clearTimeout(this.timeouts[order.id]);
+                delete this.timeouts[order.id];
+                order.state = "confirmed";
 
-                } else {
-                    this.$router.push("/waiter");
-                    if (result.value.code === 404) {
-                        /////////////////////////////////////////
-                        // SweetAlert
-                        this.$swal({
-                            type: 'error',
-                            title: 'Non-existing table',
-                            text: "The submitted table number does not exist"
-                        });
-                        /////////////////////////////////////////
-
-                    } else {
-                        /////////////////////////////////////////
-                        // SweetAlert
-                        this.$swal({
-                            type: 'error',
-                            title: 'Oops',
-                            text: "Something went wrong..."
-                        });
-                        /////////////////////////////////////////
-                    }
-                }
-            });
+                this.$http.put(
+                    `/api/orders/${order.id}/confirm`
+                )
+                .catch(() => {
+                    this.unknownError();
+                });
+            },
+            doneMeal: function() {
+                this.$emit('created-meal', this.completedOrders);
+            },
+            deleteElem: function(array, elem) {
+                array.splice(array.indexOf(elem), 1);
+            },
+            unknownError: function() {
+                this.$swal({
+                    type: 'error',
+                    title: 'Oops',
+                    text: "Something went wrong..."
+                });
+            }
+        },
+        mounted: function() {
+            this.addOrderElement();
         }
     }
 </script>

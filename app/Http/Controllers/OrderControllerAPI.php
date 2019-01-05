@@ -121,7 +121,7 @@ class OrderControllerAPI extends Controller
         $order->start = Carbon::now();
         $order->save();
 
-        return response()->json(['data' => $order], 201);
+        return new OrderResource($order);
   }
 
     public function destroy($id)
@@ -145,7 +145,7 @@ class OrderControllerAPI extends Controller
 
     public function confirm($id)
     {
-        if (!Auth::user()->type === 'waiter') {
+        if (Auth::user()->type !== 'waiter') {
             return response()->json(null, 401);
         }
 

@@ -43,7 +43,7 @@
                     <td>
                         <a class="btn btn-sm btn-success" v-if="this.showAllOrders" v-on:click.prevent="moreDetails()">Less Details</a>
                         <a class="btn btn-sm btn-success" v-if="!this.showAllOrders" v-on:click.prevent="moreDetails()">More Details</a>
-                        <a class="btn btn-sm btn-danger" v-on:click.prevent="terminateMeal(meal, index)">Terminate</a>
+                        <a class="btn btn-sm btn-danger" @click="terminateMeal">Terminate</a>
                     </td>
                 </tr>
                 </tbody>
@@ -56,7 +56,7 @@
     // Component code
 
     module.exports = {
-        props: ['meal', 'index'],
+        props: ['meal'],
         data: function(){
             return {
                 showAllOrders: false,
@@ -89,7 +89,7 @@
 
         },
         methods: {
-            terminateMeal: function (meal, index) {
+            terminateMeal: function () {
                 if(!this.safeTerminate){
                     this.$swal({
                         title: 'Are you sure?',
@@ -101,11 +101,11 @@
                         confirmButtonText: 'Yes, Terminate it!'
                     }).then((result) => {
                         if (result.value) {
-                            this.$emit('terminate-meal', meal, index);
+                            this.$emit('terminate-meal');
                         }
                     })
                 } else {
-                    this.$emit('terminate-meal', meal, index);
+                    this.$emit('terminate-meal');
                 }
             },
             deleteOrder: function (order) {

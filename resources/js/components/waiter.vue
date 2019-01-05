@@ -1,11 +1,15 @@
 <template>
     <div>
-        <router-link to="/waiter/meal" class="btn btn-lg btn-block btn-info">Create new meal</router-link>
+        <button class="btn btn-lg btn-block btn-info" @click="newMeal">Create new meal</button>
         <br/>
         <prepared-orders :preparedOrders="preparedOrders" @deliver-click="deliverOrder" ref="preparedOrdersRef"></prepared-orders>
 
-        <template v-for="(meal, index) in waiterMeals">
-            <meal-box :meal="meal" :index="index" @terminate-meal="terminateMeal" @delete-click="deleteOrder" ref="mealsRef"></meal-box>
+        <template v-for="meal in newMeals">
+            <waiter-new-meal :meal="meal" @created-meal="createdMeal(meal, $event)" :key="meal.id"></waiter-new-meal>
+        </template>
+
+        <template v-for="meal in waiterMeals">
+            <meal-box :meal="meal" @terminate-meal="terminateMeal(meal)" :key="meal.id"></meal-box>
         </template>
     </div>
 </template>
@@ -20,37 +24,15 @@
         data: function(){
             return {
                 preparedOrders: [],
+                newMeals: [],
                 waiterMeals: [],
             }
         },
         methods: {
-            deleteOrder: function (order) {
-                this.$swal({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.value) {
-                        // TODO Gabriel
-                        this.$http.delete('api/users/' + user.id)
-                            .then(response => {
-                                this.$swal({
-                                    type: 'success',
-                                    title: 'Deleted',
-                                    text: 'This order was deleted',
-                                });
-                            });
-                    }
-                })
-            },
-            terminateMeal: function (meal, index) {
+            terminateMeal: function (meal) {
                 this.$http.post('api/meals/' + meal.id + '/terminate')
                     .then(response => {
-                        if (response.status == 200) {
+                        if (response.status === 200) {
                             this.getWaiterMeals();
                             this.$socket.emit('propagateTerminateOrder');
 
@@ -71,7 +53,7 @@
             deliverOrder: function (order, index) {
                 this.$http.post('api/orders/' + order.id + '/deliver')
                     .then(response => {
-                        if (response.status == 200) {
+                        if (response.status === 200) {
                             this.preparedOrders.splice(index, 1);
                             this.$socket.emit('propagateWaiterDeliveries');
 
@@ -89,6 +71,88 @@
                         }
                     });
             },
+            newMeal: function() {
+                this.$swal({
+                    title: 'Table number?',
+                    input: 'number',
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                    showLoaderOnConfirm: true,
+                    allowOutsideClick: false,
+                    preConfirm: (tableNumber) => {
+                        return this.$http.get(`/api/tables/${tableNumber}/check`)
+                            .then(response => {
+                                console.log(response);
+                                if (response.data.data) {
+                                    if (response.data.data === 'taken') {
+                                        return {'status': 'taken'};
+
+                                    } else {
+                                        this.newMeals.push(response.data.data);
+                                        return {'status': 'success',
+                                                'data': response.data.data};
+                                    }
+                                }
+                            })
+                            .catch(payload => {
+                                return {'status': 'fail', 'code': payload.response.status};
+                            });
+                    }
+                }).then((result) => {
+                    if (result.value.status === 'taken') {
+                        /////////////////////////////////////////
+                        // SweetAlert
+                        this.$swal({
+                            type: 'error',
+                            title: 'Table is taken',
+                            text: "An active meal already exists on this table"
+                        });
+                        /////////////////////////////////////////
+
+                    } else if (result.value.status === 'success') {
+                        /////////////////////////////////////////
+                        // SweetAlert
+                        const toast = this.$swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        toast({
+                            title: `Active meal created at table number ${result.value.data.table_number}`,
+                            type: 'success'
+                        });
+                        /////////////////////////////////////////
+
+                    } else {
+                        if (result.value.code === 404) {
+                            /////////////////////////////////////////
+                            // SweetAlert
+                            this.$swal({
+                                type: 'error',
+                                title: 'Non-existing table',
+                                text: "The submitted table number does not exist"
+                            });
+                            /////////////////////////////////////////
+
+                        } else {
+                            /////////////////////////////////////////
+                            // SweetAlert
+                            this.$swal({
+                                type: 'error',
+                                title: 'Oops',
+                                text: "Something went wrong..."
+                            });
+                            /////////////////////////////////////////
+                        }
+                    }
+                });
+            },
+            createdMeal: function (meal, orders) {
+                this.newMeals.splice(this.newMeals.indexOf(meal), 1);
+                meal.orders = orders;
+                this.waiterMeals.push(meal);
+            },
             getPreparedOrders: function(){
                 this.$http.get('api/orders?states=prepared')
                     .then(response=>{
@@ -98,7 +162,17 @@
             getWaiterMeals: function(){
                 this.$http.get('api/meals?waiter=true&unfinished=true')
                     .then(response=>{
-                        this.waiterMeals = response.data.data;
+                        let meals = response.data.data;
+                        meals.forEach((meal) => {
+                            meal.orders.forEach((order) => {
+                                if (order.state === "pending") {
+                                    this.$http.put(`/api/orders/${order.id}/confirm`)
+                                    order.state = "confirmed";
+                                }
+                            })
+                        });
+
+                        this.waiterMeals = meals;
                     });
             },
         },
