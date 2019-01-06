@@ -21,8 +21,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                <template v-for="order in orders">
-                    <tr :class="{'table-warning': order.state === 'pending', 'table-green': order.state === 'confirmed'}">
+                    <tr v-for="order in (this.showAllOrders ? orders : compactedOrders)"
+                        :class="{'table-warning': order.state === 'pending',
+                                 'table-green': order.state === 'confirmed'}"
+                        :key="order.id">
                         <td><i class="fa" :class="{'fa-glass': order.item.type == 'drink', 'fa-cutlery': order.item.type == 'dish'}" aria-hidden="true"></i> {{ order.item.name }}</td>
                         <td>{{ order.item.price }}€</td>
                         <td>{{ order.responsible_cook ? order.responsible_cook.name : 'No cook yet' }}</td>
@@ -31,18 +33,23 @@
                         </td>
                         <td>
                             <a class="btn btn-sm btn-danger" v-if="order.state === 'pending'"
-                               v-on:click.prevent="deleteOrder(order)">Delete</a>
+                               @click.prevent="deleteOrder(order)">Delete</a>
                         </td>
                     </tr>
-                </template>
                 <tr>
                     <td>Total Price:</td>
                     <td>{{ totalPrice }}€</td>
                     <td></td>
                     <td></td>
                     <td>
-                        <a class="btn btn-sm btn-success" v-if="this.showAllOrders" v-on:click.prevent="moreDetails()">Less Details</a>
-                        <a class="btn btn-sm btn-success" v-if="!this.showAllOrders" v-on:click.prevent="moreDetails()">More Details</a>
+                        <a class="btn btn-sm btn-success" v-if="this.showAllOrders"
+                           @click="showAllOrders = !showAllOrders">
+                            Less Details
+                        </a>
+                        <a class="btn btn-sm btn-success" v-if="!this.showAllOrders"
+                           @click="showAllOrders = !showAllOrders">
+                            More Details
+                        </a>
                         <a class="btn btn-sm btn-danger" @click="terminateMeal">Terminate</a>
                     </td>
                 </tr>
@@ -56,37 +63,62 @@
     // Component code
 
     module.exports = {
-        props: ['meal'],
+        props: ['meal', 'mealIndex'],
         data: function(){
             return {
                 showAllOrders: false,
                 totalPrice: 0,
                 compactedOrders: [],
-                orders: [],
                 expanded: true,
                 safeTerminate: false
             }
         },
+        computed: {
+            orders: function() {
+                return this.$store.state.waiter.meals[this.mealIndex].orders;
+            }
+        },
+        watch: {
+            orders: function() {
+                let compressedOrders = [];
+                let tmp_price = 0;
+                let safeTermination = true;
+
+                for (let i = 0; i < this.orders.length; i++) {
+                    tmp_price += parseFloat(this.orders[i].item.price);
+                    if(this.orders[i].state === 'pending' || this.orders[i].state === 'confirmed'){
+                        compressedOrders.push(this.orders[i])
+                    }
+
+                    if(this.orders[i].state !== 'delivered'){
+                        safeTermination = false;
+                    }
+                }
+                this.totalPrice = tmp_price.toFixed(2);
+
+                this.compactedOrders = Object.assign([], compressedOrders);
+                this.safeTerminate = safeTermination;
+            }
+        },
         mounted() {
+            let compressedOrders = [];
             let tmp_price = 0;
             let safeTermination = true;
 
-            for (var i = 0; i < this.meal.orders.length; i++) {
-                tmp_price += parseFloat(this.meal.orders[i].item.price);
-                if(this.meal.orders[i].state === 'pending' || this.meal.orders[i].state === 'confirmed'){
-                    this.compactedOrders.push(this.meal.orders[i])
+            for (let i = 0; i < this.orders.length; i++) {
+                tmp_price += parseFloat(this.orders[i].item.price);
+                if(this.orders[i].state === 'pending' || this.orders[i].state === 'confirmed'){
+                    compressedOrders.push(this.orders[i])
                 }
 
-                if(this.meal.orders[i].state !== 'delivered'){
+                if(this.orders[i].state !== 'delivered'){
                     safeTermination = false;
                 }
             }
             this.totalPrice = tmp_price.toFixed(2);
 
-            this.orders = this.compactedOrders;
+            this.compactedOrders = Object.assign([], compressedOrders);
             this.safeTerminate = safeTermination;
-
-
         },
         methods: {
             terminateMeal: function () {
@@ -111,15 +143,6 @@
             deleteOrder: function (order) {
                 this.$emit('delete-click', order);
             },
-            moreDetails: function () {
-                if(this.showAllOrders){
-                    this.orders = this.compactedOrders;
-                    this.showAllOrders = false;
-                } else {
-                    this.orders = this.meal.orders;
-                    this.showAllOrders = true;
-                }
-            },
             toggleMeal: function () {
                 if(this.expanded){
                     $("#box" + this.meal.id).boxWidget('collapse');
@@ -128,7 +151,7 @@
                 }
 
             }
-        },
+        }
     }
 </script>
 

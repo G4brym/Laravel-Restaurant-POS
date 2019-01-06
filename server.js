@@ -70,14 +70,18 @@ io.on('connection', function (socket) {
         console.log('client ' + socket.id + ' has left "cook"');
     });
 
-	socket.on('joinWaiter', function() {
+	socket.on('joinWaiter', function(userId) {
 	    socket.join('waiter');
-        console.log('client ' + socket.id + ' has joined "waiter"');
+        console.log(`client ${socket.id} has joined "waiter"`);
+        socket.join(`waiter_${userId}`);
+        console.log(`client ${socket.id} has joined "waiter_${userId}"`);
     });
 
-    socket.on('leaveWaiter', function() {
+    socket.on('leaveWaiter', function(userId) {
         socket.leave('waiter');
-        console.log('client ' + socket.id + ' has left "waiter"');
+        console.log(`client ${socket.id} has left "waiter"`);
+        socket.leave(`waiter_${userId}`);
+        console.log(`client ${socket.id} has left "waiter_${userId}"`);
     });
 
 	socket.on('joinCashier', function() {
@@ -90,8 +94,8 @@ io.on('connection', function (socket) {
         console.log('client ' + socket.id + ' has left "cashier"');
     });
 
-	socket.on('propagateCookOrder', function(order) {
-	    socket.broadcast.to('cook').emit('propagateCookOrder', order);
+	socket.on('propagateCookOrderToCooks', function(order) {
+	    socket.broadcast.to('cook').emit('propagateCookOrderToCooks', order);
     });
 
 	socket.on('propagateWaiterDeliveries', function() {
@@ -101,6 +105,14 @@ io.on('connection', function (socket) {
 	socket.on('propagateTerminateOrder', function() {
 	    socket.broadcast.to('waiter').emit('propagateTerminateOrder');
 	    socket.broadcast.to('cashier').emit('propagateTerminateOrder');
+    });
+
+	socket.on('propagateConfirmedOrder', function(order) {
+        io.sockets.to('cook').emit('propagateConfirmedOrder', order);
+    });
+
+    socket.on('propagateCookOrderToWaiter', function(order) {
+        socket.broadcast.to(`waiter_${order.responsible_waiter_id}`).emit('propagateCookOrderToWaiter', order);
     });
 
 	/*socket.on('msg_from_client', (msg, userInfo) => {

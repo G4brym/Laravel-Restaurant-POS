@@ -23,7 +23,8 @@ class Order extends Resource
             'end' => $this->end,
             'item' => $this->item,
             'meal' => $this->meal->id,
-            'responsible_cook' => $this->responsible_cook
+            'responsible_cook' => $this->responsible_cook,
+            'responsible_waiter_id' => $this->meal->responsible_waiter_id
             /*'updated_at' => $this->updated_at->toDateTimeString(),*/
         ];
 

@@ -81,8 +81,10 @@
                         this.$store.commit(commitString, response.data.data);
                         // io socket communication here
                         if (formerState === 'confirmed') {
-                            this.$socket.emit('propagateCookOrder', response.data.data);
+                            this.$socket.emit('propagateCookOrderToCooks', response.data.data);
                         }
+
+                        this.$socket.emit('propagateCookOrderToWaiter', response.data.data);
 
                         /////////////////////////////////////////
                         // SweetAlert

@@ -5,8 +5,8 @@
             <span class="label label-danger" v-show="notifNum">{{ notifNum > 10 ? "10+" : notifNum }}</span>
         </a>
         <ul class="dropdown-menu">
-            <li class="header">You have {{ notifNum === 0 ? "no" : notifNum }} new notifications</li>
-            <li>
+            <li class="header" v-if="notifications.length === 0">You have no notifications</li>
+            <li v-else>
                 <!-- inner menu: contains the actual data -->
                 <ul class="menu" ref="notifItems">
                     <template v-for="notif in notifications">
@@ -15,32 +15,6 @@
                                            :text="notif.text">
                         </notification-item>
                     </template>
-                    <!--<li>
-                        <a href="#">
-                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
-                            page and may cause design problems
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="fa fa-users text-red"></i> 5 new members joined
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="fa fa-user text-red"></i> You changed your username
-                        </a>
-                    </li>-->
                 </ul>
             </li>
         </ul>
@@ -61,10 +35,10 @@
         },
         methods: {
             addNotif: function(text, classes, href) {
-                if (notifications.length === 15) {
-                    notifications.pop();
+                if (this.notifications.length === 15) {
+                    this.notifications.pop();
                 }
-                notifications.unshift({'text': text, 'classes': classes, 'href': href});
+                this.notifications.unshift({'text': text, 'classes': classes, 'href': href});
 
                 if (!this.$refs.notifMenu.classList.contains("open")) {
                     this.notifNum++;

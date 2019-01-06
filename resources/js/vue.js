@@ -41,10 +41,10 @@ Vue.use(new VueSocketio({
 
 import store from './stores/global-store';
 
-const performance = Vue.component('performance', require('./components/manager/performance/performance.vue'))
-const stat = Vue.component('stat', require('./components/manager/stats/stats.vue'))
-const meal = Vue.component('meal', require('./components/manager/meals/meals.vue'))
-const invoice = Vue.component('invoice', require('./components/manager/invoices/invoices.vue'))
+const performance = Vue.component('performance', require('./components/manager/performance/performance.vue'));
+const stat = Vue.component('stat', require('./components/manager/stats/stats.vue'));
+const meal = Vue.component('meal', require('./components/manager/meals/meals.vue'));
+const invoice = Vue.component('invoice', require('./components/manager/invoices/invoices.vue'));
 const table = Vue.component('tableMain', require('./components/manager/tables/table.vue'));
 const item = Vue.component('item', require('./components/manager/items/item.vue'));
 const user = Vue.component('user', require('./components/manager/users/user.vue'));
@@ -55,18 +55,15 @@ const login = Vue.component('login', require('./components/login.vue'));
 const logout = Vue.component('logout', require('./components/logout.vue'));
 const itemsMenu = Vue.component('itemsMenu', require('./components/itemsMenu.vue'));
 const cookOrders = Vue.component('cookOrders', require('./components/cook/cookOrders.vue'));
-const waiterNewMeal = Vue.component('waiterNewMeal', require('./components/waiter/waiterNewMeal.vue'));
 const verify = Vue.component('verify', require('./components/verify.vue'));
 const password = Vue.component('verify', require('./components/account/password.vue'));
 Vue.component('shift-counter', require('./components/shift_counter.vue'));
 Vue.component('shift-button', require('./components/shift_button.vue'));
-Vue.component('notifications', require('./components/notifications'));
+Vue.component('notifications', require('./components/notifications.vue'));
 
 const routes = [
     { path: '/', redirect: '/itemsMenu', name: 'root'},
     { path: '/waiter', component: waiter, name: '/waiter', meta: { requiresAuth: true, isWaiter: true }},
-    { path: '/waiter/meal', component: waiterNewMeal, name: 'waiterNewMeal',
-        meta: { requiresAuth: true, isWaiter: true }},
     { path: '/cashier', component: cashier, name: 'cashier', meta: { requiresAuth: true, isCashier: true }},
     { path: '/tables', component: table, name: 'table', meta: { requiresAuth: true, isManager: true }},
     { path: '/items', component: item, name: 'item', meta: { requiresAuth: true, isManager: true }},
@@ -132,23 +129,43 @@ const app = new Vue({
             this.$refs.shiftCounter.updateCounter(this.$store.state.user);
         },
         loadActiveData: function() {
-            if (this.$store.state.user.type === 'cook') {
-                this.$store.dispatch('loadOrders').then(() => {
-                    console.log('"cook" connect');
-                    this.$socket.emit('joinCook');
-                });
-
-            } else if (this.$store.state.user.type === 'waiter') {
-                this.$store.dispatch('loadOrders');
-                this.$socket.emit('joinWaiter');
-            } else if (this.$store.state.user.type === 'cashier') {
-                this.$socket.emit('joinCashier');
+            switch (this.$store.state.user.type) {
+                case 'cook':
+                    this.$store.dispatch('loadOrders').then(() => {
+                        console.log('"cook" connect');
+                        this.$socket.emit('joinCook');
+                    });
+                    break;
+                case 'waiter':
+                    this.$store.dispatch('loadOrders');
+                    this.$socket.emit('joinWaiter', this.$store.state.user.id);
+                    break;
+                case 'cashier':
+                    this.$socket.emit('joinCashier');
+                    break;
+                /*case 'manager':
+                    this.$socket.emit('joinManager');
+                    break;
+                */
             }
+
         },
         clearUserData: function(logout) {
-            if (this.$store.state.user.type === 'cook') {
-                if (!logout || (logout && this.$store.state.user.shift_active)) {
-                    this.$socket.emit('leaveCook');
+            if (!logout || (logout && this.$store.state.user.shift_active)) {
+                switch (this.$store.state.user.type) {
+                    case 'cook':
+                        this.$socket.emit('leaveCook');
+                        break;
+                    case 'waiter':
+                        this.$socket.emit('leaveWaiter', this.$store.state.user.id);
+                        break;
+                    case 'cashier':
+                        this.$socket.emit('leaveCashier');
+                        break;
+                    /*case 'manager':
+                        this.$socket.emit('leaveManager');
+                        break;
+                    */
                 }
             }
 
@@ -157,17 +174,42 @@ const app = new Vue({
                     this.$store.commit('clearUserAndToken')
                 }
             });
-        }
+        },
+        addNotif: function(type, message, href) {
+            let itemType = null;
+            if (type === 'dish') {
+                itemType = 'fa-cutlery';
+            }
+            else {
+                itemType = 'fa-glass';
+            }
+            this.$refs.notifications.addNotif(message, itemType + " text-red", href);
+        },
     },
     sockets: {
         connect: function() {
             console.log('socket connected');
         },
-        propagateCookOrder: function(order) {
-            this.$refs.notifications.addNotif("Order " + order.item.name +
-                " has been picked up by another cook",
-                "fa-coffee text-red", "/#/cookOrders");
-            this.$store.commit('deleteOrder', order);
+        propagateCookOrderToCooks: function(order) {
+            this.addNotif(order.item.type, "Order (" + order.item.name +
+                ") has been picked up by another cook", "/#/cookOrders");
+
+            this.$store.commit('deleteOrder', order)
+        },
+        propagateConfirmedOrder: function(order){
+            this.addNotif(order.item.type, "New order (" + order.item.name +
+                ") has been added", "/#/cookOrders");
+
+            this.$store.commit('addOrder', order);
+        },
+        propagateCookOrderToWaiter: function(order) {
+            this.$store.commit('updateWaiterOrder', order);
+            if (order.state === 'prepared') {
+                this.addNotif(order.item.type, "Order (" + order.item.name +
+                    ") has been prepared", "/#/waiter");
+
+                this.$store.commit('addWaiterPreparedOrder', order);
+            }
         }
     },
     created() {
@@ -181,4 +223,3 @@ const app = new Vue({
         }
     }
 }).$mount('#app');
-

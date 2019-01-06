@@ -14,6 +14,11 @@ export default new Vuex.Store({
         orders: null,
         items: null,
         tables: [],
+        waiter: {
+            meals: null,
+            newMeals: [],
+            preparedOrders: null,
+        },
     },
     mutations: {
         clearUserAndToken: (state) => {
@@ -72,6 +77,9 @@ export default new Vuex.Store({
         loadItems (state, items) {
             state.items = items;
         },
+        addOrder (state, order) {
+            state.orders.push(order);
+        },
         updateOrders (state, order) {
             let found = false;
             let indexFirstConfirm = null;
@@ -94,6 +102,42 @@ export default new Vuex.Store({
                 }
             }
         },
+        setWaiterMeals (state, meals) {
+            state.waiter.meals = meals;
+        },
+        addWaiterMeal (state, meal) {
+            state.waiter.meals.push(meal);
+        },
+        addNewWaiterMeal (state, meal) {
+            state.waiter.newMeals.push(meal);
+        },
+        removeNewWaiterMeal (state, meal) {
+            state.waiter.newMeals.splice(state.waiter.newMeals.indexOf(meal), 1);
+        },
+        setWaiterPreparedOrders (state, orders) {
+            state.waiter.preparedOrders = orders;
+        },
+        addWaiterPreparedOrder (state, order) {
+            state.waiter.preparedOrders.push(order);
+        },
+        removeWaiterPreparedOrders (state, index) {
+            state.waiter.preparedOrders.splice(index, 1);
+        },
+        updateWaiterOrder (state, order) {
+            for (let i = 0; i < state.waiter.meals.length; i++) {
+                if (order.meal !== state.waiter.meals[i].id) {
+                    continue;
+                }
+
+                for (let j = 0; j < state.waiter.meals[i].orders.length; j++) {
+                    if (state.waiter.meals[i].orders[j].id === order.id) {
+                        Vue.set(state.waiter.meals[i].orders, j, order);
+                        break;
+                    }
+                }
+                break;
+            }
+        },
     },
     actions: {
         clearUserData (context) {
@@ -101,10 +145,10 @@ export default new Vuex.Store({
                 context.commit('clearOrders');
             }
         },
-        loadOrders (context) {
+        loadOrders ({ commit }) {
             axios.get('api/orders')
                 .then(response => {
-                    context.commit('loadOrders', response.data.data);
+                    commit('loadOrders', response.data.data);
                 });
         },
         loadItems ({ commit }) {

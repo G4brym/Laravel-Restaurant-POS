@@ -1,15 +1,22 @@
 <template>
-    <div>
+    <div class="box box-info" v-if="this.$store.state.user.shift_active === 0">
+        <div class="box-header with-border">
+            <div class="text-center">
+                You are not doing a shift
+            </div>
+        </div>
+    </div>
+    <div v-else>
         <button class="btn btn-lg btn-block btn-info" @click="newMeal">Create new meal</button>
         <br/>
         <prepared-orders :preparedOrders="preparedOrders" @deliver-click="deliverOrder" ref="preparedOrdersRef"></prepared-orders>
 
-        <template v-for="meal in newMeals">
+        <template v-for="meal in newWaiterMeals">
             <waiter-new-meal :meal="meal" @created-meal="createdMeal(meal, $event)" :key="meal.id"></waiter-new-meal>
         </template>
 
-        <template v-for="meal in waiterMeals">
-            <meal-box :meal="meal" @terminate-meal="terminateMeal(meal)" :key="meal.id"></meal-box>
+        <template v-for="(meal, index) in waiterMeals">
+            <meal-box :meal="meal" :mealIndex="index" @terminate-meal="terminateMeal(meal)" :key="meal.id"></meal-box>
         </template>
     </div>
 </template>
@@ -19,13 +26,18 @@
     // Component code
     import PreparedOrders from './waiter/preparedOrders.vue';
     import MealBox from './waiter/mealBox.vue';
+    import NewMeal from './waiter/waiterNewMeal.vue';
 
     export default {
-        data: function(){
-            return {
-                preparedOrders: [],
-                newMeals: [],
-                waiterMeals: [],
+        computed: {
+            waiterMeals: function() {
+                return this.$store.state.waiter.meals;
+            },
+            newWaiterMeals: function() {
+                return this.$store.state.waiter.newMeals;
+            },
+            preparedOrders: function() {
+                return this.$store.state.waiter.preparedOrders;
             }
         },
         methods: {
@@ -54,8 +66,10 @@
                 this.$http.post('api/orders/' + order.id + '/deliver')
                     .then(response => {
                         if (response.status === 200) {
-                            this.preparedOrders.splice(index, 1);
+                            order.state = "delivered";
+                            this.$store.commit('removeWaiterPreparedOrders', index);
                             this.$socket.emit('propagateWaiterDeliveries');
+                            this.$store.commit('updateWaiterOrder', order);
 
                             this.$swal({
                                 type: 'success',
@@ -88,7 +102,7 @@
                                         return {'status': 'taken'};
 
                                     } else {
-                                        this.newMeals.push(response.data.data);
+                                        this.$store.commit('addNewWaiterMeal', response.data.data);
                                         return {'status': 'success',
                                                 'data': response.data.data};
                                     }
@@ -119,7 +133,7 @@
                             timer: 3000
                         });
                         toast({
-                            title: `Active meal created at table number ${result.value.data.table_number}`,
+                            title: `Active meal created at table number ${result.value.data.table_number_id}`,
                             type: 'success'
                         });
                         /////////////////////////////////////////
@@ -149,14 +163,14 @@
                 });
             },
             createdMeal: function (meal, orders) {
-                this.newMeals.splice(this.newMeals.indexOf(meal), 1);
+                this.$store.commit('removeNewWaiterMeal', meal);
                 meal.orders = orders;
-                this.waiterMeals.push(meal);
+                this.$store.commit('addWaiterMeal', meal);
             },
             getPreparedOrders: function(){
                 this.$http.get('api/orders?states=prepared')
                     .then(response=>{
-                        this.preparedOrders = response.data.data;
+                        this.$store.commit('setWaiterPreparedOrders', response.data.data);
                     });
             },
             getWaiterMeals: function(){
@@ -168,21 +182,28 @@
                                 if (order.state === "pending") {
                                     this.$http.put(`/api/orders/${order.id}/confirm`)
                                     order.state = "confirmed";
+                                    this.$socket.emit('propagateConfirmedOrder', order);
                                 }
                             })
                         });
 
-                        this.waiterMeals = meals;
+                        this.$store.commit('setWaiterMeals', meals);
                     });
             },
         },
         created: function () {
-            this.getPreparedOrders();
-            this.getWaiterMeals();
+            if (!this.$store.state.waiter.preparedOrders) {
+                this.getPreparedOrders();
+            }
+
+            if (!this.$store.state.waiterMeals) {
+                this.getWaiterMeals();
+            }
         },
         components: {
             'prepared-orders': PreparedOrders,
-            'meal-box': MealBox
+            'meal-box': MealBox,
+            'waiter-new-meal': NewMeal
         },
     }
 </script>
