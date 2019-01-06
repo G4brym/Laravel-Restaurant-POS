@@ -1,16 +1,19 @@
 <template>
-    <div class="form-group">
+    <div>
         <label :for="'input' + num">Item {{ num }}</label>
-        <select class="form-control" v-model="itemName">
-            <option v-for="item in this.$store.state.items" :value="item.name">
-                {{ item.name }}
-            </option>
-        </select>
-        <span>
-            <button class="btn btn-success btn-flat" :disabled="inputLocked" @click="sendOrder">
-                <i class="fa fa-check"></i>
-            </button>
-        </span>
+        <div class="input-group">
+            <select class="form-control" v-model="itemName">
+                <option v-for="item in this.$store.state.items" :value="item.name">
+                    {{ item.name }}
+                </option>
+            </select>
+            <span class="input-group-btn">
+                <button class="btn btn-success btn-flat" :disabled="inputLocked" @click="sendOrder">
+                    <i class="fa fa-check"></i>
+                </button>
+            </span>
+        </div>
+        <br/>
     </div>
 </template>
 
