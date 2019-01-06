@@ -7,7 +7,7 @@
         </div>
     </div>
     <div v-else>
-        <button class="btn btn-lg btn-block btn-info" @click="newMeal">Create new meal</button>
+        <button class="btn btn-lg btn-block btn-info" @click="newMeal">+ Create new meal</button>
         <br/>
         <prepared-orders :preparedOrders="preparedOrders" @deliver-click="deliverOrder" ref="preparedOrdersRef"></prepared-orders>
 
