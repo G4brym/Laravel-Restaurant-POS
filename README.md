@@ -17,7 +17,7 @@ Live refresh is provided through sockets throughout the entire app.
 In order to run with Docker, you may run with the current files and add the environment variables yourself, or you may edit the file .env.prod with your own values.
  
  
-## install db
+## Install DB
  
  - php artisan migrate
  - php artisan db:seed
