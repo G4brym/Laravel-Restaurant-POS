@@ -17,8 +17,12 @@ export default new Vuex.Store({
         waiter: {
             meals: null,
             newMeals: [],
-            preparedOrders: null,
+            preparedOrders: null
         },
+        cashier: {
+            invoices: null,
+            pendingInvoices: null
+        }
     },
     mutations: {
         clearUserAndToken: (state) => {
@@ -45,7 +49,7 @@ export default new Vuex.Store({
             sessionStorage.setItem('user', JSON.stringify(user));
         },
         setToken: (state, token) => {
-            state.token= token;
+            state.token = token;
             sessionStorage.setItem('token', token);
             axios.defaults.headers.common.Authorization = "Bearer " + token;
         },
@@ -108,20 +112,26 @@ export default new Vuex.Store({
         addWaiterMeal (state, meal) {
             state.waiter.meals.push(meal);
         },
+        clearWaiterMeals (state) {
+            state.waiter.meals = null;
+        },
+        removeWaiterMeal (state, meal) {
+            state.waiter.meals.splice(state.waiter.meals.indexOf(meal), 1);
+        },
         addNewWaiterMeal (state, meal) {
             state.waiter.newMeals.push(meal);
         },
         removeNewWaiterMeal (state, meal) {
             state.waiter.newMeals.splice(state.waiter.newMeals.indexOf(meal), 1);
         },
-        setWaiterPreparedOrders (state, orders) {
+        loadWaiterPreparedOrders (state, orders) {
             state.waiter.preparedOrders = orders;
         },
         addWaiterPreparedOrder (state, order) {
             state.waiter.preparedOrders.push(order);
         },
-        removeWaiterPreparedOrders (state, index) {
-            state.waiter.preparedOrders.splice(index, 1);
+        removeWaiterPreparedOrders (state, orderIndex) {
+            state.waiter.preparedOrders.splice(orderIndex, 1);
         },
         updateWaiterOrder (state, order) {
             for (let i = 0; i < state.waiter.meals.length; i++) {
@@ -138,12 +148,31 @@ export default new Vuex.Store({
                 break;
             }
         },
+        loadPendingInvoices (state, invoices) {
+            state.cashier.pendingInvoices = invoices;
+        },
+        addPendingInvoice (state, invoice) {
+            state.cashier.pendingInvoices.push(invoice);
+        },
+        removePendingInvoice (state, invoice) {
+            state.cashier.pendingInvoices.splice(state.cashier.pendingInvoices.indexOf(invoice), 1);
+        },
+        loadInvoices (state, invoices) {
+            state.cashier.invoices = invoices;
+        }
     },
     actions: {
-        clearUserData (context) {
-            if (context.state.orders) {
-                context.commit('clearOrders');
+        clearUserData (context, { type }) {
+            if (type === 'waiter' || type === 'cook') {
+                if (context.state.orders) {
+                    context.commit('clearOrders');
+                }
+
+                if (type === 'waiter') {
+                    context.commit('clearWaiterMeals');
+                }
             }
+
         },
         loadOrders ({ commit }) {
             axios.get('api/orders')
@@ -156,6 +185,49 @@ export default new Vuex.Store({
                 .then(response => {
                     commit('loadItems', response.data.data);
                 });
+        },
+        loadPreparedOrdersAndMeals (context, { socket, id }) {
+            axios.all([
+                axios.get('api/orders?states=prepared'),
+                axios.get('api/meals?waiter=true&unfinished=true')
+                ])
+                .then(axios.spread(function (orders, meals) {
+                    context.commit('loadWaiterPreparedOrders', orders.data.data);
+
+                    let pendingOrders = [];
+                    let mealsArray = meals.data.data;
+                    mealsArray.forEach((meal) => {
+                        meal.orders.forEach((order) => {
+                            if (order.state === "pending") {
+                                axios.put(`/api/orders/${order.id}/confirm`);
+                                order.state = "confirmed";
+                                pendingOrders.push(order);
+                            }
+                        })
+                    });
+
+                    context.commit('setWaiterMeals', mealsArray);
+
+                    socket.emit('joinWaiter', id);
+                    for (let order of pendingOrders) {
+                        socket.emit('propagateConfirmedOrder', order);
+                    }
+                }));
+        },
+        loadPendingInvoices ({ commit }) {
+            axios.get('api/invoices?pending=true')
+                .then(response => {
+                    commit('loadPendingInvoices', response.data.data);
+                });
+        },
+        loadInvoices (context, { page }) {
+            return new Promise((resolve) => {
+                // Do something here... lets say, a http call using vue-resource
+                axios.get(`api/invoices?page=${page}`).then(response => {
+                    context.commit('loadInvoices', response.data.data);
+                    resolve(response.data);
+                });
+            });
         }
     }
 });

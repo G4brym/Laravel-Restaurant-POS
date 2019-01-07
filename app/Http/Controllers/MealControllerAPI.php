@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Meal as MealResource;
+use App\Http\Resources\Invoice as InvoiceResource;
 use App\Http\Resources\Order as OrderResource;
 
 use App\Meal;
-use App\MealItem;
+use App\Invoice;
+use App\InvoiceItem;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Order;
@@ -141,7 +144,7 @@ class MealControllerAPI extends Controller
             return response()->json(['status'=>'already terminated'], 402);
         }
 
-        $invoice = new Meal();
+        $invoice = new Invoice();
         $invoice->state = 'pending';
         $invoice->meal_id = $meal->id;
         $invoice->date = Carbon::today();
@@ -155,7 +158,7 @@ class MealControllerAPI extends Controller
                 $order->state = 'not delivered';
                 $order->save();
             } else {
-                $inv_item = MealItem::where('invoice_id', $invoice->id)
+                $inv_item = InvoiceItem::where('invoice_id', $invoice->id)
                                         ->where('item_id', $order->item_id)->first();
 
                 if($inv_item == null){
@@ -186,6 +189,6 @@ class MealControllerAPI extends Controller
         $invoice->total_price = $total;
         $invoice->save();
 
-        return response()->json(['status'=>'success'], 200);
+        return new InvoiceResource($invoice);
     }
 }

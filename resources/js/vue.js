@@ -137,18 +137,22 @@ const app = new Vue({
                     });
                     break;
                 case 'waiter':
-                    this.$store.dispatch('loadOrders');
-                    this.$socket.emit('joinWaiter', this.$store.state.user.id);
+                    this.$store.dispatch('loadPreparedOrdersAndMeals', {
+                        socket: this.$socket,
+                        id: this.$store.state.user.id
+                    });
                     break;
                 case 'cashier':
-                    this.$socket.emit('joinCashier');
-                    break;
-                /*case 'manager':
-                    this.$socket.emit('joinManager');
-                    break;
-                */
-            }
+                    this.$store.dispatch('loadPendingInvoices').then(() => {
+                        this.$socket.emit('joinCashier');
+                    });
 
+                    break;
+                    /*case 'manager':
+                        this.$socket.emit('joinManager');
+                        break;
+                    */
+            }
         },
         clearUserData: function(logout) {
             if (!logout || (logout && this.$store.state.user.shift_active)) {
@@ -169,47 +173,55 @@ const app = new Vue({
                 }
             }
 
-            this.$store.dispatch('clearUserData').then(() => {
+            this.$store.dispatch('clearUserData', {
+                type: this.$store.state.user.type
+            }).then(() => {
                 if (logout) {
                     this.$store.commit('clearUserAndToken')
                 }
             });
-        },
-        addNotif: function(type, message, href) {
-            let itemType = null;
-            if (type === 'dish') {
-                itemType = 'fa-cutlery';
-            }
-            else {
-                itemType = 'fa-glass';
-            }
-            this.$refs.notifications.addNotif(message, itemType + " text-red", href);
-        },
+        }
     },
     sockets: {
         connect: function() {
             console.log('socket connected');
         },
         propagateCookOrderToCooks: function(order) {
-            this.addNotif(order.item.type, "Order (" + order.item.name +
-                ") has been picked up by another cook", "/#/cookOrders");
+            this.$refs.notifications.addNotif(`Order (${order.item.name}) has been picked up by another cook`,
+                (order.item.type === 'dish' ? 'fa-cutlery' : 'fa-glass')
+                + " text-red", "/#/cookOrders");
+
 
             this.$store.commit('deleteOrder', order)
         },
         propagateConfirmedOrder: function(order){
-            this.addNotif(order.item.type, "New order (" + order.item.name +
-                ") has been added", "/#/cookOrders");
+            this.$refs.notifications.addNotif(`New order (${order.item.name}) has been added`,
+                (order.item.type === 'dish' ? 'fa-cutlery' : 'fa-glass')
+                + " text-red", "/#/cookOrders");
 
             this.$store.commit('addOrder', order);
         },
         propagateCookOrderToWaiter: function(order) {
             this.$store.commit('updateWaiterOrder', order);
             if (order.state === 'prepared') {
-                this.addNotif(order.item.type, "Order (" + order.item.name +
-                    ") has been prepared", "/#/waiter");
+                this.$refs.notifications.addNotif(`Order (${order.item.name}) has been prepared`,
+                    (order.item.type === 'dish' ? 'fa-cutlery' : 'fa-glass')
+                    + " text-red", "/#/waiter");
 
                 this.$store.commit('addWaiterPreparedOrder', order);
             }
+        },
+        propagatePendingInvoice: function(invoice) {
+            this.$refs.notifications.addNotif(`New pending (${invoice.id}) invoice has been added`,
+                "fa-briefcase text-red", "/#/cashier");
+
+            this.$store.commit('addPendingInvoice', invoice);
+        },
+        propagateRemovePendingInvoice: function(invoice) {
+            this.$refs.notifications.addNotif(`Invoice (${invoice.id}) has been paid by another cashier`,
+                "fa-briefcase text-red", "/#/cashier");
+
+            this.$store.commit('removePendingInvoice', invoice);
         }
     },
     created() {

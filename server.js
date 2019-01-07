@@ -115,6 +115,15 @@ io.on('connection', function (socket) {
         socket.broadcast.to(`waiter_${order.responsible_waiter_id}`).emit('propagateCookOrderToWaiter', order);
     });
 
+    socket.on('propagatePendingInvoice', function(invoice) {
+        socket.broadcast.to('cashier').emit('propagatePendingInvoice', invoice);
+    });
+
+    socket.on('propagateRemovePendingInvoice', function(invoice) {
+        socket.broadcast.to('cashier').emit('propagateRemovePendingInvoice', invoice);
+    });
+
+
 	/*socket.on('msg_from_client', (msg, userInfo) => {
 		if (userInfo === undefined) {
 			io.sockets.emit('msg_from_server', 'User Unknown: "' + msg + '"');

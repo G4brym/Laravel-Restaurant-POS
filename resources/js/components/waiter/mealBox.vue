@@ -80,6 +80,14 @@
         },
         watch: {
             orders: function() {
+                this.generateCompactedOrders();
+            }
+        },
+        mounted: function() {
+            this.generateCompactedOrders();
+        },
+        methods: {
+            generateCompactedOrders: function() {
                 let compressedOrders = [];
                 let tmp_price = 0;
                 let safeTermination = true;
@@ -98,29 +106,7 @@
 
                 this.compactedOrders = Object.assign([], compressedOrders);
                 this.safeTerminate = safeTermination;
-            }
-        },
-        mounted() {
-            let compressedOrders = [];
-            let tmp_price = 0;
-            let safeTermination = true;
-
-            for (let i = 0; i < this.orders.length; i++) {
-                tmp_price += parseFloat(this.orders[i].item.price);
-                if(this.orders[i].state === 'pending' || this.orders[i].state === 'confirmed'){
-                    compressedOrders.push(this.orders[i])
-                }
-
-                if(this.orders[i].state !== 'delivered'){
-                    safeTermination = false;
-                }
-            }
-            this.totalPrice = tmp_price.toFixed(2);
-
-            this.compactedOrders = Object.assign([], compressedOrders);
-            this.safeTerminate = safeTermination;
-        },
-        methods: {
+            },
             terminateMeal: function () {
                 if(!this.safeTerminate){
                     this.$swal({

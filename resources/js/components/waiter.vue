@@ -44,22 +44,22 @@
             terminateMeal: function (meal) {
                 this.$http.post('api/meals/' + meal.id + '/terminate')
                     .then(response => {
-                        if (response.status === 200) {
-                            this.getWaiterMeals();
-                            this.$socket.emit('propagateTerminateOrder');
+                        if (response.status === 201) {
+                            this.$store.commit('removeWaiterMeal', meal);
+                            this.$socket.emit('propagatePendingInvoice', response.data.data);
 
                             this.$swal({
                                 type: 'success',
                                 title: 'Terminated',
-                                text: 'This meal was terminated',
-                            });
-                        } else {
-                            this.$swal({
-                                type: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!',
+                                text: 'This meal was terminated'
                             });
                         }
+                    }).catch(() => {
+                        this.$swal({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                        });
                     });
             },
             deliverOrder: function (order, index) {
@@ -166,38 +166,6 @@
                 this.$store.commit('removeNewWaiterMeal', meal);
                 meal.orders = orders;
                 this.$store.commit('addWaiterMeal', meal);
-            },
-            getPreparedOrders: function(){
-                this.$http.get('api/orders?states=prepared')
-                    .then(response=>{
-                        this.$store.commit('setWaiterPreparedOrders', response.data.data);
-                    });
-            },
-            getWaiterMeals: function(){
-                this.$http.get('api/meals?waiter=true&unfinished=true')
-                    .then(response=>{
-                        let meals = response.data.data;
-                        meals.forEach((meal) => {
-                            meal.orders.forEach((order) => {
-                                if (order.state === "pending") {
-                                    this.$http.put(`/api/orders/${order.id}/confirm`)
-                                    order.state = "confirmed";
-                                    this.$socket.emit('propagateConfirmedOrder', order);
-                                }
-                            })
-                        });
-
-                        this.$store.commit('setWaiterMeals', meals);
-                    });
-            },
-        },
-        created: function () {
-            if (!this.$store.state.waiter.preparedOrders) {
-                this.getPreparedOrders();
-            }
-
-            if (!this.$store.state.waiterMeals) {
-                this.getWaiterMeals();
             }
         },
         components: {

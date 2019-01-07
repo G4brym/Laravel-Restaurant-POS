@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use ErrorException;
 use Illuminate\Http\Resources\Json\Resource;
+use App\Item;
 
 class Order extends Resource
 {
