@@ -9,6 +9,11 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+window.Vue = require('vue');
+
+window.pdfMake = require('pdfmake/build/pdfmake.js');
+var pdfFonts = require('pdfmake/build/vfs_fonts.js');
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
