@@ -48,7 +48,7 @@ app.listen(8080, function(){
 // ------------------------
 // Estrutura dados - server
 // ------------------------
-
+io.set('origins', '*:*');
 io.on('connection', function (socket) {
     console.log('client has connected (socket ID = '+socket.id+')' );
 
