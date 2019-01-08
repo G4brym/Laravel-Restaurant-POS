@@ -40,7 +40,7 @@
                         this.$swal.showLoading();
                     }
                 });
-                this.$http.get('api/stats', {params: {year: option}})
+                this.$http.get('api/stats', {params: {type: option}})
                     .then(response=>{
                         this.$swal({
                             type: 'success',
