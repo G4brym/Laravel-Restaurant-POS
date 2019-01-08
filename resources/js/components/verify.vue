@@ -35,7 +35,7 @@
                     </span>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-primary" @click="verify">Submit</button>
+                    <button class="btn btn-primary" :disabled="isDisabled" @click="verify">Submit</button>
                 </div>
             </template>
             <div class="text-center" v-else>
@@ -55,7 +55,8 @@
                 differentError: false,
                 errors: [],
                 id: null,
-                hash: null
+                hash: null,
+                isDisabled: false
             }
         },
         methods: {
@@ -90,6 +91,8 @@
                     });
                     /////////////////////////////////////////
                 }
+
+                this.isDisabled = true;
 
                 /////////////////////////////////////////
                 // SweetAlert
@@ -126,6 +129,7 @@
                     });
                     /////////////////////////////////////////
                 }).catch(() => {
+                    this.isDisabled = false;
                     /////////////////////////////////////////
                     // SweetAlert
                     this.$swal({

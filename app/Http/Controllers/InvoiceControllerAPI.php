@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Invoice as InvoiceResource;
 
 use App\Invoice;
+use App\Meal;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class InvoiceControllerAPI extends Controller
 {
@@ -50,16 +52,18 @@ class InvoiceControllerAPI extends Controller
 
     public function markPaid(Request $request, $id)
     {
-        $meal = Invoice::findOrFail($id);
+        $invoice = Invoice::findOrFail($id);
 
         $name = $request->get('name');
         $nif = $request->get('nif');
 
         if($name != '' && $nif != ''){
-            $meal->name = $name;
-            $meal->nif = $nif;
-            $meal->state = 'paid';
-            $meal->save();
+            $invoice->name = $name;
+            $invoice->nif = $nif;
+            $invoice->state = 'paid';
+            $invoice->save();
+
+            Meal::find($invoice->meal_id)->update(['state' => 'paid', 'end' => Carbon::now()]);
 
             return response()->json(['status'=>'success'], 200);
 

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\InvoiceItem as InvoiceItemResource;
+use Carbon\Carbon;
 
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -25,7 +26,7 @@ class Invoice extends Resource
           'meal_id' => $this->meal_id,
           'nif' => $this->nif,
           'name' => $this->name,
-          'date' => $this->date,
+          'date' => Carbon::make($this->date)->toDateString(),
           'total_price' => $this->total_price,
           'items' => InvoiceItemResource::collection($this->items),
         ];

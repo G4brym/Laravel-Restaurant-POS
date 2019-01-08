@@ -39,9 +39,8 @@ class OrderControllerAPI extends Controller
             }
 
         } else if ($user->type === 'cook') {
-            $baseQuery = Order::whereIn('state', ['confirmed', 'in preparation'])
-                              ->where('responsible_cook_id', $uid)
-                              ->orWhereNull('responsible_cook_id')
+            $baseQuery = Order::whereRaw("(state in ('in preparation', 'confirmed'))")
+                              ->whereRaw("(responsible_cook_id = $uid or responsible_cook_id is null)")
                               ->orderBy('state', 'desc')
                               ->orderBy('updated_at');
 
@@ -151,6 +150,9 @@ class OrderControllerAPI extends Controller
 
         $order = Order::findOrFail($id);
 
+        if ($order->state === 'confirmed') {
+            return response()->json(null, 202);
+        }
         if (Auth::id() != $order->meal->responsible_waiter_id) {
             return response()->json(null, 401);
         }

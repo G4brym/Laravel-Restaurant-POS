@@ -7,7 +7,7 @@
                 <invoice-box :invoice="invoice" :index="index" ref="invoicesRef"></invoice-box>
             </template>
 
-            <paginator :data="paginatorData" @change-page="getCashierInvoices"></paginator>
+            <paginator :data="paginatorData" @change-page="getCashierInvoices" ref="cashierPaginator"></paginator>
         </div>
     </div>
 </template>
@@ -21,30 +21,34 @@
     export default {
         data: function(){
             return {
-                cashierInvoices: [],
-                pendingInvoices: [],
-                paginatorData: null,
+                paginatorData: null
+            }
+        },
+        computed: {
+            cashierInvoices: function() {
+                return this.$store.state.cashier.invoices;
+            },
+            pendingInvoices: function() {
+                return this.$store.state.cashier.pendingInvoices;
             }
         },
         methods: {
             getCashierInvoices: function(page){
-                if(page == null){
+                if (page === null){
                     page = 1
                 }
 
-                this.$http.get('api/invoices?page='+page)
-                    .then(response=>{
-                        this.cashierInvoices = response.data.data;
-
-                        this.paginatorData = response.data;
-                    });
+                this.$store.dispatch('loadInvoices', {page:page}).then((paginatorData) => {
+                    this.paginatorData = paginatorData;
+                });
             },
             markInvoicePaid: function(invoice, index, name, nif){
                 this.$http.post('api/invoices/'+invoice.id+'/markpaid', {'name': name, 'nif': nif})
                     .then(response=>{
-                        if (response.status == 200) {
-                            this.getPendingInvoices()
-                            this.getCashierInvoices()
+                        if (response.status === 200) {
+                            this.getCashierInvoices(null);
+                            this.$store.commit('removePendingInvoice', invoice);
+                            this.$socket.emit('propagateRemovePendingInvoice', invoice);
 
                             $('#markAsPaid').modal('hide');
 
@@ -62,16 +66,9 @@
                         }
                     });
             },
-            getPendingInvoices: function(){
-                this.$http.get('api/invoices?pending=true')
-                    .then(response=>{
-                        this.pendingInvoices = response.data.data;
-                    });
-            },
         },
         created: function () {
-            this.getCashierInvoices();
-            this.getPendingInvoices();
+            this.getCashierInvoices(null);
         },
         components: {
             'invoice-box': InvoiceBox,

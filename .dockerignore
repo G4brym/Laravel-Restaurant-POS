@@ -3,3 +3,4 @@
 upload
 node_modules
 .env
+storage/logs/laravel.log

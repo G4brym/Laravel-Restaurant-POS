@@ -124,6 +124,7 @@
                 clearTimeout(this.timeouts[order.id]);
                 delete this.timeouts[order.id];
                 order.state = "confirmed";
+                return order;
             },
             doneMeal: function() {
                 this.completedOrders.forEach((order) => {
@@ -133,12 +134,14 @@
 
                     this.$http.put(
                         `/api/orders/${order.id}/confirm`
-                    ).then(() => {
-                        this.$socket.emit('propagateConfirmedOrder', order);
+                    ).then((response) => {
+                        if (response.status !== 202) {
+                            this.$socket.emit('propagateConfirmedOrder', order);
+                        }
                     })
-                        .catch(() => {
-                            this.unknownError();
-                        });
+                    .catch(() => {
+                        this.unknownError();
+                    });
                 });
 
                 this.$emit('created-meal', this.completedOrders);

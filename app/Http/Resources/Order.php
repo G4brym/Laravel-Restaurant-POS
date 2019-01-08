@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use ErrorException;
 use Illuminate\Http\Resources\Json\Resource;
+use App\Item;
 
 class Order extends Resource
 {
@@ -21,7 +22,7 @@ class Order extends Resource
             'state' => $this->state,
             'start' => $this->start,
             'end' => $this->end,
-            'item' => $this->item,
+            'item' => Item::withTrashed()->find($this->item_id),
             'meal' => $this->meal->id,
             'responsible_cook' => $this->responsible_cook,
             'responsible_waiter_id' => $this->meal->responsible_waiter_id
