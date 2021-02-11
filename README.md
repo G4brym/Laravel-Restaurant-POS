@@ -51,6 +51,6 @@ Menu Items
  
 ### Developers
  
- - [Diogo Agostinho](https://github.com/Syncng)
+ - [Diogo Agostinho](https://github.com/Dinsi)
  - [Gabriel Massadas](https://github.com/G4brym)
  - [Luis Pires](https://github.com/LuisPires97)
